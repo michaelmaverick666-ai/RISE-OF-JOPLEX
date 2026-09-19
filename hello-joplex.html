@@ -24,11 +24,24 @@
     <p>I am building Joplex one mission at a time.</p>
 <p>Mission 004: I am learning how to build for the web.</p>
 <button onclick="showMessage()">Activate Joplex</button>
+<br><br>
 
+<input type="text" id="nameInput" placeholder="Enter your name">
+
+<button onclick="greetUser()">Greet Joplex</button>
 <script>
     function showMessage() {
         alert("Joplex activated! 🚀");
     }
+function greetUser() {
+    let name = document.getElementById("nameInput").value;
+
+    if (name === "") {
+        alert("Please enter your name.");
+    } else {
+        alert("Welcome to Joplex, " + name + "! 🚀");
+    }
+}
 </script>
 </body>
 </html>

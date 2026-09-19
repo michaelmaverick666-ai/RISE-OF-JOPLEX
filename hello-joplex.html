@@ -36,6 +36,7 @@
 <p id="commandResponse"></p>
 <h3>Command History</h3>
 <ul id="commandHistory"></ul>
+<button onclick="clearHistory()">Clear History</button>
 <button onclick="greetUser()">Greet Joplex</button>
 <p id="response"></p>
 <p id="status">Joplex is offline 🔴</p>
@@ -104,6 +105,8 @@ let history = document.getElementById("commandHistory");
     }let item = document.createElement("li");
 item.textContent = command;
 history.appendChild(item);
+}function clearHistory() {
+    document.getElementById("commandHistory").innerHTML = "";
 }</script>
 </body>
 </html>

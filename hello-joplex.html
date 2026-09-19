@@ -88,6 +88,13 @@ setInterval(updateClock, 1000);function runCommand() {
 
     if (command === "status") {
         response.textContent = "Joplex systems are online 🟢";
+
+    } else if (command === "time") {
+        response.textContent = "The current time is " + new Date().toLocaleTimeString() + " ⏰";
+
+    } else if (command === "hello") {
+        response.textContent = "Hello! Joplex is ready to assist you. 🤖";
+
     } else {
         response.textContent = "Command not recognized.";
     }

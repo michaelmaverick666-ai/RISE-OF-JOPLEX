@@ -41,8 +41,15 @@ function greetUser() {
     if (name === "") {
         response.textContent = "Please enter your name.";
     } else {
+        localStorage.setItem("joplexName", name);
         response.textContent = "Welcome to Joplex, " + name + "! 🚀";
     }
+}
+let savedName = localStorage.getItem("joplexName");
+
+if (savedName) {
+    document.getElementById("response").textContent =
+        "Welcome back, " + savedName + "! 🤖";
 }
 </script>
 </body>

@@ -90,7 +90,18 @@ function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");
 let history = document.getElementById("commandHistory");
-    if (command.includes("hello")) {
+if (command.includes("motivate")) {
+    let messages = [
+        "Keep going. Small progress is still progress. 💪",
+        "Build today what your future self will thank you for. 🚀",
+        "One mission at a time. Joplex is growing. 🤖",
+        "You don't need to know everything. You just need to keep learning. 🧠"
+    ];
+
+    let randomIndex = Math.floor(Math.random() * messages.length);
+    response.textContent = messages[randomIndex];
+
+} else if (command.includes("hello")) {
         response.textContent = "Hello! Joplex is ready to assist you. 🤖";
 
     } else if (command.includes("time")) {

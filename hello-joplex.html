@@ -33,6 +33,9 @@
 <p id="status">Joplex is offline 🔴</p>
 
 <button onclick="activateJoplex()">Activate System</button>
+<br><br>
+
+<button onclick="resetJoplex()">Reset Joplex Memory</button>
 <script>
     function showMessage() {
         alert("Joplex activated! 🚀");
@@ -58,6 +61,12 @@ function activateJoplex() {
     let status = document.getElementById("status");
 
     status.textContent = "Joplex is online 🟢";
+}function resetJoplex() {
+    localStorage.removeItem("joplexName");
+
+    document.getElementById("nameInput").value = "";
+    document.getElementById("response").textContent =
+        "Joplex memory has been reset. 🧠";
 }</script>
 </body>
 </html>

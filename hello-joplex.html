@@ -82,21 +82,23 @@ function activateJoplex() {
 }
 
 updateClock();
-setInterval(updateClock, 1000);function runCommand() {
-    let command = document.getElementById("commandInput").value.toLowerCase();
+setInterval(updateClock, 1000);
+function runCommand() {
+    let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");
 
-    if (command === "status") {
-        response.textContent = "Joplex systems are online 🟢";
-
-    } else if (command === "time") {
-        response.textContent = "The current time is " + new Date().toLocaleTimeString() + " ⏰";
-
-    } else if (command === "hello") {
+    if (command.includes("hello")) {
         response.textContent = "Hello! Joplex is ready to assist you. 🤖";
 
+    } else if (command.includes("time")) {
+        response.textContent =
+            "The current time is " + new Date().toLocaleTimeString() + " ⏰";
+
+    } else if (command.includes("status") || command.includes("online")) {
+        response.textContent = "Joplex systems are online 🟢";
+
     } else {
-        response.textContent = "Command not recognized.";
+        response.textContent = "I don't understand that command yet.";
     }
 }</script>
 </body>

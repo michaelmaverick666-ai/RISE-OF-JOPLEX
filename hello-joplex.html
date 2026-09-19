@@ -27,7 +27,13 @@
 <br><br>
 
 <input type="text" id="nameInput" placeholder="Enter your name">
+<br><br>
 
+<input type="text" id="commandInput" placeholder="Enter a command">
+
+<button onclick="runCommand()">Run Command</button>
+
+<p id="commandResponse"></p>
 <button onclick="greetUser()">Greet Joplex</button>
 <p id="response"></p>
 <p id="status">Joplex is offline 🔴</p>
@@ -76,6 +82,15 @@ function activateJoplex() {
 }
 
 updateClock();
-setInterval(updateClock, 1000);</script>
+setInterval(updateClock, 1000);function runCommand() {
+    let command = document.getElementById("commandInput").value.toLowerCase();
+    let response = document.getElementById("commandResponse");
+
+    if (command === "status") {
+        response.textContent = "Joplex systems are online 🟢";
+    } else {
+        response.textContent = "Command not recognized.";
+    }
+}</script>
 </body>
 </html>

@@ -29,17 +29,19 @@
 <input type="text" id="nameInput" placeholder="Enter your name">
 
 <button onclick="greetUser()">Greet Joplex</button>
+<p id="response"></p>
 <script>
     function showMessage() {
         alert("Joplex activated! 🚀");
     }
 function greetUser() {
     let name = document.getElementById("nameInput").value;
+    let response = document.getElementById("response");
 
     if (name === "") {
-        alert("Please enter your name.");
+        response.textContent = "Please enter your name.";
     } else {
-        alert("Welcome to Joplex, " + name + "! 🚀");
+        response.textContent = "Welcome to Joplex, " + name + "! 🚀";
     }
 }
 </script>

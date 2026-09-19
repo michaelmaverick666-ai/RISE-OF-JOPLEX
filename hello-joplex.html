@@ -31,7 +31,7 @@
 <button onclick="greetUser()">Greet Joplex</button>
 <p id="response"></p>
 <p id="status">Joplex is offline 🔴</p>
-
+<p id="clock">Time loading...</p>
 <button onclick="activateJoplex()">Activate System</button>
 <br><br>
 
@@ -67,6 +67,15 @@ function activateJoplex() {
     document.getElementById("nameInput").value = "";
     document.getElementById("response").textContent =
         "Joplex memory has been reset. 🧠";
-}</script>
+}function updateClock() {
+    let now = new Date();
+    let time = now.toLocaleTimeString();
+
+    document.getElementById("clock").textContent =
+        "Current time: " + time;
+}
+
+updateClock();
+setInterval(updateClock, 1000);</script>
 </body>
 </html>

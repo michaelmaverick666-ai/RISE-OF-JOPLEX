@@ -14,11 +14,21 @@
     p {
         font-size: 20px;
     }
-</style>
+body.light {
+    background: white;
+    color: black;
+}
+
+body.light input,
+body.light button {
+    background: #f2f2f2;
+    color: black;
+}</style>
 <head>
     <title>Rise of Joplex</title>
 </head>
 <body>
+<button id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
 
     <h1>Welcome to Joplex 🚀</h1>
 <h1>Welcome to Joplex</h1>
@@ -222,7 +232,27 @@ function runCommand() {
     item.textContent = command;
     history.appendChild(item);
 }
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle("light");
 
+    const button = document.getElementById("themeToggle");
+
+    if (body.classList.contains("light")) {
+        button.textContent = "☀️ Light Mode";
+        localStorage.setItem("joplexTheme", "light");
+    } else {
+        button.textContent = "🌙 Dark Mode";
+        localStorage.setItem("joplexTheme", "dark");
+    }
+}
+
+// Load saved theme
+const savedTheme = localStorage.getItem("joplexTheme");
+if (savedTheme === "light") {
+    document.body.classList.add("light");
+    document.getElementById("themeToggle").textContent = "☀️ Light Mode";
+}
 function clearHistory() {
     document.getElementById("commandHistory").innerHTML = "";
 }</script>

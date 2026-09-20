@@ -89,19 +89,20 @@ setInterval(updateClock, 1000);
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");
-let history = document.getElementById("commandHistory");
-if (command.includes("motivate")) {
-    let messages = [
-        "Keep going. Small progress is still progress. 💪",
-        "Build today what your future self will thank you for. 🚀",
-        "One mission at a time. Joplex is growing. 🤖",
-        "You don't need to know everything. You just need to keep learning. 🧠"
-    ];
+    let history = document.getElementById("commandHistory");
 
-    let randomIndex = Math.floor(Math.random() * messages.length);
-    response.textContent = messages[randomIndex];
+    if (command.includes("motivate")) {
+        let messages = [
+            "Keep going. Small progress is still progress. 💪",
+            "Build today what your future self will thank you for. 🚀",
+            "One mission at a time. Joplex is growing. 🤖",
+            "You don't need to know everything. You just need to keep learning. 🧠"
+        ];
 
-} else if (command.includes("hello")) {
+        let randomIndex = Math.floor(Math.random() * messages.length);
+        response.textContent = messages[randomIndex];
+
+    } else if (command.includes("hello")) {
         response.textContent = "Hello! Joplex is ready to assist you. 🤖";
 
     } else if (command.includes("time")) {
@@ -112,28 +113,34 @@ if (command.includes("motivate")) {
         response.textContent = "Joplex systems are online 🟢";
 
     } else if (command.includes("remember")) {
-    let memory = prompt("What should Joplex remember?");
+        let memory = prompt("What should Joplex remember?");
 
-    if (memory) {
-        localStorage.setItem("joplexMemory", memory);
-        response.textContent = "Memory saved. 🧠";
-    } else {
-        response.textContent = "Nothing was saved.";
-    }
+        if (memory) {
+            localStorage.setItem("joplexMemory", memory);
+            response.textContent = "Memory saved. 🧠";
+        } else {
+            response.textContent = "Nothing was saved.";
+        }
 
-} else if (command.includes("show memory")) {
-    let memory = localStorage.getItem("joplexMemory");
+    } else if (command.includes("show memory")) {
+        let memory = localStorage.getItem("joplexMemory");
 
-    if (memory) {
-        response.textContent = "Joplex remembers: " + memory + " 🧠";
-    } else {
-        response.textContent = "Joplex has no saved memory yet.";
+        if (memory) {
+            response.textContent = "Joplex remembers: " + memory + " 🧠";
+        } else {
+            response.textContent = "Joplex has no saved memory yet.";
+        }
+
     } else {
         response.textContent = "I don't understand that command yet.";
-    }let item = document.createElement("li");
-item.textContent = command;
-history.appendChild(item);
-}function clearHistory() {
+    }
+
+    let item = document.createElement("li");
+    item.textContent = command;
+    history.appendChild(item);
+}
+
+function clearHistory() {
     document.getElementById("commandHistory").innerHTML = "";
 }</script>
 </body>

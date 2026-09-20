@@ -181,6 +181,15 @@ function runCommand() {
 
     let randomIndex = Math.floor(Math.random() * replies.length);
     response.textContent = replies[randomIndex];
+} else if (command.includes("goodbye")) {
+    let replies = [
+        "Goodbye! Keep building. 🚀",
+        "See you next time! Joplex will be here. 🤖",
+        "Until the next mission! 🔥"
+    ];
+
+    let randomIndex = Math.floor(Math.random() * replies.length);
+    response.textContent = replies[randomIndex];
     } else {
         response.textContent = "I don't understand that command yet.";
     }

@@ -160,7 +160,15 @@ function runCommand() {
     let name = localStorage.getItem("joplexName");
 
     if (name) {
-        response.textContent = "Welcome back, " + name + "! Joplex is ready. 🤖🚀";
+        let greetings = [
+            "Welcome back, " + name + "! 🤖🚀",
+            "Good to see you again, " + name + "! 🧠🔥",
+            "Joplex is ready for you, " + name + "! ⚡🤖"
+        ];
+
+        let randomIndex = Math.floor(Math.random() * greetings.length);
+        response.textContent = greetings[randomIndex];
+
     } else {
         response.textContent = "Welcome back! I don't know your name yet.";
     }

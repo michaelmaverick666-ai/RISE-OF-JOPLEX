@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Rise of Joplex</title>
 <style>
     body {
         font-family: Arial, sans-serif;
         text-align: center;
         padding: 50px;
+        background: #0f1219;
+        color: white;
     }
 
     h1 {
@@ -14,22 +18,32 @@
     p {
         font-size: 20px;
     }
-body.light {
-    background: white !important;
-    color: black !important;
-}
 
-body.light * {
-    color: black;
-}
+    body.light {
+        background: white !important;
+        color: black !important;
+    }
 
-body.light input,
-body.light button {
-    background: #f2f2f2 !important;
-    color: black !important;
-}</style>
-<head>
-    <title>Rise of Joplex</title>
+    body.light h1,
+    body.light h2,
+    body.light h3,
+    body.light p,
+    body.light li {
+        color: black !important;
+    }
+
+    body.light input {
+        background: #f2f2f2 !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+
+    body.light button {
+        background: #f2f2f2 !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+</style>
 </head>
 <body>
 <button id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>

@@ -190,6 +190,15 @@ function runCommand() {
 
     let randomIndex = Math.floor(Math.random() * replies.length);
     response.textContent = replies[randomIndex];
+} else if (command.startsWith("calculate")) {
+    let calculation = command.replace("calculate", "").trim();
+
+    try {
+        let answer = Function('"use strict"; return (' + calculation + ')')();
+        response.textContent = "The answer is " + answer + ". 🧮🤖";
+    } catch (error) {
+        response.textContent = "I couldn't calculate that. 🤔";
+    }
     } else {
         response.textContent = "I don't understand that command yet.";
     }

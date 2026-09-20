@@ -156,6 +156,14 @@ function runCommand() {
     }
 } else if (command.includes("good morning")) {
     response.textContent = "Good morning! Let's make today another step forward for Joplex. ☀️🚀";
+} else if (command.includes("i am back")) {
+    let name = localStorage.getItem("joplexName");
+
+    if (name) {
+        response.textContent = "Welcome back, " + name + "! Joplex is ready. 🤖🚀";
+    } else {
+        response.textContent = "Welcome back! I don't know your name yet.";
+    }
     } else {
         response.textContent = "I don't understand that command yet.";
     }

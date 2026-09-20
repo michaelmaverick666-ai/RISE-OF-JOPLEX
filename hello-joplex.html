@@ -111,6 +111,23 @@ if (command.includes("motivate")) {
     } else if (command.includes("status") || command.includes("online")) {
         response.textContent = "Joplex systems are online 🟢";
 
+    } else if (command.includes("remember")) {
+    let memory = prompt("What should Joplex remember?");
+
+    if (memory) {
+        localStorage.setItem("joplexMemory", memory);
+        response.textContent = "Memory saved. 🧠";
+    } else {
+        response.textContent = "Nothing was saved.";
+    }
+
+} else if (command.includes("show memory")) {
+    let memory = localStorage.getItem("joplexMemory");
+
+    if (memory) {
+        response.textContent = "Joplex remembers: " + memory + " 🧠";
+    } else {
+        response.textContent = "Joplex has no saved memory yet.";
     } else {
         response.textContent = "I don't understand that command yet.";
     }let item = document.createElement("li");

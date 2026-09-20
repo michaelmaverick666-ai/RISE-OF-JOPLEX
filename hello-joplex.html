@@ -132,6 +132,14 @@ function runCommand() {
         }
 } else if (command.includes("who are you")) {
     response.textContent = "I am Joplex, your AI project. 🤖🚀";
+} else if (command.includes("what is my name")) {
+    let name = localStorage.getItem("joplexName");
+
+    if (name) {
+        response.textContent = "Your name is " + name + ". 👤🤖";
+    } else {
+        response.textContent = "I don't know your name yet.";
+    }
     } else {
         response.textContent = "I don't understand that command yet.";
     }

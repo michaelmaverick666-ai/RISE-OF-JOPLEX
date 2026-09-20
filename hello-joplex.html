@@ -199,6 +199,20 @@ function runCommand() {
     } catch (error) {
         response.textContent = "I couldn't calculate that. 🤔";
     }
+} else if (command.startsWith("remember ")) {
+    let memory = command.replace("remember ", "").trim();
+    localStorage.setItem("joplexMemory", memory);
+    response.textContent = "🧠 I'll remember: " + memory;
+
+} else if (command === "show memory") {
+    let memory = localStorage.getItem("joplexMemory");
+    response.textContent = memory
+        ? "🧠 Memory: " + memory
+        : "🧠 I don't remember anything yet.";
+
+} else if (command === "forget memory") {
+    localStorage.removeItem("joplexMemory");
+    response.textContent = "🗑️ Memory cleared.";
     } else {
         response.textContent = "I don't understand that command yet.";
     }

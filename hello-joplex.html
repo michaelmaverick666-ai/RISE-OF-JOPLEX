@@ -155,29 +155,20 @@ function speak(text) {
     window.speechSynthesis.speak(speech);
 }
 let joplexLights = false;
-
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");
     let history = document.getElementById("commandHistory");
 
-if (command.startsWith("repeat ")) {
+    if (command.startsWith("repeat ")) {
 
-    let message =
-        command.substring(7).trim();
+        let message = command.substring(7).trim();
 
-    if (message !== "") {
+        response.textContent = message
+            ? "🔁 " + message
+            : "Tell me what you want me to repeat.";
 
-        response.textContent =
-            "🔁 " + message;
-
-    } else {
-
-        response.textContent =
-            "Tell me what you want me to repeat.";
-    }
-
-   } else if (command.includes("motivate")) {
+    } else if (command.includes("motivate")) {
 
         let messages = [
             "Keep going. Small progress is still progress. 💪",
@@ -186,90 +177,105 @@ if (command.startsWith("repeat ")) {
             "You don't need to know everything. You just need to keep learning. 🧠"
         ];
 
-        let randomIndex = Math.floor(Math.random() * messages.length);
-        response.textContent = messages[randomIndex];
+        response.textContent =
+            messages[Math.floor(Math.random() * messages.length)];
 
     } else if (command.includes("hello")) {
 
-        response.textContent = "Hello! Joplex is ready to assist you. 🤖";
+        response.textContent =
+            "Hello! Joplex is ready to assist you. 🤖";
 
     } else if (command.includes("time")) {
 
         response.textContent =
-            "The current time is " + new Date().toLocaleTimeString() + " ⏰";
+            "The current time is " +
+            new Date().toLocaleTimeString() +
+            " ⏰";
 
-} else if (command.includes("date")) {
-
-    let today = new Date();
-
-    response.textContent =
-        "📅 Today is " + today.toLocaleDateString();
-
-} else if (command.includes("day")) {
-
-    let today = new Date();
-
-    response.textContent =
-        "📅 Today is " + today.toLocaleDateString("en-US", {
-            weekday: "long"
-        }) + ".";
-
-    } else if (command.includes("status") || command.includes("online")) {
-
-        response.textContent = "Joplex systems are online 🟢";
-} else if (command.startsWith("save ")) {
-
-    let memory =
-        command.replace("save ", "").trim();
-
-    if (memory) {
-        localStorage.setItem("joplexMemory", memory);
+    } else if (command.includes("date")) {
 
         response.textContent =
-            "🧠 Memory saved: " + memory;
-    } else {
+            "📅 Today is " +
+            new Date().toLocaleDateString();
+
+    } else if (command.includes("day")) {
+
         response.textContent =
-            "Tell me what you want me to save.";
-    }
+            "📅 Today is " +
+            new Date().toLocaleDateString("en-US", {
+                weekday: "long"
+            }) + ".";
 
-    } else if (command.includes("remember")) {
+    } else if (
+        command.includes("status") ||
+        command.includes("online")
+    ) {
 
-        let memory = prompt("What should Joplex remember?");
+        response.textContent =
+            "Joplex systems are online 🟢";
+
+    } else if (command.startsWith("save ")) {
+
+        let memory =
+            command.replace("save ", "").trim();
 
         if (memory) {
             localStorage.setItem("joplexMemory", memory);
-            response.textContent = "Memory saved. 🧠";
+            response.textContent =
+                "🧠 Memory saved: " + memory;
         } else {
-            response.textContent = "Nothing was saved.";
+            response.textContent =
+                "Tell me what you want me to save.";
         }
 
-    } else if (command.includes("show memory")) {
+    } else if (command.startsWith("remember ")) {
 
-        let memory = localStorage.getItem("joplexMemory");
+        let memory =
+            command.replace("remember ", "").trim();
 
         if (memory) {
-            response.textContent = "Joplex remembers: " + memory + " 🧠";
+            localStorage.setItem("joplexMemory", memory);
+            response.textContent =
+                "🧠 I'll remember: " + memory;
         } else {
-            response.textContent = "Joplex has no saved memory yet.";
+            response.textContent =
+                "Tell me what you want me to remember.";
         }
+
+    } else if (command === "show memory") {
+
+        let memory =
+            localStorage.getItem("joplexMemory");
+
+        response.textContent = memory
+            ? "🧠 Joplex remembers: " + memory
+            : "🧠 Joplex has no saved memory yet.";
+
+    } else if (command === "forget memory") {
+
+        localStorage.removeItem("joplexMemory");
+
+        response.textContent =
+            "🗑️ Memory cleared.";
 
     } else if (command.includes("who are you")) {
 
-        response.textContent = "I am Joplex, your AI project. 🤖🚀";
+        response.textContent =
+            "I am Joplex, your AI project. 🤖🚀";
 
     } else if (command.includes("what is my name")) {
 
-        let name = localStorage.getItem("joplexName");
+        let name =
+            localStorage.getItem("joplexName");
 
-        if (name) {
-            response.textContent = "Your name is " + name + ". 👤🤖";
-        } else {
-            response.textContent = "I don't know your name yet.";
-        }
+        response.textContent = name
+            ? "Your name is " + name + ". 👤🤖"
+            : "I don't know your name yet.";
 
     } else if (command.includes("what is my goal")) {
 
-        response.textContent = "Your goal is to build Joplex. 🚀";
+        response.textContent =
+            "Your goal is to build Joplex. 🚀";
 
     } else if (command.includes("what is my mission")) {
 
@@ -283,195 +289,187 @@ if (command.startsWith("repeat ")) {
 
     } else if (command.includes("introduce me")) {
 
-        let name = localStorage.getItem("joplexName");
+        let name =
+            localStorage.getItem("joplexName");
 
-        if (name) {
-            response.textContent =
-                "This is " + name +
-                ". He is building Joplex one mission at a time. 🚀";
-        } else {
-            response.textContent = "I don't know your name yet.";
-        }
+        response.textContent = name
+            ? "This is " + name +
+              ". He is building Joplex one mission at a time. 🚀"
+            : "I don't know your name yet.";
 
     } else if (command.includes("good morning")) {
 
         response.textContent =
             "Good morning! Let's make today another step forward for Joplex. ☀️🚀";
-} else if (command.includes("i am back")) {
 
-    let name = localStorage.getItem("joplexName");
+    } else if (command.includes("i am back")) {
 
-    if (name) {
+        let name =
+            localStorage.getItem("joplexName");
 
-        let greetings = [
-            "Welcome back, " + name + "! 🤖🚀",
-            "Good to see you again, " + name + "! 🧠🔥",
-            "Joplex is ready for you, " + name + "! ⚡🤖"
+        if (name) {
+
+            let greetings = [
+                "Welcome back, " + name + "! 🤖🚀",
+                "Good to see you again, " + name + "! 🧠🔥",
+                "Joplex is ready for you, " + name + "! ⚡🤖"
+            ];
+
+            response.textContent =
+                greetings[Math.floor(Math.random() * greetings.length)];
+
+        } else {
+
+            response.textContent =
+                "Welcome back! I don't know your name yet.";
+        }
+
+    } else if (command.startsWith("countdown ")) {
+
+        let number =
+            parseInt(command.replace("countdown ", "").trim());
+
+        if (!isNaN(number) && number > 0 && number <= 100) {
+
+            let count = [];
+
+            for (let i = number; i >= 0; i--) {
+                count.push(i);
+            }
+
+            response.textContent =
+                "🚀 Countdown: " + count.join(", ");
+
+        } else {
+
+            response.textContent =
+                "Give me a number from 1 to 100.";
+        }
+
+    } else if (command.startsWith("count to ")) {
+
+        let number =
+            parseInt(command.replace("count to ", "").trim());
+
+        if (!isNaN(number) && number > 0 && number <= 100) {
+
+            let count = [];
+
+            for (let i = 1; i <= number; i++) {
+                count.push(i);
+            }
+
+            response.textContent =
+                "🔢 " + count.join(", ");
+
+        } else {
+
+            response.textContent =
+                "Please give me a number from 1 to 100.";
+        }
+
+    } else if (command.startsWith("choose ")) {
+
+        let choices =
+            command.replace("choose ", "").split(" or ");
+
+        if (choices.length >= 2) {
+
+            let randomChoice =
+                choices[Math.floor(Math.random() * choices.length)];
+
+            response.textContent =
+                "🤖 Joplex chooses: " + randomChoice;
+
+        } else {
+
+            response.textContent =
+                "Give me at least two choices using 'or'.";
+        }
+
+    } else if (command.includes("random number")) {
+
+        let number =
+            Math.floor(Math.random() * 100) + 1;
+
+        response.textContent =
+            "🎲 Your random number is " + number + "!";
+
+    } else if (
+        command.includes("roll a die") ||
+        command.includes("roll dice")
+    ) {
+
+        let dice =
+            Math.floor(Math.random() * 6) + 1;
+
+        response.textContent =
+            "🎲 The die rolled a " + dice + "!";
+
+    } else if (
+        command.includes("flip a coin") ||
+        command.includes("coin")
+    ) {
+
+        let result =
+            Math.random() < 0.5
+                ? "Heads 🪙"
+                : "Tails 🪙";
+
+        response.textContent =
+            "The coin landed on " + result;
+
+    } else if (command.includes("compliment")) {
+
+        let compliments = [
+            "You're doing something most people never do: you're actually building. 🔥",
+            "You're making progress every time you show up. Keep going! 🚀",
+            "Joplex is getting better because you keep improving it. 🤖🧠",
+            "You've come a long way since Mission 001. 💪🔥"
         ];
 
-        let randomIndex =
-            Math.floor(Math.random() * greetings.length);
+        response.textContent =
+            compliments[Math.floor(Math.random() * compliments.length)];
 
-        response.textContent = greetings[randomIndex];
+    } else if (
+        command.includes("tell me a joke") ||
+        command === "joke"
+    ) {
 
-    } else {
-    response.textContent =
-        "Welcome back! I don't know your name yet.";
-}
-} else if (command.startsWith("countdown ")) {
-
-    let number = parseInt(command.replace("countdown ", "").trim());
-
-    if (!isNaN(number) && number > 0 && number <= 100) {
-
-        let count = [];
-
-        for (let i = number; i >= 0; i--) {
-            count.push(i);
-        }
-
-        response.textContent = "🚀 Countdown: " + count.join(", ");
-
-    } else {
-
-        response.textContent = "Give me a number from 1 to 100.";
-    }
-
-} else if (command.startsWith("count to ")) {
-
-    let number =
-        parseInt(command.replace("count to ", "").trim());
-
-    if (!isNaN(number) && number > 0 && number <= 100) {
-
-        let count = [];
-
-        for (let i = 1; i <= number; i++) {
-            count.push(i);
-        }
+        let jokes = [
+            "Why did the computer go to the doctor? Because it had a virus! 😂🤖",
+            "Why was the JavaScript developer sad? Because they didn't know how to null their feelings? 😭💻",
+            "What do you call a computer that sings? A Dell-a! 🎤😂"
+        ];
 
         response.textContent =
-            "🔢 " + count.join(", ");
+            jokes[Math.floor(Math.random() * jokes.length)];
 
-    } else {
+    } else if (command.includes("how are you")) {
 
-        response.textContent =
-            "Please give me a number from 1 to 100.";
-    }
-
-} else if (command.startsWith("choose ")) {
-
-    let choices = command
-        .replace("choose ", "")
-        .split(" or ");
-
-    if (choices.length >= 2) {
-
-        let randomChoice =
-            choices[Math.floor(Math.random() * choices.length)];
+        let replies = [
+            "I'm doing great! My systems are online and I'm ready to build. 🤖🚀",
+            "I'm feeling powerful! Let's keep building Joplex. 🔥",
+            "All systems are running smoothly. Thanks for asking! ⚡🤖"
+        ];
 
         response.textContent =
-            "🤖 Joplex chooses: " + randomChoice;
-
-    } else {
-
-        response.textContent =
-            "Give me at least two choices using 'or'.";
-    }
-
-} else if (command.includes("random number")) {
-
-    let number = Math.floor(Math.random() * 100) + 1;
-
-    response.textContent =
-        "🎲 Your random number is " + number + "!";
-
-} else if (command.includes("roll a die") || command.includes("roll dice")) {
-
-    let dice = Math.floor(Math.random() * 6) + 1;
-
-    response.textContent =
-        "🎲 The die rolled a " + dice + "!";
-
-} else if (command.includes("flip a coin") || command.includes("coin")) {
-
-    let result = Math.random() < 0.5
-        ? "Heads 🪙"
-        : "Tails 🪙";
-
-    response.textContent =
-        "The coin landed on " + result;
-
-} else if (command.includes("compliment")) {
-
-    let compliments = [
-        "You're doing something most people never do: you're actually building. 🔥",
-        "You're making progress every time you show up. Keep going! 🚀",
-        "Joplex is getting better because you keep improving it. 🤖🧠",
-        "You've come a long way since Mission 001. 💪🔥"
-    ];
-
-    let randomIndex =
-        Math.floor(Math.random() * compliments.length);
-
-    response.textContent = compliments[randomIndex];
-
-} else if (command.includes("tell me a joke") || command.includes("joke")) {
-
-    let jokes = [
-        "Why did the computer go to the doctor? Because it had a virus! 😂🤖",
-        "Why was the JavaScript developer sad? Because they didn't know how to null their feelings. 😭💻",
-        "What do you call a computer that sings? A Dell-a! 🎤😂"
-    ];
-
-    let randomIndex =
-        Math.floor(Math.random() * jokes.length);
-
-    response.textContent = jokes[randomIndex];
-
-} else if (command.includes("how are you")) {
-
-    let replies = [
-        "I'm doing great! My systems are online and I'm ready to build. 🤖🚀",
-        "I'm feeling powerful! Let's keep building Joplex. 🔥",
-        "All systems are running smoothly. Thanks for asking! ⚡🤖"
-    ];
-
-    let randomIndex =
-        Math.floor(Math.random() * replies.length);
-
-    response.textContent = replies[randomIndex];
+            replies[Math.floor(Math.random() * replies.length)];
 
     } else if (command.includes("thank you")) {
 
-        let replies = [
-            "You're welcome! 🤖❤️",
-            "Always happy to help. 🚀",
-            "Anytime! Let's keep building Joplex. 🔥"
-        ];
-
-        let randomIndex =
-            Math.floor(Math.random() * replies.length);
-
-        response.textContent = replies[randomIndex];
+        response.textContent =
+            "You're welcome! 🤖❤️";
 
     } else if (command.includes("goodbye")) {
 
-        let replies = [
-            "Goodbye! Keep building. 🚀",
-            "See you next time! Joplex will be here. 🤖",
-            "Until the next mission! 🔥"
-        ];
+        response.textContent =
+            "Goodbye! Keep building. 🚀";
 
-        let randomIndex =
-            Math.floor(Math.random() * replies.length);
-
-        response.textContent = replies[randomIndex];
-
-    } else if (command.startsWith("calculate")) {
+    } else if (command.startsWith("calculate ")) {
 
         let calculation =
-            command.replace("calculate", "").trim();
+            command.replace("calculate ", "").trim();
 
         try {
 
@@ -487,83 +485,64 @@ if (command.startsWith("repeat ")) {
                 "I couldn't calculate that. 🤔";
         }
 
-    } else if (command.startsWith("remember ")) {
+    } else if (command === "clear") {
 
-        let memory =
-            command.replace("remember ", "").trim();
-
-        localStorage.setItem("joplexMemory", memory);
+        history.innerHTML = "";
 
         response.textContent =
-            "🧠 I'll remember: " + memory;
+            "🧹 Command history cleared.";
 
-    } else if (command === "show memory") {
+    } else if (command === "lights on") {
 
-        let memory =
-            localStorage.getItem("joplexMemory");
+        joplexLights = true;
 
-        response.textContent = memory
-            ? "🧠 Memory: " + memory
-            : "🧠 I don't remember anything yet.";
+        document.body.style.boxShadow =
+            "inset 0 0 120px rgba(255,255,180,0.35)";
 
-} else if (command === "clear") {
+        response.textContent =
+            "💡 Joplex lights are now ON.";
 
-    document.getElementById("commandHistory").innerHTML = "";
-    response.textContent = "🧹 Command history cleared.";
+    } else if (command === "lights off") {
 
-} else if (command === "lights on") {
+        joplexLights = false;
 
-    joplexLights = true;
-    document.body.style.boxShadow = "inset 0 0 120px rgba(255,255,180,0.35)";
-    response.textContent = "💡 Joplex lights are now ON.";
+        document.body.style.boxShadow = "none";
 
-} else if (command === "lights off") {
+        response.textContent =
+            "🌑 Joplex lights are now OFF.";
 
-    joplexLights = false;
-    document.body.style.boxShadow = "none";
-    response.textContent = "🌑 Joplex lights are now OFF.";
+    } else if (command.includes("open mission")) {
 
-} else if (command.includes("help")) {
+        response.textContent =
+            "Mission system ready. Awaiting your next mission. 🚀";
 
-    response.textContent =
-        "I can motivate you, tell jokes, remember things, tell the time and date, roll dice, flip coins, count, repeat messages, and more. 🚀";
+    } else if (command.includes("system report")) {
 
-} else if (command === "forget memory") {
-    localStorage.removeItem("joplexMemory");
-    response.textContent = "🗑️ Memory cleared.";
+        response.textContent =
+            "All systems operational. Voice, memory, clock, and commands are online. 🟢";
 
-} else if (command.includes("open mission")) {
+    } else if (command.includes("wake up joplex")) {
 
-    response.textContent =
-        "Mission system ready. Awaiting your next mission. 🚀";
+        response.textContent =
+            "I'm awake. Ready for the next mission. 🤖⚡";
 
-} else if (command.includes("system report")) {
+    } else if (command.includes("help")) {
 
-    response.textContent =
-        "All systems operational. Voice, memory, clock, and commands are online. 🟢";
+        response.textContent =
+            "I can motivate you, tell jokes, remember things, tell the time and date, roll dice, flip coins, count, repeat messages, and more. 🚀";
 
-} else if (command.includes("wake up joplex")) {
+    } else {
 
-    response.textContent =
-        "I'm awake. Ready for the next mission. 🤖⚡";
+        response.textContent =
+            "I don't understand that command yet.";
+    }
 
-} else {
-
-    response.textContent =
-        "I don't understand that command yet.";
-}
-    
-
-    // Make Joplex speak the final response
     speak(response.textContent);
 
-    // Add command to history
     let item = document.createElement("li");
     item.textContent = command;
     history.appendChild(item);
 }
-
-
 function toggleTheme() {
     const html = document.documentElement;
 

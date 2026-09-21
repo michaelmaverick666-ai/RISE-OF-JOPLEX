@@ -286,6 +286,13 @@ function runCommand() {
             response.textContent =
                 "Welcome back! I don't know your name yet.";
 
+} else if (command.includes("random number")) {
+
+    let number = Math.floor(Math.random() * 100) + 1;
+
+    response.textContent =
+        "🎲 Your random number is " + number + "!";
+
 } else if (command.includes("roll a die") || command.includes("roll dice")) {
 
     let dice = Math.floor(Math.random() * 6) + 1;

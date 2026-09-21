@@ -184,6 +184,20 @@ function runCommand() {
     } else if (command.includes("status") || command.includes("online")) {
 
         response.textContent = "Joplex systems are online 🟢";
+} else if (command.startsWith("save ")) {
+
+    let memory =
+        command.replace("save ", "").trim();
+
+    if (memory) {
+        localStorage.setItem("joplexMemory", memory);
+
+        response.textContent =
+            "🧠 Memory saved: " + memory;
+    } else {
+        response.textContent =
+            "Tell me what you want me to save.";
+    }
 
     } else if (command.includes("remember")) {
 

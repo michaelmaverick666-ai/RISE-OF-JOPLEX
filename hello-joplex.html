@@ -197,6 +197,13 @@ if (command.startsWith("repeat ")) {
         response.textContent =
             "The current time is " + new Date().toLocaleTimeString() + " ⏰";
 
+} else if (command.includes("date")) {
+
+    let today = new Date();
+
+    response.textContent =
+        "📅 Today is " + today.toLocaleDateString();
+
     } else if (command.includes("status") || command.includes("online")) {
 
         response.textContent = "Joplex systems are online 🟢";

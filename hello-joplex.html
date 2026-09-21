@@ -550,8 +550,7 @@ function startListening() {
             event.results[0][0].transcript
                 .toLowerCase();
 
-        document.getElementById("commandInput").value =
-            spoken;
+        document.getElementById("commandInput").value = spoken.replace(/joe plex/gi, "Joplex");
 
         runCommand();
     };

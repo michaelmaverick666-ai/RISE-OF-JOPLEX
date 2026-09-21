@@ -160,6 +160,24 @@ function runCommand() {
     let response = document.getElementById("commandResponse");
     let history = document.getElementById("commandHistory");
 
+if (command.startsWith("repeat ")) {
+
+    let message =
+        command.substring(7).trim();
+
+    if (message !== "") {
+
+        response.textContent =
+            "🔁 " + message;
+
+    } else {
+
+        response.textContent =
+            "Tell me what you want me to repeat.";
+    }
+
+} else if (command.includes("motivate")) {
+
     if (command.includes("motivate")) {
 
         let messages = [
@@ -454,22 +472,6 @@ function runCommand() {
         response.textContent = memory
             ? "🧠 Memory: " + memory
             : "🧠 I don't remember anything yet.";
-
-} else if (command.startsWith("repeat ")) {
-
-    let message =
-        command.substring(7).trim();
-
-    if (message !== "") {
-
-        response.textContent =
-            "🔁 " + message;
-
-    } else {
-
-        response.textContent =
-            "Tell me what you want me to repeat.";
-    }
 
     } else if (command === "forget memory") {
 

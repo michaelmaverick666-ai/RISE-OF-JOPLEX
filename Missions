@@ -1,16 +1,61 @@
-# Mission 001 — GitHub Headquarters
+🚀 Rise of Joplex — Mission Log
 
-## Objective
-Create the GitHub headquarters for the Rise of Joplex journey.
+Mission 001 — GitHub Headquarters ✅
 
-## Status
-✅ Complete
+- Created the Joplex GitHub repository.
+- Learned how repositories, commits, and the README work.
 
-## What I learned
-- GitHub can store and organize my projects.
-- A repository is a project headquarters.
-- A commit records a change to my project.
-- A README explains what a project is about.
+Mission 002 — First Joplex Program ✅
 
-## Date
-19 September 2026
+- Created "hello-joplex.html".
+- Made the first Joplex webpage.
+- First code successfully committed.
+
+Mission 003 — Joplex Goes Live ✅
+
+- Published the website using GitHub Pages.
+- Learned how to access the live Joplex website.
+
+Mission 004–022 — Website Expansion ✅
+
+- Built the main Joplex homepage.
+- Added command input.
+- Added command history.
+- Added name memory with "localStorage".
+- Added online/offline system status.
+- Added live clock.
+- Added light/dark mode.
+- Added calculator command.
+- Added voice recognition (microphone).
+- Improved command responses and bug fixes.
+- Learned debugging and GitHub updates throughout these missions.
+
+Mission 023 — Voice System ✅
+
+- Added text-to-speech.
+- Joplex now speaks command responses.
+
+Mission 024 — Wake-Up Greeting ✅
+
+- Joplex remembers your name.
+- Automatically welcomes you back.
+
+Mission 025 — Memory Vault ✅
+
+- Added "save", "show memory", and "forget memory".
+- Joplex can save, recall, and clear memory.
+
+Mission 026 — Personality System ✅
+
+- Added the "how are you" command.
+- Random personality responses.
+
+Mission 027 — Joke System ✅
+
+- Added "tell me a joke".
+- Random spoken jokes.
+
+Mission 028 — Compliment System ✅
+
+- Added "give me a compliment".
+- Random spoken compliments.

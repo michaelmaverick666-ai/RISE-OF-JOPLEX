@@ -510,6 +510,17 @@ if (command.startsWith("repeat ")) {
     document.getElementById("commandHistory").innerHTML = "";
     response.textContent = "🧹 Command history cleared.";
 
+} else if (command === "lights on") {
+
+    joplexLights = true;
+    document.body.style.boxShadow = "inset 0 0 120px rgba(255,255,180,0.35)";
+    response.textContent = "💡 Joplex lights are now ON.";
+
+} else if (command === "lights off") {
+
+    joplexLights = false;
+    document.body.style.boxShadow = "none";
+    response.textContent = "🌑 Joplex lights are now OFF.";
 } else if (command.includes("help")) {
 
     response.textContent =

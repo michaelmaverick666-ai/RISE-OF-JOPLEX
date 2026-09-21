@@ -1,22 +1,22 @@
 🚀 Rise of Joplex — Mission Log
 
-Mission 001 — GitHub Headquarters ✅
+##Mission 001 — GitHub Headquarters ✅
 
 - Created the Joplex GitHub repository.
 - Learned how repositories, commits, and the README work.
 
-Mission 002 — First Joplex Program ✅
+##Mission 002 — First Joplex Program ✅
 
 - Created "hello-joplex.html".
 - Made the first Joplex webpage.
 - First code successfully committed.
 
-Mission 003 — Joplex Goes Live ✅
+##Mission 003 — Joplex Goes Live ✅
 
 - Published the website using GitHub Pages.
 - Learned how to access the live Joplex website.
 
-Mission 004–022 — Website Expansion ✅
+##Mission 004–022 — Website Expansion ✅
 
 - Built the main Joplex homepage.
 - Added command input.
@@ -30,32 +30,67 @@ Mission 004–022 — Website Expansion ✅
 - Improved command responses and bug fixes.
 - Learned debugging and GitHub updates throughout these missions.
 
-Mission 023 — Voice System ✅
+##Mission 023 — Voice System ✅
 
 - Added text-to-speech.
 - Joplex now speaks command responses.
 
-Mission 024 — Wake-Up Greeting ✅
+##Mission 024 — Wake-Up Greeting ✅
 
 - Joplex remembers your name.
 - Automatically welcomes you back.
 
-Mission 025 — Memory Vault ✅
+##Mission 025 — Memory Vault ✅
 
 - Added "save", "show memory", and "forget memory".
 - Joplex can save, recall, and clear memory.
 
-Mission 026 — Personality System ✅
+##Mission 026 — Personality System ✅
 
 - Added the "how are you" command.
 - Random personality responses.
 
-Mission 027 — Joke System ✅
+##Mission 027 — Joke System ✅
 
 - Added "tell me a joke".
 - Random spoken jokes.
 
-Mission 028 — Compliment System ✅
+##Mission 028 — Compliment System ✅
 
 - Added "give me a compliment".
 - Random spoken compliments.
+## Mission 029 — Joplex Learns to Flip a Coin ✅
+- Added a coin-flipping command.
+- Joplex can randomly respond with Heads or Tails.
+
+## Mission 030 — Joplex Learns to Roll Dice ✅
+- Added a dice-rolling command.
+- Joplex can randomly roll a six-sided die.
+
+## Mission 031 — Joplex Learns Random Numbers ✅
+- Added a random-number command.
+- Joplex can generate a random number from 1 to 100.
+
+## Mission 032 — Joplex Learns to Pick a Random Choice ✅
+- Added the `choose` command.
+- Joplex can randomly choose between multiple options.
+
+## Mission 033 — Joplex Learns to Count ✅
+- Added the `count to` command.
+- Joplex can count from 1 to 100.
+
+## Mission 034 — Joplex Learns to Repeat ✅
+- Added the `repeat` command.
+- Joplex can repeat a message entered after `repeat`.
+
+## Mission 035 — Joplex Speech Recognition Fix ✅
+- Improved speech recognition.
+- Fixed recognition of "Joplex" being interpreted as "Joe plex".
+
+## Mission 036 — Joplex Learns the Date ✅
+- Added the date command.
+- Joplex can tell the current date.
+
+## Mission 037 — Joplex Learns the Day of the Week ✅
+- Added the day command.
+- Joplex can tell the current day of the week.

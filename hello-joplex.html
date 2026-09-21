@@ -154,6 +154,7 @@ function speak(text) {
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(speech);
 }
+let joplexLights = false;
 
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();

@@ -287,6 +287,12 @@ function runCommand() {
                 "Welcome back! I don't know your name yet.";
         }
 
+} else if (command.includes("roll a die") || command.includes("roll dice")) {
+
+    let dice = Math.floor(Math.random() * 6) + 1;
+
+    response.textContent =
+        "🎲 The die rolled a " + dice + "!";
 } else if (command.includes("flip a coin") || command.includes("coin")) {
 
     let result = Math.random() < 0.5 ? "Heads 🪙" : "Tails 🪙";

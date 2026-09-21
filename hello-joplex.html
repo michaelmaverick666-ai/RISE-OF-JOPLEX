@@ -129,6 +129,14 @@ function activateJoplex() {
 
 updateClock();
 setInterval(updateClock, 1000);
+function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
+}
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");
@@ -187,6 +195,7 @@ function runCommand() {
     response.textContent = "Your goal is to build Joplex. 🚀";
 } else if (command.includes("what is my mission")) {
     response.textContent = "Your current mission is Mission 004 — Learning Web Development. 🚀";
+speak(response.textContent);
 } else if (command.includes("what do i like")) {
     response.textContent = "You like building Joplex and learning new things. 🚀🧠";
 } else if (command.includes("introduce me")) {
@@ -256,7 +265,9 @@ function runCommand() {
 } else if (command === "forget memory") {
     localStorage.removeItem("joplexMemory");
     response.textContent = "🗑️ Memory cleared.";
-    } else {
+    }
+
+ else {
         response.textContent = "I don't understand that command yet.";
     }
 
@@ -306,6 +317,14 @@ function startListening() {
     };
 
     recognition.start();
+}
+function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
 }
 function clearHistory() {
     document.getElementById("commandHistory").innerHTML = "";

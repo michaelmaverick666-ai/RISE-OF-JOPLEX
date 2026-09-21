@@ -316,7 +316,26 @@ if (command.startsWith("repeat ")) {
     } else {
         response.textContent =
             "Welcome back! I don't know your name yet.";
-   }
+   
+} else if (command.startsWith("countdown ")) {
+
+    let number = parseInt(command.replace("countdown ", "").trim());
+
+    if (!isNaN(number) && number > 0 && number <= 20) {
+
+        let count = [];
+
+        for (let i = number; i >= 0; i--) {
+            count.push(i);
+        }
+
+        response.textContent = "🚀 Countdown: " + count.join(", ");
+
+    } else {
+
+        response.textContent = "Give me a number from 1 to 20.";
+
+    }
 
 } else if (command.startsWith("count to ")) {
 

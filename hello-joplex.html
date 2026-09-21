@@ -316,7 +316,8 @@ if (command.startsWith("repeat ")) {
     } else {
         response.textContent =
             "Welcome back! I don't know your name yet.";
-   
+   }
+
 } else if (command.startsWith("countdown ")) {
 
     let number = parseInt(command.replace("countdown ", "").trim());

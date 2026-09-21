@@ -286,6 +286,28 @@ function runCommand() {
             "Welcome back! I don't know your name yet.";
     }
 
+} else if (command.startsWith("count to ")) {
+
+    let number =
+        parseInt(command.replace("count to ", "").trim());
+
+    if (!isNaN(number) && number > 0 && number <= 20) {
+
+        let count = [];
+
+        for (let i = 1; i <= number; i++) {
+            count.push(i);
+        }
+
+        response.textContent =
+            "🔢 " + count.join(", ");
+
+    } else {
+
+        response.textContent =
+            "Please give me a number from 1 to 20.";
+    }
+
 } else if (command.startsWith("choose ")) {
 
     let choices = command

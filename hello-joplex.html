@@ -106,14 +106,15 @@ function greetUser() {
         speak(response.textContent);
     }
 }
-
 let savedName = localStorage.getItem("joplexName");
 
 if (savedName) {
-    document.getElementById("response").textContent =
-        "Welcome back, " + savedName + "! 🤖";
-}
+    let welcomeMessage =
+        "Welcome back, " + savedName + "! Joplex is online and ready. 🤖🚀";
 
+    document.getElementById("response").textContent =
+        welcomeMessage;
+}
 function activateJoplex() {
     let status = document.getElementById("status");
 

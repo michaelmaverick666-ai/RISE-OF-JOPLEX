@@ -548,6 +548,20 @@ if (command.startsWith("repeat ")) {
     item.textContent = command;
     history.appendChild(item);
 }
+} else if (command.includes("open mission")) {
+
+    response.textContent =
+        "Mission system ready. Awaiting your next mission. 🚀";
+
+} else if (command.includes("system report")) {
+
+    response.textContent =
+        "All systems operational. Voice, memory, clock, and commands are online. 🟢";
+
+} else if (command.includes("wake up joplex")) {
+
+    response.textContent =
+        "I'm awake. Ready for the next mission. 🤖⚡";
 
 function toggleTheme() {
     const html = document.documentElement;

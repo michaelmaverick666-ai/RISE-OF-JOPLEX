@@ -250,16 +250,16 @@ function runCommand() {
     history.appendChild(item);
 }
 function toggleTheme() {
-    const body = document.body;
-    body.classList.toggle("light");
+    const html = document.documentElement;
+    html.classList.toggle("light");
 
     const button = document.getElementById("themeToggle");
 
-    if (body.classList.contains("light")) {
-        button.textContent = "☀️ Light Mode";
+    if (html.classList.contains("light")) {
+        button.textContent = "🌙 Dark Mode";
         localStorage.setItem("joplexTheme", "light");
     } else {
-        button.textContent = "🌙 Dark Mode";
+        button.textContent = "☀️ Light Mode";
         localStorage.setItem("joplexTheme", "dark");
     }
 }
@@ -267,8 +267,8 @@ function toggleTheme() {
 // Load saved theme
 const savedTheme = localStorage.getItem("joplexTheme");
 if (savedTheme === "light") {
-    document.body.classList.add("light");
-    document.getElementById("themeToggle").textContent = "☀️ Light Mode";
+    document.documentElement.classList.add("light");
+    document.getElementById("themeToggle").textContent = "🌙 Dark Mode";
 }
 function clearHistory() {
     document.getElementById("commandHistory").innerHTML = "";

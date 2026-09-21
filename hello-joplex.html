@@ -487,6 +487,10 @@ if (command.startsWith("repeat ")) {
             ? "🧠 Memory: " + memory
             : "🧠 I don't remember anything yet.";
 
+else if (command.includes("help")) {
+    response.textContent = "I can motivate you, tell jokes, remember things, tell the time and date, roll dice, flip coins, count, repeat messages, and more. 🚀";
+}
+
     } else if (command === "forget memory") {
       localStorage.removeItem("joplexMemory");
 

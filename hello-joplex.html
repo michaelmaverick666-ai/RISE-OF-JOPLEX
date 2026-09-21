@@ -458,9 +458,9 @@ function runCommand() {
 } else if (command.startsWith("repeat ")) {
 
     let message =
-        command.replace("repeat ", "").trim();
+        command.substring(7).trim();
 
-    if (message) {
+    if (message !== "") {
 
         response.textContent =
             "🔁 " + message;
@@ -469,7 +469,7 @@ function runCommand() {
 
         response.textContent =
             "Tell me what you want me to repeat.";
-   }
+    }
 
     } else if (command === "forget memory") {
 

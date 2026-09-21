@@ -487,6 +487,11 @@ if (command.startsWith("repeat ")) {
             ? "🧠 Memory: " + memory
             : "🧠 I don't remember anything yet.";
 
+} else if (command === "clear") {
+
+    document.getElementById("commandHistory").innerHTML = "";
+    response.textContent = "🧹 Command history cleared.";
+
 } else if (command.includes("help")) {
 
     response.textContent =

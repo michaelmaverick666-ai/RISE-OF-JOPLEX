@@ -529,25 +529,9 @@ if (command.startsWith("repeat ")) {
         "I can motivate you, tell jokes, remember things, tell the time and date, roll dice, flip coins, count, repeat messages, and more. 🚀";
 
 } else if (command === "forget memory") {
-      localStorage.removeItem("joplexMemory");
+    localStorage.removeItem("joplexMemory");
+    response.textContent = "🗑️ Memory cleared.";
 
-        response.textContent =
-            "🗑️ Memory cleared.";
-
-    } else {
-
-        response.textContent =
-            "I don't understand that command yet.";
-    }
-
-    // Make Joplex speak the final response
-    speak(response.textContent);
-
-    // Add command to history
-    let item = document.createElement("li");
-    item.textContent = command;
-    history.appendChild(item);
-}
 } else if (command.includes("open mission")) {
 
     response.textContent =
@@ -562,6 +546,23 @@ if (command.startsWith("repeat ")) {
 
     response.textContent =
         "I'm awake. Ready for the next mission. 🤖⚡";
+
+} else {
+
+    response.textContent =
+        "I don't understand that command yet.";
+}
+    
+
+    // Make Joplex speak the final response
+    speak(response.textContent);
+
+    // Add command to history
+    let item = document.createElement("li");
+    item.textContent = command;
+    history.appendChild(item);
+}
+
 
 function toggleTheme() {
     const html = document.documentElement;

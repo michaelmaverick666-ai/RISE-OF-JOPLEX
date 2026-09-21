@@ -75,7 +75,7 @@ html.light {
 <input type="text" id="commandInput" placeholder="Enter a command">
 
 <button onclick="runCommand()">Run Command</button>
-
+<button onclick="startListening()">🎙️ Speak</button>
 <p id="commandResponse"></p>
 <h3>Command History</h3>
 <ul id="commandHistory"></ul>
@@ -284,6 +284,28 @@ const savedTheme = localStorage.getItem("joplexTheme");
 if (savedTheme === "light") {
     document.documentElement.classList.add("light");
     document.getElementById("themeToggle").textContent = "🌙 Dark Mode";
+}
+function startListening() {
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        alert("Speech recognition is not supported in this browser.");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+
+    recognition.onresult = function (event) {
+        const spoken = event.results[0][0].transcript.toLowerCase();
+
+        document.getElementById("commandInput").value = spoken;
+        runCommand();
+    };
+
+    recognition.start();
 }
 function clearHistory() {
     document.getElementById("commandHistory").innerHTML = "";

@@ -474,8 +474,7 @@ if (command.startsWith("repeat ")) {
             : "🧠 I don't remember anything yet.";
 
     } else if (command === "forget memory") {
-
-        localStorage.removeItem("joplexMemory");
+      localStorage.removeItem("joplexMemory");
 
         response.textContent =
             "🗑️ Memory cleared.";

@@ -314,10 +314,8 @@ if (command.startsWith("repeat ")) {
         response.textContent = greetings[randomIndex];
 
     } else {
-        response.textContent =
-            "Welcome back! I don't know your name yet.";
-}
-
+    response.textContent =
+        "Welcome back! I don't know your name yet.";
 } else if (command.startsWith("countdown ")) {
 
     let number = parseInt(command.replace("countdown ", "").trim());

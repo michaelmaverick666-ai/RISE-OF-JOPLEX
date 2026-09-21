@@ -454,6 +454,23 @@ function runCommand() {
         response.textContent = memory
             ? "🧠 Memory: " + memory
             : "🧠 I don't remember anything yet.";
+  }
+
+} else if (command.startsWith("repeat ")) {
+
+    let message =
+        command.replace("repeat ", "").trim();
+
+    if (message) {
+
+        response.textContent =
+            "🔁 " + message;
+
+    } else {
+
+        response.textContent =
+            "Tell me what you want me to repeat.";
+    }
 
     } else if (command === "forget memory") {
 

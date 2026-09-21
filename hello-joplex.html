@@ -264,27 +264,27 @@ function runCommand() {
 
         response.textContent =
             "Good morning! Let's make today another step forward for Joplex. ☀️🚀";
+} else if (command.includes("i am back")) {
 
-    } else if (command.includes("i am back")) {
+    let name = localStorage.getItem("joplexName");
 
-        let name = localStorage.getItem("joplexName");
+    if (name) {
 
-        if (name) {
+        let greetings = [
+            "Welcome back, " + name + "! 🤖🚀",
+            "Good to see you again, " + name + "! 🧠🔥",
+            "Joplex is ready for you, " + name + "! ⚡🤖"
+        ];
 
-            let greetings = [
-                "Welcome back, " + name + "! 🤖🚀",
-                "Good to see you again, " + name + "! 🧠🔥",
-                "Joplex is ready for you, " + name + "! ⚡🤖"
-            ];
+        let randomIndex =
+            Math.floor(Math.random() * greetings.length);
 
-            let randomIndex =
-                Math.floor(Math.random() * greetings.length);
+        response.textContent = greetings[randomIndex];
 
-            response.textContent = greetings[randomIndex];
-
-        } else {
-            response.textContent =
-                "Welcome back! I don't know your name yet.";
+    } else {
+        response.textContent =
+            "Welcome back! I don't know your name yet.";
+    }
 
 } else if (command.includes("random number")) {
 
@@ -302,9 +302,12 @@ function runCommand() {
 
 } else if (command.includes("flip a coin") || command.includes("coin")) {
 
-    let result = Math.random() < 0.5 ? "Heads 🪙" : "Tails 🪙";
+    let result = Math.random() < 0.5
+        ? "Heads 🪙"
+        : "Tails 🪙";
 
-    response.textContent = "The coin landed on " + result;
+    response.textContent =
+        "The coin landed on " + result;
 
 } else if (command.includes("compliment")) {
 

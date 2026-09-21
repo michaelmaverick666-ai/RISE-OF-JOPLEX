@@ -204,6 +204,15 @@ if (command.startsWith("repeat ")) {
     response.textContent =
         "📅 Today is " + today.toLocaleDateString();
 
+} else if (command.includes("day")) {
+
+    let today = new Date();
+
+    response.textContent =
+        "📅 Today is " + today.toLocaleDateString("en-US", {
+            weekday: "long"
+        }) + ".";
+
     } else if (command.includes("status") || command.includes("online")) {
 
         response.textContent = "Joplex systems are online 🟢";

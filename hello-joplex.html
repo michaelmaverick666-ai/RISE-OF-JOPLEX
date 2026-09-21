@@ -113,8 +113,9 @@ if (savedName) {
         "Welcome back, " + savedName + "! Joplex is online and ready. 🤖🚀";
 
     document.getElementById("response").textContent =
-        welcomeMessage;
-}
+    welcomeMessage;
+
+speak(welcomeMessage);
 function activateJoplex() {
     let status = document.getElementById("status");
 

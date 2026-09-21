@@ -286,6 +286,26 @@ function runCommand() {
             "Welcome back! I don't know your name yet.";
     }
 
+} else if (command.startsWith("choose ")) {
+
+    let choices = command
+        .replace("choose ", "")
+        .split(" or ");
+
+    if (choices.length >= 2) {
+
+        let randomChoice =
+            choices[Math.floor(Math.random() * choices.length)];
+
+        response.textContent =
+            "🤖 Joplex chooses: " + randomChoice;
+
+    } else {
+
+        response.textContent =
+            "Give me at least two choices using 'or'.";
+    }
+
 } else if (command.includes("random number")) {
 
     let number = Math.floor(Math.random() * 100) + 1;

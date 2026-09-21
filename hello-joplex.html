@@ -286,6 +286,20 @@ function runCommand() {
             response.textContent =
                 "Welcome back! I don't know your name yet.";
         }
+} else if (command.includes("compliment")) {
+
+    let compliments = [
+        "You're doing something most people never do: you're actually building. 🔥",
+        "You're making progress every time you show up. Keep going! 🚀",
+        "Joplex is getting better because you keep improving it. 🤖🧠",
+        "You've come a long way since Mission 001. 💪🔥"
+    ];
+
+    let randomIndex =
+        Math.floor(Math.random() * compliments.length);
+
+    response.textContent = compliments[randomIndex];
+
 } else if (command.includes("tell me a joke") || command.includes("joke")) {
 
     let jokes = [

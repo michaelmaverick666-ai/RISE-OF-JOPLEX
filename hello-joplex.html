@@ -321,7 +321,7 @@ if (command.startsWith("repeat ")) {
 
     let number = parseInt(command.replace("countdown ", "").trim());
 
-    if (!isNaN(number) && number > 0 && number <= 20) {
+    if (!isNaN(number) && number > 0 && number <= 100) {
 
         let count = [];
 
@@ -333,8 +333,7 @@ if (command.startsWith("repeat ")) {
 
     } else {
 
-        response.textContent = "Give me a number from 1 to 20.";
-
+        response.textContent = "Give me a number from 1 to 100.";
     }
 
 } else if (command.startsWith("count to ")) {

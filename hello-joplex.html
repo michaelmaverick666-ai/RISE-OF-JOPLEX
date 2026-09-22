@@ -589,6 +589,8 @@ document.getElementById("commandCount").textContent =
     let item = document.createElement("li");
     item.textContent = command;
     history.appendChild(item);
+savedHistory.push(command);
+localStorage.setItem("joplexHistory", JSON.stringify(savedHistory));
 }
 function quickCommand(command) {
 
@@ -596,7 +598,6 @@ function quickCommand(command) {
 
     runCommand();
 }
-history.appendChild(item);
 function completeMission() {
     document.getElementById("missionNumber").textContent = "Mission: 049";
     document.getElementById("missionStatus").textContent = "Status: Complete 🟢";

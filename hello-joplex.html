@@ -104,6 +104,14 @@ html.light {
 function showMessage() {
     alert("Joplex activated! 🚀");
 }
+<h3>Mission Tracker 🎯</h3>
+
+<div id="missionCard" style="border:1px solid #555;padding:15px;border-radius:10px;max-width:400px;margin:auto;">
+    <p id="missionNumber">Mission: 046</p>
+    <p id="missionStatus">Status: In Progress 🟡</p>
+
+    <button onclick="completeMission()">✅ Complete Mission</button>
+</div>
 
 function greetUser() {
     let name = document.getElementById("nameInput").value;
@@ -575,6 +583,20 @@ function quickCommand(command) {
     document.getElementById("commandInput").value = command;
 
     runCommand();
+}
+function completeMission() {
+
+    document.getElementById("missionStatus").textContent =
+        "Status: Complete 🟢";
+
+    speak("Mission zero four six complete.");
+
+    localStorage.setItem("joplexMission046", "complete");
+}
+if (localStorage.getItem("joplexMission046") === "complete") {
+
+    document.getElementById("missionStatus").textContent =
+        "Status: Complete 🟢";
 }
 function toggleTheme() {
     const html = document.documentElement;

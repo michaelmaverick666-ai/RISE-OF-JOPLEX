@@ -133,10 +133,9 @@ window.onload = function () {
     }
 };
 window.addEventListener("load", function () {
-    let mission = localStorage.getItem("joplexCurrentMission");
-    let status = localStorage.getItem("joplexMissionStatus");
 
-    if (mission) {
+    let mission = currentMission;
+let status = currentMissionStatus;
         document.getElementById("missionNumber").textContent = "Mission: " + mission;
     }
 

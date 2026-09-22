@@ -314,8 +314,13 @@ function runCommand() {
 
     } else if (command.includes("what is my mission")) {
 
-        response.textContent =
-            "Your current mission is Mission 004 — Learning Web Development. 🚀";
+    let mission =
+        localStorage.getItem("joplexCurrentMission");
+
+    response.textContent =
+        mission
+            ? "Your current mission is Mission " + mission + ". 🚀"
+            : "I don't know your current mission yet.";
 
     } else if (command.includes("what do i like")) {
 

@@ -111,19 +111,16 @@ html.light {
 function showMessage() {
     alert("Joplex activated! 🚀");
 }
-function greetUser() {
-    let name = document.getElementById("nameInput").value;
-    let response = document.getElementById("response");
 
-    if (name === "") {
-        response.textContent = "Please enter your name.";
-        speak(response.textContent);
-    } else {
+function greetUser() {
+    let name = document.getElementById("nameInput").value.trim();
+
+    if (name) {
         localStorage.setItem("joplexName", name);
-        response.textContent = "Welcome to Joplex, " + name + "! 🚀";
-        speak(response.textContent);
+        alert("Welcome, " + name + "! Joplex will remember you. 🚀");
     }
 }
+</script>
 let savedName = localStorage.getItem("joplexName");
 
 if (savedName) {

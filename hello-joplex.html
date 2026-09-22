@@ -73,7 +73,6 @@ html.light {
 <br><br>
 
 <input type="text" id="commandInput" placeholder="Enter a command">
-
 <button onclick="runCommand()">Run Command</button>
 <button onclick="startListening()">🎙️ Speak</button>
 <p id="commandResponse"></p>
@@ -184,6 +183,7 @@ function speak(text) {
 }
 let joplexLights = false;
 let commandCounter = 0;
+let savedHistory = JSON.parse(localStorage.getItem("joplexHistory")) || [];
 
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();

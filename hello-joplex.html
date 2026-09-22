@@ -600,13 +600,13 @@ function quickCommand(command) {
     runCommand();
 }
 function completeMission() {
-    document.getElementById("missionNumber").textContent = "Mission: 049";
-    document.getElementById("missionStatus").textContent = "Status: Complete 🟢";
+    document.getElementById("missionNumber").textContent = "Mission: 050";
+    document.getElementById("missionStatus").textContent = "Status: In Progress 🟡";
 
-    localStorage.setItem("joplexCurrentMission", "049");
-    localStorage.setItem("joplexMissionStatus", "Complete 🟢");
+    localStorage.setItem("joplexCurrentMission", "050");
+    localStorage.setItem("joplexMissionStatus", "In Progress 🟡");
 
-    speak("Mission zero four nine complete.");
+    speak("Mission zero four nine complete. Mission zero five zero is now active.");
 }
 function toggleTheme() {
     const html = document.documentElement;

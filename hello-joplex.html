@@ -135,18 +135,24 @@ window.onload = function () {
 window.addEventListener("load", function () {
 
     let mission = currentMission;
-let status = currentMissionStatus;
-        document.getElementById("missionNumber").textContent = "Mission: " + mission;
+    let status = currentMissionStatus;
+
+    if (mission) {
+        document.getElementById("missionNumber").textContent =
+            "Mission: " + mission;
     }
 
     if (status) {
-        document.getElementById("missionStatus").textContent = "Status: " + status;
+        document.getElementById("missionStatus").textContent =
+            "Status: " + status;
     }
-savedHistory.forEach(function (command) {
-    let item = document.createElement("li");
-    item.textContent = command;
-    document.getElementById("commandHistory").appendChild(item);
-});
+
+    savedHistory.forEach(function (command) {
+        let item = document.createElement("li");
+        item.textContent = command;
+        document.getElementById("commandHistory").appendChild(item);
+    });
+
 });
 function activateJoplex() {
     let status = document.getElementById("status");

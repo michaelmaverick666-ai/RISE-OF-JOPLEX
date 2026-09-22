@@ -80,6 +80,11 @@ html.light {
 <h3>Command History</h3>
 <ul id="commandHistory"></ul>
 <button onclick="clearHistory()">Clear History</button>
+<h3>Joplex Command Center</h3>
+
+<p id="joplexMode">Mode: Idle ⚪</p>
+<p id="lastCommand">Last command: None</p>
+<p id="commandCount">Commands this session: 0</p>
 <button onclick="greetUser()">Greet Joplex</button>
 <p id="response"></p>
 <p id="status">Joplex is offline 🔴</p>
@@ -155,6 +160,7 @@ function speak(text) {
     window.speechSynthesis.speak(speech);
 }
 let joplexLights = false;
+let commandCounter = 0;
 
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
@@ -539,6 +545,19 @@ function runCommand() {
     }
 
     speak(response.textContent);
+document.getElementById("joplexMode").textContent =
+    "Mode: Idle ⚪";
+
+commandCounter++;
+
+document.getElementById("joplexMode").textContent =
+    "Mode: Processing 🟡";
+
+document.getElementById("lastCommand").textContent =
+    "Last command: " + command;
+
+document.getElementById("commandCount").textContent =
+    "Commands this session: " + commandCounter;
 
     let item = document.createElement("li");
     item.textContent = command;
@@ -606,6 +625,9 @@ function startListening() {
 
         runCommand();
     };
+
+document.getElementById("joplexMode").textContent =
+    "Mode: Listening 🎙️";
 
     recognition.start();
 }

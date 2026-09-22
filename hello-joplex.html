@@ -120,17 +120,19 @@ function greetUser() {
         alert("Welcome, " + name + "! Joplex will remember you. 🚀");
     }
 }
-let savedName = localStorage.getItem("joplexName");
+window.onload = function () {
+    let savedName = localStorage.getItem("joplexName");
 
-if (savedName) {
-    let welcomeMessage =
-        "Welcome back, " + savedName + "! Joplex is online and ready. 🤖🚀";
+    if (savedName) {
+        document.getElementById("nameInput").value = savedName;
 
-    document.getElementById("response").textContent =
-    welcomeMessage;
+        let welcomeMessage =
+            "Welcome back, " + savedName + "! Joplex is online and ready. 🤖🚀";
 
-speak(welcomeMessage);
-}
+        document.getElementById("response").textContent = welcomeMessage;
+        speak(welcomeMessage);
+    }
+};
 function activateJoplex() {
     let status = document.getElementById("status");
 

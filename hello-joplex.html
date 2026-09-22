@@ -190,6 +190,12 @@ let joplexLights = false;
 let commandCounter = 0;
 let savedHistory = JSON.parse(localStorage.getItem("joplexHistory")) || [];
 
+let currentMission =
+    localStorage.getItem("joplexCurrentMission") || "051";
+
+let currentMissionStatus =
+    localStorage.getItem("joplexMissionStatus") || "In Progress 🟡";
+
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");

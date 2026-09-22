@@ -155,6 +155,11 @@ function speak(text) {
     window.speechSynthesis.speak(speech);
 }
 let joplexLights = false;
+<h3>Joplex Command Center</h3>
+
+<p id="joplexMode">Mode: Idle ⚪</p>
+<p id="lastCommand">Last command: None</p>
+<p id="commandCount">Commands this session: 0</p>
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");

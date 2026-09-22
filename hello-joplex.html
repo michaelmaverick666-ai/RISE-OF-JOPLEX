@@ -143,6 +143,10 @@ window.addEventListener("load", function () {
     if (status) {
         document.getElementById("missionStatus").textContent = "Status: " + status;
     }
+savedHistory.forEach(function (command) {
+    let item = document.createElement("li");
+    item.textContent = command;
+    document.getElementById("commandHistory").appendChild(item);
 });
 function activateJoplex() {
     let status = document.getElementById("status");
@@ -592,6 +596,7 @@ function quickCommand(command) {
 
     runCommand();
 }
+history.appendChild(item);
 function completeMission() {
     document.getElementById("missionNumber").textContent = "Mission: 049";
     document.getElementById("missionStatus").textContent = "Status: Complete 🟢";

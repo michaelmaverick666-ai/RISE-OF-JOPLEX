@@ -322,6 +322,16 @@ function runCommand() {
             ? "Your current mission is Mission " + mission + ". 🚀"
             : "I don't know your current mission yet.";
 
+} else if (command.includes("what is my mission status")) {
+
+    let status =
+        localStorage.getItem("joplexMissionStatus");
+
+    response.textContent =
+        status
+            ? "Your mission status is: " + status + " 🚀"
+            : "I don't know your mission status yet.";
+
     } else if (command.includes("what do i like")) {
 
         response.textContent =

@@ -605,13 +605,26 @@ function quickCommand(command) {
     runCommand();
 }
 function completeMission() {
-    document.getElementById("missionNumber").textContent = "Mission: 050";
-    document.getElementById("missionStatus").textContent = "Status: In Progress 🟡";
+    let mission =
+        localStorage.getItem("joplexCurrentMission") || "050";
 
-    localStorage.setItem("joplexCurrentMission", "050");
+    let nextMission =
+        String(parseInt(mission) + 1).padStart(3, "0");
+
+    document.getElementById("missionNumber").textContent =
+        "Mission: " + nextMission;
+
+    document.getElementById("missionStatus").textContent =
+        "Status: In Progress 🟡";
+
+    localStorage.setItem("joplexCurrentMission", nextMission);
     localStorage.setItem("joplexMissionStatus", "In Progress 🟡");
 
-    speak("Mission zero four nine complete. Mission zero five zero is now active.");
+    speak(
+        "Mission " + mission +
+        " complete. Mission " + nextMission +
+        " is now active."
+    );
 }
 function toggleTheme() {
     const html = document.documentElement;

@@ -91,6 +91,13 @@ html.light {
 <p id="clock">Time loading...</p>
 <button onclick="activateJoplex()">Activate System</button>
 <br><br>
+<h3>Quick Actions ⚡</h3>
+
+<button onclick="quickCommand('system report')">📊 System Report</button>
+
+<button onclick="quickCommand('wake up joplex')">🤖 Wake Up</button>
+
+<button onclick="quickCommand('motivate')">🔥 Motivate Me</button>
 
 <button onclick="resetJoplex()">Reset Joplex Memory</button>
 <script>
@@ -562,6 +569,12 @@ document.getElementById("commandCount").textContent =
     let item = document.createElement("li");
     item.textContent = command;
     history.appendChild(item);
+}
+function quickCommand(command) {
+
+    document.getElementById("commandInput").value = command;
+
+    runCommand();
 }
 function toggleTheme() {
     const html = document.documentElement;

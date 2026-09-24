@@ -1,3 +1,4 @@
+#  Wider Missions
 Digital Inclusion / Digital Divide
 Diversity, Equity & Inclusion (DEI)
 Universal Design / Assistive Technology
@@ -21,3 +22,13 @@ Rural & Underserved Connectivity
 Ethical Technology Design
 Regulatory Compliance
 Transparency & Accountability
+
+## Entry Format
+
+- Topic
+- What is it?
+- Why it matters
+- Joplex connection
+- Related topics
+- Current developments
+- Status

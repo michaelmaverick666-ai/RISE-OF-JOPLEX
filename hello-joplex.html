@@ -668,12 +668,10 @@ function runCommand() {
 
 } else if (command.includes("hello")) {
 
-    let message =
+    response.textContent =
         "Hello! Joplex is ready to assist you. 🤖";
 
-    response.textContent = message;
-
-    speak(message);
+    speak("Hello! Joplex is ready to assist you.");
 
     } else if (command.includes("time")) {
 

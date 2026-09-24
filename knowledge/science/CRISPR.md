@@ -11,19 +11,17 @@
 - <span style="color:#ffcc00;">Status: Researching</span>
 - <span style="color:#a855f7;">Field: Genetics / Biotechnology</span>
 
+<span style="color:#00e5ff;">📊 RESEARCH STATUS</span>
+
+<span style="color:#ffcc00;">🔎 Researching</span>
+→ Joplex is currently studying the topic.
+
+<span style="color:#39ff88;">🧠 Understood</span>
+→ Joplex understands the core concepts.
+
+<span style="color:#a855f7;">⚙️ Applied</span>
+→ Joplex has used the knowledge in a project or mission.
 ---
-
-### <span style="color:#ff7a00;">FUTURE RESEARCH ENTRIES</span>
-
-New scientific discoveries will be added here as Joplex researches them.
-
-<span style="color:#888;">Entry 002 → Next discovery</span>
-
-<span style="color:#888;">Entry 003 → Next discovery</span>
-
-<span style="color:#888;">Entry 004 → Next discovery</span>
-«<span style="color:#39ff88;"><strong>Research Entry</strong></span><br>
-<span style="color:#888;">Science → Discovery → Possibility</span>»
 
 ---
 

@@ -1,46 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Rise of Joplex</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rise of Joplex</title>
 <meta name="color-scheme" content="light dark">
 <style>
-    body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 50px;
+* { box-sizing: border-box; }
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
     background: #0f1219;
-    color: white;
-    min-height: 100vh;
+    color: #e8eaf0;
     margin: 0;
+    padding: 28px 16px 60px;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
 }
 
-    h1 {
-        font-size: 40px;
-    }
+h1, h2, h3, h4, .brand, .btn {
+    font-family: "Courier New", ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+}
 
-    p {
-        font-size: 20px;
-    }
+h1 { font-size: 34px; margin: 0 0 12px; }
+h3 { font-size: 19px; margin: 0 0 14px; }
+h4 { font-size: 15px; margin: 18px 0 8px; color: #9aa4bb; }
+p { font-size: 17px; line-height: 1.6; margin: 8px 0; }
 
-    /* LIGHT MODE */
-    html.light {
-        background: white !important;
-        color: black !important;
-    }
+.page { max-width: 640px; margin: 0 auto; }
 
-    html.light h1,
-    html.light h2,
-    html.light h3,
-    html.light p,
-    html.light li,
-    html.light #status,
-    html.light #clock,
-    html.light #response,
-    html.light #commandResponse {
-        color: black !important;
-    }
+/* ---- Top bar ---- */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+.brand {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #00e5ff;
+    text-shadow: 0 0 10px rgba(0,229,255,.5);
+}
 
-  html.light input,
+/* ---- Hero ---- */
+.hero { text-align: center; margin-bottom: 28px; }
+.hero p { color: #b7bfd1; }
+
+/* ---- Panels ---- */
+.panel {
+    background: #111722;
+    border: 2px solid;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 22px;
+    text-align: center;
+}
+
+.accent-cyan   { border-color: #00e5ff; box-shadow: 0 0 18px rgba(0,229,255,.18); }
+.accent-cyan h2, .accent-cyan h3 { color: #00e5ff; }
+
+.accent-green  { border-color: #39ff88; box-shadow: 0 0 18px rgba(57,255,136,.18); }
+.accent-green h3 { color: #39ff88; }
+
+.accent-purple { border-color: #a855f7; box-shadow: 0 0 18px rgba(168,85,247,.18); }
+.accent-purple h3 { color: #a855f7; }
+
+.accent-gold   { border-color: #ffcc00; box-shadow: 0 0 18px rgba(255,204,0,.18); }
+.accent-gold h3 { color: #ffcc00; }
+
+.accent-orange { border-color: #ff7a00; box-shadow: 0 0 18px rgba(255,122,0,.18); }
+.accent-orange h3 { color: #ff7a00; }
+
+.accent-pink   { border-color: #ff3b6b; box-shadow: 0 0 18px rgba(255,59,107,.18); }
+.accent-pink h3 { color: #ff3b6b; }
+
+/* ---- Inputs ---- */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #2a3346;
+    background: #0b0f17;
+    color: #e8eaf0;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+input[type="text"]::placeholder { color: #6b7488; }
+input[type="text"]:focus { outline: none; border-color: #00e5ff; }
+
+/* ---- Buttons ---- */
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1.5px solid #3a4256;
+    background: transparent;
+    color: #e8eaf0;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 4px;
+    transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.btn:hover { border-color: #00e5ff; color: #00e5ff; }
+.btn:focus-visible { outline: 2px solid #00e5ff; outline-offset: 2px; }
+
+.btn-primary {
+    background: rgba(0,229,255,.12);
+    border-color: #00e5ff;
+    color: #00e5ff;
+}
+
+.btn-ghost { border-style: dashed; opacity: .8; }
+
+.btn-danger {
+    border-color: #ff3b6b;
+    color: #ff9fb3;
+    margin-top: 6px;
+}
+.btn-danger:hover { background: rgba(255,59,107,.12); color: #ff3b6b; }
+
+.btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+}
+
+/* ---- Readouts / lists ---- */
+.readout { min-height: 22px; font-weight: 600; }
+.history-list {
+    text-align: left;
+    max-width: 420px;
+    margin: 12px auto;
+    padding-left: 20px;
+    color: #ccd2e0;
+}
+.reset-wrap { text-align: center; margin: 8px 0 36px; }
+
+/* ---- Knowledge sections (wider, sit outside the narrow console column) ---- */
+.crispr-panel {
+    max-width: 1000px;
+    margin: 0 auto 32px;
+    padding: 30px;
+    text-align: left;
+}
+.crispr-panel h2 { text-align: center; font-size: 28px; margin-top: 0; }
+.crispr-panel > p:last-child { text-align: center; }
+
+/* LIGHT MODE */
+html.light {
+    background: white !important;
+    color: black !important;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light p,
+html.light li,
+html.light #status,
+html.light #clock,
+html.light #response,
+html.light #commandResponse {
+    color: black !important;
+}
+
+html.light input,
 html.light button {
     background: #f2f2f2 !important;
     color: black !important;
@@ -156,7 +282,76 @@ html.light {
 </style>
 </head>
 <body>
-<section>
+
+<div class="page">
+
+    <div class="topbar">
+        <span class="brand">JOPLEX</span>
+        <button id="themeToggle" class="btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </div>
+
+    <div class="hero">
+        <h1>Welcome to Joplex 🚀</h1>
+        <p>I am building Joplex one mission at a time.</p>
+        <p>Mission 004: I am learning how to build for the web.</p>
+        <button onclick="showMessage()" class="btn btn-primary">Activate Joplex</button>
+    </div>
+
+    <section class="panel accent-green">
+        <h3>👤 Identity</h3>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button onclick="greetUser()" class="btn">Greet Joplex</button>
+        <p id="response" class="readout"></p>
+    </section>
+
+    <section class="panel accent-purple">
+        <h3>💬 Command Console</h3>
+        <input type="text" id="commandInput" placeholder="Enter a command">
+        <div class="btn-row">
+            <button onclick="runCommand()" class="btn">Run Command</button>
+            <button onclick="startListening()" class="btn">🎙️ Speak</button>
+        </div>
+        <p id="commandResponse" class="readout"></p>
+        <h4>Command History</h4>
+        <ul id="commandHistory" class="history-list"></ul>
+        <button onclick="clearHistory()" class="btn btn-ghost">Clear History</button>
+    </section>
+
+    <section class="panel accent-gold">
+        <h3>🖥️ Joplex Command Center</h3>
+        <p id="joplexMode">Mode: Idle ⚪</p>
+        <p id="lastCommand">Last command: None</p>
+        <p id="commandCount">Commands this session: 0</p>
+        <p id="status">Joplex is offline 🔴</p>
+        <p id="clock">Time loading...</p>
+        <button onclick="activateJoplex()" class="btn">Activate System</button>
+    </section>
+
+    <section class="panel accent-orange">
+        <h3>⚡ Quick Actions</h3>
+        <div class="btn-row">
+            <button onclick="quickCommand('system report')" class="btn">📊 System Report</button>
+            <button onclick="quickCommand('wake up joplex')" class="btn">🤖 Wake Up</button>
+            <button onclick="quickCommand('motivate')" class="btn">🔥 Motivate Me</button>
+        </div>
+    </section>
+
+    <section class="panel accent-pink">
+        <h3>🎯 Mission Tracker</h3>
+        <div id="missionCard">
+            <p id="missionNumber">Mission: 049</p>
+            <p id="missionStatus">Status: In Progress 🟡</p>
+            <button onclick="completeMission()" class="btn">✅ Complete Mission</button>
+        </div>
+    </section>
+
+    <div class="reset-wrap">
+        <button onclick="resetJoplex()" class="btn btn-danger">Reset Joplex Memory</button>
+    </div>
+
+</div>
+
+<section class="panel accent-cyan crispr-panel">
     <h2 style="color:#00e5ff;">🧬 CRISPR</h2>
 
     <p>
@@ -205,51 +400,6 @@ html.light {
         Joplex Knowledge Base — Biotechnology
     </p>
 </section>
-<button id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
-
-    <h1>Welcome to Joplex 🚀</h1>
-    <p>I am building Joplex one mission at a time.</p>
-<p>Mission 004: I am learning how to build for the web.</p>
-<button onclick="showMessage()">Activate Joplex</button>
-<br><br>
-
-<input type="text" id="nameInput" placeholder="Enter your name">
-<br><br>
-
-<input type="text" id="commandInput" placeholder="Enter a command">
-<button onclick="runCommand()">Run Command</button>
-<button onclick="startListening()">🎙️ Speak</button>
-<p id="commandResponse"></p>
-<h3>Command History</h3>
-<ul id="commandHistory"></ul>
-<button onclick="clearHistory()">Clear History</button>
-<h3>Joplex Command Center</h3>
-
-<p id="joplexMode">Mode: Idle ⚪</p>
-<p id="lastCommand">Last command: None</p>
-<p id="commandCount">Commands this session: 0</p>
-<button onclick="greetUser()">Greet Joplex</button>
-<p id="response"></p>
-<p id="status">Joplex is offline 🔴</p>
-<p id="clock">Time loading...</p>
-<button onclick="activateJoplex()">Activate System</button>
-<br><br>
-<h3>Quick Actions ⚡</h3>
-
-<button onclick="quickCommand('system report')">📊 System Report</button>
-
-<button onclick="quickCommand('wake up joplex')">🤖 Wake Up</button>
-
-<button onclick="quickCommand('motivate')">🔥 Motivate Me</button>
-<h3>Mission Tracker 🎯</h3>
-
-<div id="missionCard" style="border:1px solid #555;padding:15px;border-radius:10px;max-width:400px;margin:auto;">
-    <p id="missionNumber">Mission: 049</p>
-    <p id="missionStatus">Status: In Progress 🟡</p>
-
-    <button onclick="completeMission()">✅ Complete Mission</button>
-</div>
-<button onclick="resetJoplex()">Reset Joplex Memory</button>
 
 <!-- 🧠 JOPLEX KNOWLEDGE CORE -->
 
@@ -716,6 +866,7 @@ function runCommand() {
 } else if (command.includes("what is the solar system")) {
     response.textContent =
     "The Solar System is the Sun and the objects that orbit it, including planets, dwarf planets, moons, asteroids, and comets. ☀️🪐";
+
 } else if (command.includes("what is an algorithm")) {
     response.textContent =
     "An algorithm is a step-by-step set of instructions used to solve a problem or complete a task. 💻";
@@ -741,52 +892,52 @@ function runCommand() {
     "Cybersecurity is the practice of protecting computers, networks, systems, and data from unauthorized access, misuse, damage, or disruption. 🔐";
 
 } else if (command === "show knowledge") {
+    response.textContent =
+    "Joplex Knowledge Core is online. 🧠⚡\n\n" +
+    "Identity: Joplex\n" +
+    "Goal: Build an evolving personal AI\n" +
+    "Development: Web development and JavaScript\n" +
+    "Learning: AI, coding, technology and problem solving\n" +
+    "Vision: A powerful personal AI system\n" +
+    "Knowledge Categories: Technology, AI, science, finance and general knowledge.";
+
+} else if (command.includes("introduce me")) {
+
+    let name =
+        localStorage.getItem("joplexName");
+
+    response.textContent = name
+        ? "This is " + name +
+          ". He is building Joplex one mission at a time. 🚀"
+        : "I don't know your name yet.";
+
+} else if (command.includes("good morning")) {
 
     response.textContent =
-        "Joplex Knowledge Core is online. 🧠⚡\n\n" +
-        "Identity: Joplex\n" +
-        "Goal: Build an evolving personal AI\n" +
-        "Development: Web development and JavaScript\n" +
-        "Learning: AI, coding, technology and problem solving\n" +
-        "Vision: A powerful personal AI system\n" +
-        "Knowledge Categories: Technology, AI, science, finance and general knowledge.";
+        "Good morning! Let's make today another step forward for Joplex. ☀️🚀";
 
-    } else if (command.includes("introduce me")) {
+} else if (command.includes("i am back")) {
 
-        let name =
-            localStorage.getItem("joplexName");
+    let name =
+        localStorage.getItem("joplexName");
 
-        response.textContent = name
-            ? "This is " + name +
-              ". He is building Joplex one mission at a time. 🚀"
-            : "I don't know your name yet.";
+    if (name) {
 
-    } else if (command.includes("good morning")) {
+        let greetings = [
+            "Welcome back, " + name + "! 🤖🚀",
+            "Good to see you again, " + name + "! 🧠🔥",
+            "Joplex is ready for you, " + name + "! ⚡🤖"
+        ];
 
         response.textContent =
-            "Good morning! Let's make today another step forward for Joplex. ☀️🚀";
+            greetings[Math.floor(Math.random() * greetings.length)];
 
-    } else if (command.includes("i am back")) {
+    } else {
 
-        let name =
-            localStorage.getItem("joplexName");
+        response.textContent =
+            "Welcome back! I don't know your name yet.";
 
-        if (name) {
-
-            let greetings = [
-                "Welcome back, " + name + "! 🤖🚀",
-                "Good to see you again, " + name + "! 🧠🔥",
-                "Joplex is ready for you, " + name + "! ⚡🤖"
-            ];
-
-            response.textContent =
-                greetings[Math.floor(Math.random() * greetings.length)];
-
-        } else {
-
-            response.textContent =
-                "Welcome back! I don't know your name yet.";
-        }
+    }
 
     } else if (command.startsWith("countdown ")) {
 
@@ -1127,6 +1278,7 @@ function clearHistory() {
     savedHistory = [];
 
     localStorage.removeItem("joplexHistory");
-}</script>
+}
+</script>
 </body>
 </html>

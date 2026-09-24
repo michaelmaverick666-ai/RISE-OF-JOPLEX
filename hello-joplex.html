@@ -615,13 +615,14 @@ function speak(text) {
 
 function typeResponse(element, text) {
     element.textContent = "";
-    
+
     let i = 0;
 
     function typeNext() {
         if (i < text.length) {
-            element.textContent += text.charAt(i);
+            element.textContent += text[i];
             i++;
+
             setTimeout(typeNext, 25);
         }
     }

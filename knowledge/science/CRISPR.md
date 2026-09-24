@@ -2,6 +2,8 @@
 
 <span style="color:#39ff88;">JOPLEX SCIENCE RESEARCH</span>
 
+<span style="color:#888;">Research Entry 001</span>
+
 «<span style="color:#39ff88;"><strong>Research Entry</strong></span><br>
 <span style="color:#888;">Science → Discovery → Possibility</span>»
 

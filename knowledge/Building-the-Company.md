@@ -1,3 +1,4 @@
+#  Company Build 
 Marketing
 Branding
 Operations Management
@@ -28,3 +29,13 @@ Communication Skills
 Decision-Making Frameworks
 Competitive Analysis
 Exit Strategy
+
+## Entry Format
+
+- Topic
+- What is it?
+- Why it matters
+- Joplex connection
+- Related topics
+- Current developments
+- Status

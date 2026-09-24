@@ -123,11 +123,13 @@ Potential future missions could involve:
 
 ---
 
-<span style="color:#00e5ff;">📊 STATUS</span>
+<span style="color:#00e5ff;">📊 DISCOVERY STATUS</span>
 
-- ☑ <span style="color:#39ff88;">Researching</span>
-- ☐ <span style="color:#ffcc00;">Understood</span>
-- ☐ <span style="color:#a855f7;">Applied</span>
+🟢 Researching
+⚪ Understood
+⚪ Applied
+
+Knowledge Level: ███░░
 
 ---
 

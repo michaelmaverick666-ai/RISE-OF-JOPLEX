@@ -281,8 +281,26 @@ function greetUser() {
     let name = document.getElementById("nameInput").value.trim();
 
     if (name) {
+
         localStorage.setItem("joplexName", name);
-        alert("Welcome, " + name + "! Joplex will remember you. 🚀");
+
+        let greeting =
+            "Welcome, " + name + "! I am Joplex. I'm ready to continue our journey. 🚀🤖";
+
+        document.getElementById("response").textContent = greeting;
+
+        alert(greeting);
+
+        speak(greeting);
+
+    } else {
+
+        let message =
+            "Please enter your name first.";
+
+        document.getElementById("response").textContent = message;
+
+        speak(message);
     }
 }
 window.onload = function () {

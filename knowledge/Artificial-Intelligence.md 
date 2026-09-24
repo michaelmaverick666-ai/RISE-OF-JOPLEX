@@ -1,3 +1,4 @@
+#AI
 Deep Learning
 Natural Language Processing (NLP)
 Computer Vision
@@ -21,3 +22,13 @@ Model Deployment & Serving
 Synthetic Data
 Transfer Learning
 Frameworks/Tools: TensorFlow, PyTorch, scikit-learn, Hugging Face, LangChain
+
+## Entry Format
+
+- Topic
+- What is it?
+- Why it matters
+- Joplex connection
+- Related topics
+- Current developments
+- Status

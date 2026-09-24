@@ -663,10 +663,12 @@ function runCommand() {
         response.textContent =
             messages[Math.floor(Math.random() * messages.length)];
 
-    } else if (command.includes("hello")) {
+  } else if (command.includes("hello")) {
 
-        response.textContent =
-            "Hello! Joplex is ready to assist you. 🤖";
+    typeResponse(
+        response,
+        "Hello! Joplex is ready to assist you. 🤖"
+    );
 
     } else if (command.includes("time")) {
 

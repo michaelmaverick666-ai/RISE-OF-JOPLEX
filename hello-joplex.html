@@ -612,6 +612,22 @@ function speak(text) {
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(speech);
 }
+
+function typeResponse(element, text) {
+    element.textContent = "";
+    
+    let i = 0;
+
+    function typeNext() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeNext, 25);
+        }
+    }
+
+    typeNext();
+}
 let joplexLights = false;
 let commandCounter = 0;
 let savedHistory = JSON.parse(localStorage.getItem("joplexHistory")) || [];

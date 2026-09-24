@@ -367,6 +367,8 @@ let currentMission =
 let currentMissionStatus =
     localStorage.getItem("joplexMissionStatus") || "In Progress 🟡";
 
+localStorage.setItem("joplexHistory", JSON.stringify(savedHistory));
+}
 function runCommand() {
     let command = document.getElementById("commandInput").value.toLowerCase().trim();
     let response = document.getElementById("commandResponse");

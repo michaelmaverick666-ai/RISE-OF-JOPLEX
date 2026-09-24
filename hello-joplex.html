@@ -520,12 +520,10 @@ function runCommand() {
     } else if (command.includes("what is my mission")) {
 
     let mission =
-        localStorage.getItem("joplexCurrentMission");
+        localStorage.getItem("joplexCurrentMission") || currentMission;
 
     response.textContent =
-        mission
-            ? "Your current mission is Mission " + mission + ". 🚀"
-            : "I don't know your current mission yet.";
+        "Your current mission is Mission " + mission + ". 🚀";
 
 } else if (command.includes("what do i like")) {
 

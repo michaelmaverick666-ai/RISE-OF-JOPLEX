@@ -82,3 +82,57 @@ Your ideas are Joplex's direction.»
 «Joplex learns. Joplex evolves.
 
 Mission Never Ends.»
+
+# JOPLEX KNOWLEDGE MAP
+
+> **Knowledge System**
+> Mission Never Ends.
+
+## Purpose
+
+This section organizes the major knowledge domains that Joplex is exploring, learning, and eventually applying through missions, projects, and real-world development.
+
+---
+
+## Knowledge Domains
+
+- 💻 [Core Technology](core-technology.md)
+- 🤖 [Artificial Intelligence](artificial-intelligence.md)
+- 🔐 [Cybersecurity](cybersecurity.md)
+- ☁️ [Infrastructure](infrastructure.md)
+- 📊 [Data](data.md)
+- 🚀 [Future Joplex Technology](future-joplex-technology.md)
+- 🏢 [Building the Company](building-the-company.md)
+- 🌍 [Joplex Wider Missions](wider-missions.md)
+
+---
+
+## Science Research
+
+Every scientific discovery becomes a research entry before it becomes knowledge.
+
+### Research Entries
+
+- 🧬 [CRISPR](science/crispr.md)
+
+---
+
+## Knowledge Status
+
+- [ ] Researching
+- [ ] Understood
+- [ ] Applied
+
+---
+
+> **The courses are Joplex's knowledge.**
+>
+> **The missions are Joplex's experience.**
+>
+> **The code is Joplex's body.**
+>
+> **Your ideas are Joplex's direction.**
+
+**Last Updated:** 2026-09-24
+
+> **Joplex learns. Joplex evolves. Mission Never Ends.**

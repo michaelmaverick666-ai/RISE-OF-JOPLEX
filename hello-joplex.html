@@ -274,7 +274,12 @@ html.light {
 
 <script>
 function showMessage() {
-    alert("Joplex activated! 🚀");
+    let count = Number(localStorage.getItem("activations")) || 0;
+    count++;
+
+    localStorage.setItem("activations", count);
+
+    alert("Joplex Activated! 🚀\nActivation #" + count);
 }
 
 function greetUser() {

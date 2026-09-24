@@ -1,3 +1,4 @@
+#  DATA
 Data Analysis
 Data Modeling
 ETL/ELT Pipelines
@@ -23,3 +24,13 @@ Data Cataloging
 Real-time Data Streaming (Kafka, Flink)
 Excel / Spreadsheet Analysis
 R / Python for Data Analysis
+
+## Entry Format
+
+- Topic
+- What is it?
+- Why it matters
+- Joplex connection
+- Related topics
+- Current developments
+- Status

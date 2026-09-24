@@ -21,7 +21,12 @@ Recommender Systems
 Model Deployment & Serving
 Synthetic Data
 Transfer Learning
-Frameworks/Tools: TensorFlow, PyTorch, scikit-learn, Hugging Face, LangChain
+Frameworks/Tools:
+ TensorFlow
+PyTorch
+ scikit-learn
+Hugging Face
+LangChain
 
 
 ## Entry Format

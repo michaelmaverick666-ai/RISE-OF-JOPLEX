@@ -666,12 +666,15 @@ function runCommand() {
         response.textContent =
             messages[Math.floor(Math.random() * messages.length)];
 
-  } else if (command.includes("hello")) {
+} else if (command.includes("hello")) {
 
     let message = "Hello! Joplex is ready to assist you. 🤖";
 
     typeResponse(response, message);
-    speak(message);
+
+    setTimeout(function() {
+        speak(message);
+    }, 100);
 
     } else if (command.includes("time")) {
 

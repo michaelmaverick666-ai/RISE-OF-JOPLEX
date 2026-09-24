@@ -1,4 +1,4 @@
-Languages
+#  Languages
 Python, JavaScript, TypeScript, Java, C++, C#, Go, Rust, Ruby, PHP, Swift, Kotlin, SQL, Bash/Shell
 Software Engineering Fundamentals
 Data Structures & Algorithms, Object-Oriented Design, Design Patterns, System Design, Software Architecture, Debugging & Profiling, Code Review

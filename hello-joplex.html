@@ -59,6 +59,101 @@ html.light {
     color-scheme: light;
 }
 </style>
+/* ============================= */
+/* 🧠 JOPLEX KNOWLEDGE CORE */
+/* MISSION 059 */
+/* ============================= */
+
+.knowledge-core {
+    margin: 40px auto;
+    padding: 30px;
+    max-width: 1000px;
+    background: #0b0f17;
+    border: 2px solid #00e5ff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,229,255,0.25);
+}
+
+.knowledge-core h2 {
+    color: #00e5ff;
+    font-size: 30px;
+    text-shadow: 0 0 12px #00e5ff;
+}
+
+.knowledge-intro {
+    color: #888;
+}
+
+.knowledge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.knowledge-card {
+    padding: 20px;
+    border-radius: 15px;
+    background: #111722;
+    border: 2px solid;
+}
+
+.knowledge-card h3 {
+    margin-top: 0;
+}
+
+.knowledge-card p,
+.knowledge-card li {
+    color: #ddd;
+    line-height: 1.6;
+}
+
+.cyan {
+    border-color: #00e5ff;
+}
+
+.cyan h3 {
+    color: #00e5ff;
+}
+
+.green {
+    border-color: #39ff88;
+}
+
+.green h3 {
+    color: #39ff88;
+}
+
+.purple {
+    border-color: #a855f7;
+}
+
+.purple h3 {
+    color: #a855f7;
+}
+
+.gold {
+    border-color: #ffcc00;
+}
+
+.gold h3 {
+    color: #ffcc00;
+}
+
+.orange {
+    border-color: #ff7a00;
+}
+
+.orange h3 {
+    color: #ff7a00;
+}
+
+.pink {
+    border-color: #ff3b6b;
+}
+
+.pink h3 {
+    color: #ff3b6b;
+}
 </head>
 <body>
 <button id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
@@ -725,188 +820,6 @@ function clearHistory() {
 
     localStorage.removeItem("joplexHistory");
 }</script>
-<!-- ============================= -->
-<!-- 🧠 JOPLEX KNOWLEDGE CORE -->
-<!-- MISSION 059 -->
-<!-- ============================= -->
-
-<section id="knowledgeCore" class="knowledge-core">
-
-    <h2>🧠 JOPLEX KNOWLEDGE CORE</h2>
-
-    <p class="knowledge-intro">
-        A growing collection of knowledge powering the Rise of Joplex.
-    </p>
-
-    <div class="knowledge-grid">
-
-        <div class="knowledge-card cyan">
-            <h3>🤖 Identity</h3>
-            <p>
-                Joplex is my AI project.
-                Joplex is being built one mission at a time.
-            </p>
-        </div>
-
-        <div class="knowledge-card green">
-            <h3>🎯 Goal</h3>
-            <p>
-                The goal of Rise of Joplex is to build
-                an increasingly capable personal AI system.
-            </p>
-        </div>
-
-        <div class="knowledge-card purple">
-            <h3>💻 Development</h3>
-            <p>
-                Joplex is currently being developed as
-                a web-based project using HTML, CSS and JavaScript.
-            </p>
-        </div>
-
-        <div class="knowledge-card gold">
-            <h3>🧠 Learning</h3>
-            <p>
-                Joplex learns through missions,
-                experiments, research and new features.
-            </p>
-        </div>
-
-        <div class="knowledge-card orange">
-            <h3>🚀 Vision</h3>
-            <p>
-                The long-term vision is to make Joplex
-                a powerful personal AI assistant with
-                knowledge, tools, memory and useful capabilities.
-            </p>
-        </div>
-
-        <div class="knowledge-card pink">
-            <h3>📚 Knowledge Categories</h3>
-
-            <ul>
-                <li>🤖 Artificial Intelligence</li>
-                <li>💻 Programming</li>
-                <li>🌐 Web Development</li>
-                <li>📊 Finance</li>
-                <li>🔬 Science</li>
-                <li>🌍 General Knowledge</li>
-                <li>🚀 Technology</li>
-            </ul>
-        </div>
-
-    </div>
-
-</section>
-
-<style>
-
-.knowledge-core {
-    margin: 40px auto;
-    padding: 30px;
-    max-width: 1000px;
-
-    background: #0b0f17;
-    border: 2px solid #00e5ff;
-    border-radius: 20px;
-
-    box-shadow:
-        0 0 20px rgba(0,229,255,0.25),
-        inset 0 0 25px rgba(0,229,255,0.05);
-}
-
-.knowledge-core h2 {
-    color: #00e5ff;
-    font-size: 30px;
-    text-shadow: 0 0 12px #00e5ff;
-    margin-bottom: 10px;
-}
-
-.knowledge-intro {
-    color: #888;
-    margin-bottom: 25px;
-}
-
-.knowledge-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 18px;
-}
-
-.knowledge-card {
-    padding: 20px;
-    border-radius: 15px;
-    background: #111722;
-    border: 1px solid;
-    transition: 0.3s;
-}
-
-.knowledge-card:hover {
-    transform: translateY(-5px);
-}
-
-.knowledge-card h3 {
-    margin-top: 0;
-}
-
-.knowledge-card p,
-.knowledge-card li {
-    color: #ddd;
-    line-height: 1.6;
-}
-
-.knowledge-card ul {
-    padding-left: 20px;
-}
-
-.cyan {
-    border-color: #00e5ff;
-}
-
-.cyan h3 {
-    color: #00e5ff;
-}
-
-.green {
-    border-color: #39ff88;
-}
-
-.green h3 {
-    color: #39ff88;
-}
-
-.purple {
-    border-color: #a855f7;
-}
-
-.purple h3 {
-    color: #a855f7;
-}
-
-.gold {
-    border-color: #ffcc00;
-}
-
-.gold h3 {
-    color: #ffcc00;
-}
-
-.orange {
-    border-color: #ff7a00;
-}
-
-.orange h3 {
-    color: #ff7a00;
-}
-
-.pink {
-    border-color: #ff3b6b;
-}
-
-.pink h3 {
-    color: #ff3b6b;
-}
-
 </style>
 </body>
 </html>

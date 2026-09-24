@@ -619,12 +619,14 @@ function typeResponse(element, text) {
     let i = 0;
 
     function typeNext() {
-        if (i < text.length) {
-            element.textContent += text[i];
-            i++;
-
-            setTimeout(typeNext, 25);
+        if (i >= text.length) {
+            return;
         }
+
+        element.textContent = text.substring(0, i + 1);
+        i++;
+
+        setTimeout(typeNext, 50);
     }
 
     typeNext();

@@ -26,7 +26,7 @@ Frameworks/Tools:
  TensorFlow
 PyTorch
  scikit-learn
-Hugging Face
+Hugging Face,
 LangChain
 
 

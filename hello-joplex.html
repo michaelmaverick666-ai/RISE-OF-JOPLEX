@@ -621,6 +621,39 @@ function runCommand() {
     response.textContent =
     "A protein is a molecule made from amino acids. Proteins perform many important functions in cells and living organisms. 🧬";
 
+} else if (
+    command.includes("what is rna") ||
+    command.includes("what are chromosomes") ||
+    command.includes("what is a cell") ||
+    command.includes("what is a genome") ||
+    command.includes("what is inheritance") ||
+    command.includes("what is genetics")
+) {
+
+    if (command.includes("what is rna")) {
+        response.textContent =
+        "RNA stands for Ribonucleic Acid. It helps cells use genetic information and plays an important role in making proteins. 🧬";
+
+    } else if (command.includes("what are chromosomes")) {
+        response.textContent =
+        "Chromosomes are structures made of DNA and proteins that carry genetic information inside cells. 🧬";
+
+    } else if (command.includes("what is a cell")) {
+        response.textContent =
+        "A cell is the basic structural and functional unit of living organisms. 🧫";
+
+    } else if (command.includes("what is a genome")) {
+        response.textContent =
+        "A genome is the complete set of genetic material in an organism. 🧬";
+
+    } else if (command.includes("what is inheritance")) {
+        response.textContent =
+        "Genetic inheritance is the process by which genetic information is passed from parents to their offspring. 🧬";
+
+    } else if (command.includes("what is genetics")) {
+        response.textContent =
+        "Genetics is the branch of biology that studies genes, heredity, and variation in living organisms. 🧬";
+
 } else if (command === "show knowledge") {
 
     response.textContent =

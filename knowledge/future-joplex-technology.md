@@ -23,3 +23,13 @@ Genetic Engineering / CRISPR
 Smart Grids
 Autonomous Drones & Swarm Robotics
 Green/Sustainable Tech
+
+## Entry Format
+
+- Topic
+- What is it?
+- Why it matters
+- Joplex connection
+- Related topics
+- Current developments
+- Status

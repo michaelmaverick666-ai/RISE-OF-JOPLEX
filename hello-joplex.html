@@ -1312,6 +1312,38 @@ function clearHistory() {
 
     localStorage.removeItem("joplexHistory");
 }
+
+// ===== Joplex Boot Sequence =====
+const bootMessages = [
+  "Initializing Joplex...",
+  "Loading systems...",
+  "AI Core Online...",
+  "Welcome, Commander."
+];
+
+let bootIndex = 0;
+
+function bootSequence() {
+  const bootText = document.getElementById("bootText");
+
+  if (bootText) {
+    bootText.textContent = bootMessages[bootIndex];
+  }
+
+  bootIndex++;
+
+  if (bootIndex < bootMessages.length) {
+    setTimeout(bootSequence, 1000);
+  } else {
+    setTimeout(() => {
+      document.getElementById("bootScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+    }, 800);
+  }
+}
+
+window.addEventListener("load", bootSequence);
+
 </script>
 </body>
 </html>

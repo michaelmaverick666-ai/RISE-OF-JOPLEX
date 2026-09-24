@@ -22,3 +22,13 @@ Hybrid & Multi-Cloud Strategies
 Immutable Infrastructure
 Secrets Management (Vault, AWS Secrets Manager)
 Artifact Repositories (Nexus, Artifactory)
+
+## Entry Format
+
+- Topic
+- What is it?
+- Why it matters
+- Joplex connection
+- Related topics
+- Current developments
+- Status

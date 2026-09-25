@@ -717,7 +717,6 @@ function runCommand() {
     const mission = localStorage.getItem("joplexCurrentMission") || "062";
 
     response.text = "Current mission: " + mission + ".";
-
     response.speak = "Current mission is " + mission + ".";
 
     } else if (command.includes("date")) {

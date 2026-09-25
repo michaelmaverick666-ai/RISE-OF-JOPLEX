@@ -1237,13 +1237,7 @@ function runCommand() {
 
         response.textContent =
             "I don't understand that command yet.";
-
-else if (command.includes("current mission") || command.includes("show mission")) {
-    const mission = localStorage.getItem("joplexCurrentMission") || "062";
-    response.text = "Current mission: " + mission + ".";
-    response.speak = "Current mission is " + mission + ".";
 }
-
     speak(response.textContent);
 document.getElementById("joplexMode").textContent =
     "Mode: Idle ⚪";

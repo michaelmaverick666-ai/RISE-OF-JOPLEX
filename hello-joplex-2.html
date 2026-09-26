@@ -977,7 +977,13 @@ response.textContent = "Hello! Joplex is ready to assist you.";
     response.textContent =
     "An algorithm is a step-by-step set of instructions used to solve a problem or complete a task. 💻";
 
-} else if (command.includes("what is artificial intelligence") || command.includes("what is ai")) {
+} else if (
+    command.includes("what is artificial intelligence") ||
+    command.includes("what is ai") ||
+    command.includes("explain ai") ||
+    command.includes("explain artificial intelligence") ||
+    command.includes("tell me about ai")
+) {
     response.textContent =
     "Artificial Intelligence, or AI, is technology that enables computers to perform tasks that can involve learning, reasoning, recognizing patterns, or understanding language. 🤖";
 

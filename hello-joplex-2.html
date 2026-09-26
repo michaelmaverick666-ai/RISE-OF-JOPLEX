@@ -710,12 +710,13 @@ function runCommand() {
         response.textContent =
             messages[Math.floor(Math.random() * messages.length)];
 
-} else if (command.includes("hello")) {
-
-    response.textContent =
-        "Hello! Joplex is ready to assist you. 🤖";
-
-    speak("Hello! Joplex is ready to assist you.");
+} else if (
+    command.includes("hello") ||
+    command.includes("hi") ||
+    command.includes("hey") ||
+    command.includes("good evening") ||
+    command.includes("good afternoon")
+) {
 
     } else if (command.includes("time")) {
 

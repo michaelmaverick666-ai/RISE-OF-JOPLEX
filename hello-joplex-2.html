@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rise of Joplex</title>
+<meta name="color-scheme" content="light dark">
+<style>
+* { box-sizing: border-box; }
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: #0f1219;
+    color: #e8eaf0;
+    margin: 0;
+    padding: 28px 16px 60px;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3, h4, .brand, .btn {
+    font-family: "Courier New", ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+}
+
+h1 { font-size: 34px; margin: 0 0 12px; }
+h3 { font-size: 19px; margin: 0 0 14px; }
+h4 { font-size: 15px; margin: 18px 0 8px; color: #9aa4bb; }
+p { font-size: 17px; line-height: 1.6; margin: 8px 0; }
+
+.page { max-width: 640px; margin: 0 auto; }
+
+/* ---- Top bar ---- */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+.brand {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #00e5ff;
+    text-shadow: 0 0 10px rgba(0,229,255,.5);
+}
+
+/* ---- Hero ---- */
+.hero { text-align: center; margin-bottom: 28px; }
+.hero p { color: #b7bfd1; }
+
+/* ---- Panels ---- */
+.panel {
+    background: #111722;
+    border: 2px solid;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 22px;
+    text-align: center;
+}
+
+.accent-cyan   { border-color: #00e5ff; box-shadow: 0 0 18px rgba(0,229,255,.18); }
+.accent-cyan h2, .accent-cyan h3 { color: #00e5ff; }
+
+.accent-green  { border-color: #39ff88; box-shadow: 0 0 18px rgba(57,255,136,.18); }
+.accent-green h3 { color: #39ff88; }
+
+.accent-purple { border-color: #a855f7; box-shadow: 0 0 18px rgba(168,85,247,.18); }
+.accent-purple h3 { color: #a855f7; }
+
+.accent-gold   { border-color: #ffcc00; box-shadow: 0 0 18px rgba(255,204,0,.18); }
+.accent-gold h3 { color: #ffcc00; }
+
+.accent-orange { border-color: #ff7a00; box-shadow: 0 0 18px rgba(255,122,0,.18); }
+.accent-orange h3 { color: #ff7a00; }
+
+.accent-pink   { border-color: #ff3b6b; box-shadow: 0 0 18px rgba(255,59,107,.18); }
+.accent-pink h3 { color: #ff3b6b; }
+
+/* ---- Inputs ---- */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #2a3346;
+    background: #0b0f17;
+    color: #e8eaf0;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+input[type="text"]::placeholder { color: #6b7488; }
+input[type="text"]:focus { outline: none; border-color: #00e5ff; }
+
+/* ---- Buttons ---- */
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1.5px solid #3a4256;
+    background: transparent;
+    color: #e8eaf0;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 4px;
+    transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.btn:hover { border-color: #00e5ff; color: #00e5ff; }
+.btn:focus-visible { outline: 2px solid #00e5ff; outline-offset: 2px; }
+
+.btn-primary {
+    background: rgba(0,229,255,.12);
+    border-color: #00e5ff;
+    color: #00e5ff;
+}
+
+.btn-ghost { border-style: dashed; opacity: .8; }
+
+.btn-danger {
+    border-color: #ff3b6b;
+    color: #ff9fb3;
+    margin-top: 6px;
+}
+.btn-danger:hover { background: rgba(255,59,107,.12); color: #ff3b6b; }
+
+.btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+}
+
+/* ---- Readouts / lists ---- */
+.readout { min-height: 22px; font-weight: 600; }
+.history-list {
+    text-align: left;
+    max-width: 420px;
+    margin: 12px auto;
+    padding-left: 20px;
+    color: #ccd2e0;
+}
+.reset-wrap { text-align: center; margin: 8px 0 36px; }
+
+/* ---- Knowledge sections (wider, sit outside the narrow console column) ---- */
+.crispr-panel {
+    max-width: 1000px;
+    margin: 0 auto 32px;
+    padding: 30px;
+    text-align: left;
+}
+.crispr-panel h2 { text-align: center; font-size: 28px; margin-top: 0; }
+.crispr-panel > p:last-child { text-align: center; }
+
+/* LIGHT MODE */
+html.light {
+    background: white !important;
+    color: black !important;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light p,
+html.light li,
+html.light #status,
+html.light #clock,
+html.light #response,
+html.light #commandResponse {
+    color: black !important;
+}
+
+html.light input,
+html.light button {
+    background: #f2f2f2 !important;
+    color: black !important;
+    border: 1px solid #999 !important;
+}
+
+html.light body {
+    background: white !important;
+    color: black !important;
+}
+html {
+    color-scheme: dark;
+}
+
+html.light {
+    color-scheme: light;
+}
+/* ============================= */
+/* 🧠 JOPLEX KNOWLEDGE CORE */
+/* MISSION 059 */
+/* ============================= */
+
+.knowledge-core {
+    margin: 40px auto;
+    padding: 30px;
+    max-width: 1000px;
+    background: #0b0f17;
+    border: 2px solid #00e5ff;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,229,255,0.25);
+}
+
+.knowledge-core h2 {
+    color: #00e5ff;
+    font-size: 30px;
+    text-shadow: 0 0 12px #00e5ff;
+}
+
+.knowledge-intro {
+    color: #888;
+}
+
+.knowledge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.knowledge-card {
+    padding: 20px;
+    border-radius: 15px;
+    background: #111722;
+    border: 2px solid;
+}
+
+.knowledge-card h3 {
+    margin-top: 0;
+}
+
+.knowledge-card p,
+.knowledge-card li {
+    color: #ddd;
+    line-height: 1.6;
+}
+
+.cyan {
+    border-color: #00e5ff;
+}
+
+.cyan h3 {
+    color: #00e5ff;
+}
+
+.green {
+    border-color: #39ff88;
+}
+
+.green h3 {
+    color: #39ff88;
+}
+
+.purple {
+    border-color: #a855f7;
+}
+
+.purple h3 {
+    color: #a855f7;
+}
+
+.gold {
+    border-color: #ffcc00;
+}
+
+.gold h3 {
+    color: #ffcc00;
+}
+
+.orange {
+    border-color: #ff7a00;
+}
+
+.orange h3 {
+    color: #ff7a00;
+}
+
+.pink {
+    border-color: #ff3b6b;
+}
+
+.pink h3 {
+    color: #ff3b6b;
+}
+
+/* ===== Joplex Boot Screen ===== */
+#bootScreen{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#050816;
+    color:#00e5ff;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+#bootScreen h1{
+    font-size:40px;
+    margin:0;
+}
+
+#bootText{
+    margin-top:15px;
+    color:#39ff88;
+}
+#commandCentre{
+  background:#050816;
+  border:2px solid #00e5ff;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+  text-align:center;
+}
+
+#commandCentre h1{
+  color:#00e5ff;
+  text-shadow:0 0 10px #00e5ff;
+}
+
+#commandCentre p{
+  color:#39ff88;
+}
+
+#systemStatus{
+  margin-top:15px;
+  border-top:1px solid #00e5ff;
+  padding-top:10px;
+}
+
+body.booting {
+    overflow: hidden;
+}
+
+</style>
+</head>
+<body class="booting">
+
+<div id="commandCentre">
+  <h1>🚀 JOPLEX COMMAND CENTRE</h1>
+  <p>Mission Control • AI Core Online</p>
+
+  <div id="systemStatus">
+    <p>🟢 Status: ONLINE</p>
+    <p>🎯 Mission: 062</p>
+    <p>🧠 Memory: ACTIVE</p>
+    <p>🎤 Voice: READY</p>
+  </div>
+</div>
+
+<div id="bootScreen">
+    <h1>JOPLEX</h1>
+    <p id="bootText">Initializing...</p>
+</div>
+
+<div id="mainContent" style="display:none;">
+<div class="page">
+
+    <div class="topbar">
+        <span class="brand">JOPLEX</span>
+        <button id="themeToggle" class="btn" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </div>
+
+    <div class="hero">
+        <h1>Welcome to Joplex 🚀</h1>
+        <p>I am building Joplex one mission at a time.</p>
+        <button onclick="showMessage()" class="btn btn-primary">Activate Joplex</button>
+    </div>
+
+    <section class="panel accent-green">
+        <h3>👤 Identity</h3>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button onclick="greetUser()" class="btn">Greet Joplex</button>
+        <p id="response" class="readout"></p>
+    </section>
+
+    <section class="panel accent-purple">
+        <h3>💬 Command Console</h3>
+        <input type="text" id="commandInput" placeholder="Enter a command">
+        <div class="btn-row">
+            <button onclick="runCommand()" class="btn">Run Command</button>
+            <button onclick="startListening()" class="btn">🎙️ Speak</button>
+        </div>
+        <p id="commandResponse" class="readout"></p>
+        <h4>Command History</h4>
+        <ul id="commandHistory" class="history-list"></ul>
+        <button onclick="clearHistory()" class="btn btn-ghost">Clear History</button>
+    </section>
+
+    <section class="panel accent-gold">
+        <h3>🖥️ Joplex Command Center</h3>
+        <p id="joplexMode">Mode: Idle ⚪</p>
+        <p id="lastCommand">Last command: None</p>
+        <p id="commandCount">Commands this session: 0</p>
+        <p id="status">Joplex is offline 🔴</p>
+        <p id="clock">Time loading...</p>
+        <button onclick="activateJoplex()" class="btn">Activate System</button>
+    </section>
+
+    <section class="panel accent-orange">
+        <h3>⚡ Quick Actions</h3>
+        <div class="btn-row">
+            <button onclick="quickCommand('system report')" class="btn">📊 System Report</button>
+            <button onclick="quickCommand('wake up joplex')" class="btn">🤖 Wake Up</button>
+            <button onclick="quickCommand('motivate')" class="btn">🔥 Motivate Me</button>
+        </div>
+    </section>
+
+    <section class="panel accent-pink">
+        <h3>🎯 Mission Tracker</h3>
+        <div id="missionCard">
+            <p id="missionNumber">Mission: 062</p>
+            <p id="missionStatus">Status: In Progress 🟡</p>
+            <button onclick="completeMission()" class="btn">✅ Complete Mission</button>
+        </div>
+    </section>
+
+    <div class="reset-wrap">
+        <button onclick="resetJoplex()" class="btn btn-danger">Reset Joplex Memory</button>
+    </div>
+
+</div>
+
+<section class="panel accent-cyan crispr-panel">
+    <h2 style="color:#00e5ff;">🧬 CRISPR</h2>
+
+    <p>
+        <strong style="color:#39ff88;">CRISPR</strong>
+        stands for Clustered Regularly Interspaced Short Palindromic Repeats.
+    </p>
+
+    <p>
+        CRISPR is a family of biological systems that can be used
+        to target specific DNA sequences.
+    </p>
+
+    <h3 style="color:#a855f7;">🔬 Key Components</h3>
+
+    <p>
+        <strong style="color:#ffcc00;">Cas9:</strong>
+        An enzyme that can cut DNA.
+    </p>
+
+    <p>
+        <strong style="color:#ff7a00;">Guide RNA:</strong>
+        Helps direct Cas9 toward a particular DNA sequence.
+    </p>
+
+    <p>
+        <strong style="color:#39ff88;">DNA:</strong>
+        The molecule that stores genetic information.
+    </p>
+
+    <h3 style="color:#ff3b6b;">🧠 Simple Example</h3>
+
+    <p>
+        Think of DNA like a huge book.
+        The guide RNA helps find the target,
+        while Cas9 acts like molecular scissors.
+    </p>
+
+    <h3 style="color:#00e5ff;">🌍 Why It Matters</h3>
+
+    <p>
+        CRISPR is important in biological research,
+        medicine, agriculture, and the study of genetic diseases.
+    </p>
+
+    <p style="color:#888;">
+        Joplex Knowledge Base — Biotechnology
+    </p>
+</section>
+
+<!-- 🧠 JOPLEX KNOWLEDGE CORE -->
+
+<section id="knowledgeCore" class="knowledge-core">
+
+    <h2>🧠 JOPLEX KNOWLEDGE CORE</h2>
+
+    <p class="knowledge-intro">
+        A growing collection of knowledge powering the Rise of Joplex.
+    </p>
+
+    <div class="knowledge-grid">
+
+        <div class="knowledge-card cyan">
+            <h3>🤖 Identity</h3>
+            <p>
+                Joplex is my AI project.<br>
+                Joplex is being built one mission at a time.
+            </p>
+        </div>
+
+        <div class="knowledge-card green">
+            <h3>🎯 Goal</h3>
+            <p>
+                The goal of Rise of Joplex is to build
+                an increasingly capable personal AI system.
+            </p>
+        </div>
+
+        <div class="knowledge-card purple">
+            <h3>💻 Development</h3>
+            <p>
+                Joplex is being developed as a web-based
+                project using HTML, CSS and JavaScript.
+            </p>
+        </div>
+
+        <div class="knowledge-card gold">
+            <h3>🧠 Learning</h3>
+            <p>
+                Joplex learns through missions,
+                experiments, research and new features.
+            </p>
+        </div>
+
+        <div class="knowledge-card orange">
+            <h3>🚀 Vision</h3>
+            <p>
+                The long-term vision is to make Joplex
+                a powerful personal AI assistant.
+            </p>
+        </div>
+
+        <div class="knowledge-card pink">
+            <h3>📚 Knowledge Categories</h3>
+
+            <ul>
+                <li>🤖 Artificial Intelligence</li>
+                <li>💻 Programming</li>
+                <li>🌐 Web Development</li>
+                <li>📊 Finance</li>
+                <li>🔬 Science</li>
+                <li>🌍 General Knowledge</li>
+                <li>🚀 Technology</li>
+            </ul>
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+<script>
+const DEFAULT_MISSION = "062"; // single source of truth for the fallback mission number
+
+function showMessage() {
+    let count = Number(localStorage.getItem("activations")) || 0;
+    count++;
+
+    localStorage.setItem("activations", count);
+
+    alert("Joplex Activated! 🚀\nActivation #" + count);
+}
+
+function greetUser() {
+    let name = document.getElementById("nameInput").value.trim();
+
+    if (name) {
+
+        localStorage.setItem("joplexName", name);
+
+        let greeting =
+            "Welcome, " + name + "! I am Joplex. I'm ready to continue our journey. 🚀🤖";
+
+        document.getElementById("response").textContent = greeting;
+
+        alert(greeting);
+
+        speak(greeting);
+
+    } else {
+
+        let message =
+            "Please enter your name first.";
+
+        document.getElementById("response").textContent = message;
+
+        speak(message);
+    }
+}
+window.onload = function () {
+    let savedName = localStorage.getItem("joplexName");
+
+    if (savedName) {
+        document.getElementById("nameInput").value = savedName;
+
+        let welcomeMessage =
+            "Welcome back, " + savedName + "! Joplex is online and ready. 🤖🚀";
+
+        document.getElementById("response").textContent = welcomeMessage;
+        speak(welcomeMessage);
+    }
+};
+window.addEventListener("load", function () {
+
+    let mission = currentMission;
+    let status = currentMissionStatus;
+
+    if (mission) {
+        document.getElementById("missionNumber").textContent =
+            "Mission: " + mission;
+    }
+
+    if (status) {
+        document.getElementById("missionStatus").textContent =
+            "Status: " + status;
+    }
+
+    savedHistory.forEach(function (command) {
+        let item = document.createElement("li");
+        item.textContent = command;
+        document.getElementById("commandHistory").appendChild(item);
+    });
+
+});
+function activateJoplex() {
+    let status = document.getElementById("status");
+
+    status.textContent = "Joplex is online 🟢";
+    speak("Joplex is online.");
+}
+
+function resetJoplex() {
+    localStorage.removeItem("joplexName");
+
+    document.getElementById("nameInput").value = "";
+    document.getElementById("response").textContent =
+        "Joplex memory has been reset. 🧠";
+
+    speak("Joplex memory has been reset.");
+}
+
+function updateClock() {
+    let now = new Date();
+    let time = now.toLocaleTimeString();
+
+    document.getElementById("clock").textContent =
+        "Current time: " + time;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-GB";
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
+}
+function typeResponse(element, text) {
+    element.textContent = "";
+
+    let i = 0;
+
+    function typeNext() {
+        if (i >= text.length) {
+            return;
+        }
+
+        element.textContent = text.substring(0, i + 1);
+        i++;
+
+        setTimeout(typeNext, 50);
+    }
+
+    typeNext();
+}
+let joplexLights = false;
+let commandCounter = 0;
+let savedHistory = JSON.parse(localStorage.getItem("joplexHistory")) || [];
+
+let currentMission =
+    localStorage.getItem("joplexCurrentMission") || DEFAULT_MISSION;
+
+let currentMissionStatus =
+    localStorage.getItem("joplexMissionStatus") || "In Progress 🟡";
+
+function runCommand() {
+    let command = document.getElementById("commandInput").value.toLowerCase().trim();
+    let response = document.getElementById("commandResponse");
+    let history = document.getElementById("commandHistory");
+
+    document.getElementById("joplexMode").textContent =
+        "Mode: Processing 🟡";
+
+    if (command.startsWith("repeat ")) {
+
+        let message = command.substring(7).trim();
+
+        response.textContent = message
+            ? "🔁 " + message
+            : "Tell me what you want me to repeat.";
+
+    } else if (command.includes("motivate")) {
+
+        let messages = [
+            "Keep going. Small progress is still progress. 💪",
+            "Build today what your future self will thank you for. 🚀",
+            "One mission at a time. Joplex is growing. 🤖",
+            "You don't need to know everything. You just need to keep learning. 🧠"
+        ];
+
+        response.textContent =
+            messages[Math.floor(Math.random() * messages.length)];
+
+} else if (command.includes("hello")) {
+
+    response.textContent =
+        "Hello! Joplex is ready to assist you. 🤖";
+
+    speak("Hello! Joplex is ready to assist you.");
+
+    } else if (command.includes("time")) {
+
+        response.textContent =
+            "The current time is " +
+            new Date().toLocaleTimeString() +
+            " ⏰";
+} else if (command.includes("current mission") || command.includes("show mission")) {
+
+    const mission = localStorage.getItem("joplexCurrentMission") || DEFAULT_MISSION;
+
+    response.textContent = "Current mission: " + mission + ".";
+
+    } else if (command.includes("date")) {
+
+        response.textContent =
+            "📅 Today is " +
+            new Date().toLocaleDateString();
+
+    } else if (command.includes("day")) {
+
+        response.textContent =
+            "📅 Today is " +
+            new Date().toLocaleDateString("en-US", {
+                weekday: "long"
+            }) + ".";
+
+} else if (command.includes("what is my mission status")) {
+
+    let status =
+        localStorage.getItem("joplexMissionStatus");
+
+    response.textContent =
+        status
+            ? "Your mission status is: " + status + " 🚀"
+            : "I don't know your mission status yet.";
+
+    } else if (
+        command.includes("status") ||
+        command.includes("online")
+    ) {
+
+        response.textContent =
+            "Joplex systems are online 🟢";
+
+    } else if (command.startsWith("save ")) {
+
+        let memory =
+            command.replace("save ", "").trim();
+
+        if (memory) {
+            localStorage.setItem("joplexMemory", memory);
+            response.textContent =
+                "🧠 Memory saved: " + memory;
+        } else {
+            response.textContent =
+                "Tell me what you want me to save.";
+        }
+
+    } else if (command.startsWith("remember ")) {
+
+        let memory =
+            command.replace("remember ", "").trim();
+
+        if (memory) {
+            localStorage.setItem("joplexMemory", memory);
+            response.textContent =
+                "🧠 I'll remember: " + memory;
+        } else {
+            response.textContent =
+                "Tell me what you want me to remember.";
+        }
+
+    } else if (command === "show memory") {
+
+        let memory =
+            localStorage.getItem("joplexMemory");
+
+        response.textContent = memory
+            ? "🧠 Joplex remembers: " + memory
+            : "🧠 Joplex has no saved memory yet.";
+
+    } else if (command === "forget memory") {
+
+        localStorage.removeItem("joplexMemory");
+
+        response.textContent =
+            "🗑️ Memory cleared.";
+
+    } else if (command.includes("who are you")) {
+
+        response.textContent =
+            "I am Joplex, your AI project. 🤖🚀";
+
+} else if (command === "when was joplex created") {
+
+    response.textContent =
+    "Joplex was created during the Rise of Joplex journey. 🤖🚀";
+
+} else if (command === "what is joplex") {
+    response.textContent =
+    "Joplex is my AI project. I am building it one mission at a time. 🤖🚀";
+
+} else if (command === "who created joplex") {
+    response.textContent =
+    "Michael Maverick created Joplex during the Rise of Joplex journey. 🚀🤖";
+
+} else if (command === "what version are you") {
+    response.textContent =
+    "I am Joplex Version 0.6.2. 🚀";
+
+    } else if (command.includes("what is my name")) {
+
+        let name =
+            localStorage.getItem("joplexName");
+
+        response.textContent = name
+            ? "Your name is " + name + ". 👤🤖"
+            : "I don't know your name yet.";
+
+    } else if (command.includes("what is my goal")) {
+
+        response.textContent =
+            "Your goal is to build Joplex. 🚀";
+
+    } else if (command.includes("what is my mission")) {
+
+    let mission =
+        localStorage.getItem("joplexCurrentMission") || currentMission;
+
+    response.textContent =
+        "Your current mission is Mission " + mission + ". 🚀";
+
+} else if (command.includes("what do i like")) {
+
+    response.textContent =
+        "You like building Joplex and learning new things. 🚀🧠";
+
+} else if (command.includes("what is crispr")) {
+    response.textContent =
+    "CRISPR is a technology used to target and modify specific DNA sequences. 🧬";
+
+} else if (command.includes("what is dna")) {
+    response.textContent =
+    "DNA stands for Deoxyribonucleic Acid. It stores the biological instructions used by living organisms. 🧬";
+
+} else if (command.includes("what is a gene")) {
+    response.textContent =
+    "A gene is a section of DNA that contains biological information used by cells. 🧬";
+
+} else if (command.includes("what is a mutation")) {
+    response.textContent =
+    "A mutation is a change in the DNA sequence. Mutations can happen naturally or be caused by environmental factors. 🧬";
+
+} else if (command.includes("what is a protein")) {
+    response.textContent =
+    "A protein is a molecule made from amino acids. Proteins perform many important functions in cells and living organisms. 🧬";
+
+} else if (command.includes("what is rna")) {
+    response.textContent =
+    "RNA stands for Ribonucleic Acid. It helps cells use genetic information and plays an important role in making proteins. 🧬";
+
+} else if (command.includes("what are chromosomes")) {
+    response.textContent =
+    "Chromosomes are structures made of DNA and proteins that carry genetic information inside cells. 🧬";
+
+} else if (command.includes("what is a cell")) {
+    response.textContent =
+    "A cell is the basic structural and functional unit of living organisms. 🧫";
+
+} else if (command.includes("what is a genome")) {
+    response.textContent =
+    "A genome is the complete set of genetic material in an organism. 🧬";
+
+} else if (command.includes("what is inheritance")) {
+    response.textContent =
+    "Genetic inheritance is the process by which genetic information is passed from parents to their offspring. 🧬";
+
+} else if (command.includes("what is genetics")) {
+    response.textContent =
+    "Genetics is the branch of biology that studies genes, heredity, and variation in living organisms. 🧬";
+
+} else if (command.includes("what is energy")) {
+    response.textContent =
+    "Energy is the capacity to cause change or do work. It can exist in forms such as kinetic, potential, thermal, chemical, and electrical energy. ⚡";
+
+} else if (command.includes("what is force")) {
+    response.textContent =
+    "Force is a push or pull that can change an object's motion. Force is measured in newtons. 💪";
+
+} else if (command.includes("what is acceleration")) {
+    response.textContent =
+    "Acceleration is the rate at which an object's velocity changes over time. 🚀";
+
+} else if (command.includes("what is electricity")) {
+    response.textContent =
+    "Electricity involves the movement or presence of electric charge. It powers many devices and systems used in everyday life. ⚡";
+
+} else if (command.includes("what is a wave")) {
+    response.textContent =
+    "A wave is a disturbance that transfers energy from one place to another. Waves can travel through matter or, in some cases, through empty space. 🌊";
+
+} else if (command.includes("what is gravity")) {
+    response.textContent =
+    "Gravity is the attraction between objects with mass. On Earth, gravity pulls objects toward the ground. 🌍";
+
+} else if (command.includes("what is an atom")) {
+    response.textContent =
+    "An atom is the basic unit of ordinary matter. It contains a nucleus made of protons and neutrons, with electrons around it. ⚛️";
+
+} else if (command.includes("what is an element")) {
+    response.textContent =
+    "An element is a pure substance made of atoms with the same number of protons. Examples include oxygen, carbon, and gold. 🧲";
+
+} else if (command.includes("what is a molecule")) {
+    response.textContent =
+    "A molecule is a group of two or more atoms held together by chemical bonds. 🔗";
+
+} else if (command.includes("what is a compound")) {
+    response.textContent =
+    "A compound is a substance made when atoms of two or more different elements chemically combine. 🧪";
+
+} else if (command.includes("what is a chemical reaction")) {
+    response.textContent =
+    "A chemical reaction is a process in which substances are transformed into new substances through changes in chemical bonds. ⚗️";
+
+} else if (command.includes("what is ph")) {
+    response.textContent =
+    "pH is a scale used to describe how acidic or basic an aqueous solution is. The scale commonly ranges from 0 to 14. 🧪";
+
+} else if (command.includes("what is a star")) {
+    response.textContent =
+    "A star is a huge, hot ball of plasma that produces energy through nuclear fusion in its core. ☀️";
+
+} else if (command.includes("what is a planet")) {
+    response.textContent =
+    "A planet is a large celestial body that orbits a star or, in some definitions, another planetary body. Planets do not produce their own visible light like stars. 🪐";
+
+} else if (command.includes("what is a moon")) {
+    response.textContent =
+    "A moon is a natural satellite that orbits a planet or another celestial body. Earth's Moon is our planet's natural satellite. 🌙";
+
+} else if (command.includes("what is a galaxy")) {
+    response.textContent =
+    "A galaxy is a vast system containing stars, gas, dust, and dark matter held together by gravity. 🌌";
+
+} else if (command.includes("what is a black hole")) {
+    response.textContent =
+    "A black hole is a region of spacetime where gravity is so strong that nothing, including light, can escape from within its event horizon. 🕳️";
+
+} else if (command.includes("what is the solar system")) {
+    response.textContent =
+    "The Solar System is the Sun and the objects that orbit it, including planets, dwarf planets, moons, asteroids, and comets. ☀️🪐";
+
+} else if (command.includes("what is an algorithm")) {
+    response.textContent =
+    "An algorithm is a step-by-step set of instructions used to solve a problem or complete a task. 💻";
+
+} else if (command.includes("what is artificial intelligence") || command.includes("what is ai")) {
+    response.textContent =
+    "Artificial Intelligence, or AI, is technology that enables computers to perform tasks that can involve learning, reasoning, recognizing patterns, or understanding language. 🤖";
+
+} else if (command.includes("what is data")) {
+    response.textContent =
+    "Data is information that can be collected, stored, processed, and analyzed by people or computers. 📊";
+
+} else if (command.includes("what is programming")) {
+    response.textContent =
+    "Programming is the process of creating instructions that tell a computer what to do, usually by using a programming language. 👨‍💻";
+
+} else if (command.includes("what is the internet")) {
+    response.textContent =
+    "The Internet is a global network of interconnected computer networks that communicate using standardized protocols. 🌐";
+
+} else if (command.includes("what is cybersecurity")) {
+    response.textContent =
+    "Cybersecurity is the practice of protecting computers, networks, systems, and data from unauthorized access, misuse, damage, or disruption. 🔐";
+
+} else if (command === "show knowledge") {
+    response.textContent =
+    "Joplex Knowledge Core is online. 🧠⚡\n\n" +
+    "Identity: Joplex\n" +
+    "Goal: Build an evolving personal AI\n" +
+    "Development: Web development and JavaScript\n" +
+    "Learning: AI, coding, technology and problem solving\n" +
+    "Vision: A powerful personal AI system\n" +
+    "Knowledge Categories: Technology, AI, science, finance and general knowledge.";
+
+} else if (command.includes("introduce me")) {
+
+    let name =
+        localStorage.getItem("joplexName");
+
+    response.textContent = name
+        ? "This is " + name +
+          ". He is building Joplex one mission at a time. 🚀"
+        : "I don't know your name yet.";
+
+} else if (command.includes("good morning")) {
+
+    response.textContent =
+        "Good morning! Let's make today another step forward for Joplex. ☀️🚀";
+
+} else if (command.includes("i am back")) {
+
+    let name =
+        localStorage.getItem("joplexName");
+
+    if (name) {
+
+        let greetings = [
+            "Welcome back, " + name + "! 🤖🚀",
+            "Good to see you again, " + name + "! 🧠🔥",
+            "Joplex is ready for you, " + name + "! ⚡🤖"
+        ];
+
+        response.textContent =
+            greetings[Math.floor(Math.random() * greetings.length)];
+
+    } else {
+
+        response.textContent =
+            "Welcome back! I don't know your name yet.";
+
+    }
+
+    } else if (command.startsWith("countdown ")) {
+
+        let number =
+            parseInt(command.replace("countdown ", "").trim());
+
+        if (!isNaN(number) && number > 0 && number <= 100) {
+
+            let count = [];
+
+            for (let i = number; i >= 0; i--) {
+                count.push(i);
+            }
+
+            response.textContent =
+                "🚀 Countdown: " + count.join(", ");
+
+        } else {
+
+            response.textContent =
+                "Give me a number from 1 to 100.";
+        }
+
+    } else if (command.startsWith("count to ")) {
+
+        let number =
+            parseInt(command.replace("count to ", "").trim());
+
+        if (!isNaN(number) && number > 0 && number <= 100) {
+
+            let count = [];
+
+            for (let i = 1; i <= number; i++) {
+                count.push(i);
+            }
+
+            response.textContent =
+                "🔢 " + count.join(", ");
+
+        } else {
+
+            response.textContent =
+                "Please give me a number from 1 to 100.";
+        }
+
+    } else if (command.startsWith("choose ")) {
+
+        let choices =
+            command.replace("choose ", "").split(" or ");
+
+        if (choices.length >= 2) {
+
+            let randomChoice =
+                choices[Math.floor(Math.random() * choices.length)];
+
+            response.textContent =
+                "🤖 Joplex chooses: " + randomChoice;
+
+        } else {
+
+            response.textContent =
+                "Give me at least two choices using 'or'.";
+        }
+
+    } else if (command.includes("random number")) {
+
+        let number =
+            Math.floor(Math.random() * 100) + 1;
+
+        response.textContent =
+            "🎲 Your random number is " + number + "!";
+
+    } else if (
+        command.includes("roll a die") ||
+        command.includes("roll dice")
+    ) {
+
+        let dice =
+            Math.floor(Math.random() * 6) + 1;
+
+        response.textContent =
+            "🎲 The die rolled a " + dice + "!";
+
+    } else if (
+        command.includes("flip a coin") ||
+        command.includes("coin")
+    ) {
+
+        let result =
+            Math.random() < 0.5
+                ? "Heads 🪙"
+                : "Tails 🪙";
+
+        response.textContent =
+            "The coin landed on " + result;
+
+    } else if (command.includes("compliment")) {
+
+        let compliments = [
+            "You're doing something most people never do: you're actually building. 🔥",
+            "You're making progress every time you show up. Keep going! 🚀",
+            "Joplex is getting better because you keep improving it. 🤖🧠",
+            "You've come a long way since Mission 001. 💪🔥"
+        ];
+
+        response.textContent =
+            compliments[Math.floor(Math.random() * compliments.length)];
+
+    } else if (
+        command.includes("tell me a joke") ||
+        command === "joke"
+    ) {
+
+        let jokes = [
+            "Why did the computer go to the doctor? Because it had a virus! 😂🤖",
+            "Why was the JavaScript developer sad? Because they didn't know how to null their feelings? 😭💻",
+            "What do you call a computer that sings? A Dell-a! 🎤😂"
+        ];
+
+        response.textContent =
+            jokes[Math.floor(Math.random() * jokes.length)];
+
+    } else if (command.includes("how are you")) {
+
+        let replies = [
+            "I'm doing great! My systems are online and I'm ready to build. 🤖🚀",
+            "I'm feeling powerful! Let's keep building Joplex. 🔥",
+            "All systems are running smoothly. Thanks for asking! ⚡🤖"
+        ];
+
+        response.textContent =
+            replies[Math.floor(Math.random() * replies.length)];
+
+    } else if (command.includes("thank you")) {
+
+        response.textContent =
+            "You're welcome! 🤖❤️";
+
+    } else if (command.includes("goodbye")) {
+
+        response.textContent =
+            "Goodbye! Keep building. 🚀";
+
+    } else if (command.startsWith("calculate ")) {
+
+        let calculation =
+            command.replace("calculate ", "").trim();
+
+        if (/^[0-9+\-*/().%\s]+$/.test(calculation)) {
+
+            try {
+
+                let answer =
+                    Function('"use strict"; return (' + calculation + ')')();
+
+                response.textContent =
+                    "The answer is " + answer + ". 🧮🤖";
+
+            } catch (error) {
+
+                response.textContent =
+                    "I couldn't calculate that. 🤔";
+            }
+
+        } else {
+
+            response.textContent =
+                "I can only calculate simple math (numbers and + − × ÷ ( ) %). 🧮";
+        }
+
+    } else if (command === "clear") {
+
+        history.innerHTML = "";
+
+        response.textContent =
+            "🧹 Command history cleared.";
+
+    } else if (command === "lights on") {
+
+        joplexLights = true;
+
+        document.body.style.boxShadow =
+            "inset 0 0 120px rgba(255,255,180,0.35)";
+
+        response.textContent =
+            "💡 Joplex lights are now ON.";
+
+    } else if (command === "lights off") {
+
+        joplexLights = false;
+
+        document.body.style.boxShadow = "none";
+
+        response.textContent =
+            "🌑 Joplex lights are now OFF.";
+
+    } else if (command.includes("open mission")) {
+
+        response.textContent =
+            "Mission system ready. Awaiting your next mission. 🚀";
+
+    } else if (command.includes("system report")) {
+
+        response.textContent =
+            "All systems operational. Voice, memory, clock, and commands are online. 🟢";
+
+    } else if (command.includes("wake up joplex")) {
+
+        response.textContent =
+            "I'm awake. Ready for the next mission. 🤖⚡";
+
+    } else if (command.includes("help")) {
+
+        response.textContent =
+            "I can motivate you, tell jokes, remember things, tell the time and date, roll dice, flip coins, count, repeat messages, and more. 🚀";
+
+    } else {
+
+        response.textContent =
+            "I don't understand that command yet.";
+}
+    speak(response.textContent);
+
+commandCounter++;
+
+document.getElementById("lastCommand").textContent =
+    "Last command: " + command;
+
+document.getElementById("commandCount").textContent =
+    "Commands this session: " + commandCounter;
+
+    let item = document.createElement("li");
+    item.textContent = command;
+    history.appendChild(item);
+savedHistory.push(command);
+localStorage.setItem("joplexHistory", JSON.stringify(savedHistory));
+
+document.getElementById("joplexMode").textContent =
+    "Mode: Idle ⚪";
+}
+function quickCommand(command) {
+
+    document.getElementById("commandInput").value = command;
+
+    runCommand();
+}
+function completeMission() {
+    let mission =
+        localStorage.getItem("joplexCurrentMission") || DEFAULT_MISSION;
+
+    let nextMission =
+        String(parseInt(mission) + 1).padStart(3, "0");
+
+    document.getElementById("missionNumber").textContent =
+        "Mission: " + nextMission;
+
+    document.getElementById("missionStatus").textContent =
+        "Status: In Progress 🟡";
+
+    localStorage.setItem("joplexCurrentMission", nextMission);
+    localStorage.setItem("joplexMissionStatus", "In Progress 🟡");
+
+    speak(
+        "Mission " + mission +
+        " complete. Mission " + nextMission +
+        " is now active."
+    );
+}
+function toggleTheme() {
+    const html = document.documentElement;
+
+    html.classList.toggle("light");
+
+    const button =
+        document.getElementById("themeToggle");
+
+    if (html.classList.contains("light")) {
+
+        button.textContent = "🌙 Dark Mode";
+        localStorage.setItem("joplexTheme", "light");
+
+    } else {
+
+        button.textContent = "☀️ Light Mode";
+        localStorage.setItem("joplexTheme", "dark");
+    }
+}
+
+const savedTheme =
+    localStorage.getItem("joplexTheme");
+
+if (savedTheme === "light") {
+
+    document.documentElement.classList.add("light");
+
+    document.getElementById("themeToggle").textContent =
+        "🌙 Dark Mode";
+}
+
+function startListening() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+        alert(
+            "Speech recognition is not supported in this browser."
+        );
+
+        return;
+    }
+
+    const recognition =
+        new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+
+    recognition.onresult = function (event) {
+
+        const spoken =
+            event.results[0][0].transcript
+                .toLowerCase();
+
+        document.getElementById("commandInput").value = spoken.replace(/joe plex/gi, "Joplex");
+
+        runCommand();
+    };
+
+    recognition.onerror = function () {
+        document.getElementById("joplexMode").textContent =
+            "Mode: Idle ⚪";
+    };
+
+    recognition.onend = function () {
+        if (document.getElementById("joplexMode").textContent === "Mode: Listening 🎙️") {
+            document.getElementById("joplexMode").textContent =
+                "Mode: Idle ⚪";
+        }
+    };
+
+document.getElementById("joplexMode").textContent =
+    "Mode: Listening 🎙️";
+
+    recognition.start();
+}
+
+function clearHistory() {
+
+    document.getElementById("commandHistory")
+        .innerHTML = "";
+
+    savedHistory = [];
+
+    localStorage.removeItem("joplexHistory");
+}
+
+// ===== Joplex Boot Sequence =====
+const bootMessages = [
+  "Initializing Joplex...",
+  "Loading systems...",
+  "AI Core Online...",
+  "Welcome, Commander."
+];
+
+let bootIndex = 0;
+
+function bootSequence() {
+  const bootText = document.getElementById("bootText");
+
+  if (bootText) {
+    bootText.textContent = bootMessages[bootIndex];
+  }
+
+  bootIndex++;
+
+  if (bootIndex < bootMessages.length) {
+    setTimeout(bootSequence, 1000);
+  } else {
+    setTimeout(() => {
+      document.getElementById("bootScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+      document.body.classList.remove("booting");
+    }, 800);
+  }
+}
+
+window.addEventListener("load", bootSequence);
+
+</script>
+</body>
+</html>

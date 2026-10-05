@@ -1126,6 +1126,17 @@ if (
   speak(response.textContent);
   return;
 }
+
+if (
+  command.includes("emergency stop") ||
+  command.includes("stop joplex") ||
+  command.includes("halt joplex")
+) {
+  response.textContent =
+    "Joplex Emergency Stop: All powerful actions are paused. Human direction is required to continue.";
+  speak(response.textContent);
+  return;
+}
  document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 

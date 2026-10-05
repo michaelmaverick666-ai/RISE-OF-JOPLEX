@@ -1092,6 +1092,30 @@ if (
   speak(response.textContent);
   return;
 }
+
+if (
+  command.includes("audit") ||
+  command.includes("safety log")
+) {
+  let safetyLog = JSON.parse(
+    localStorage.getItem("joplexSafetyLog") || "[]"
+  );
+
+  safetyLog.push({
+    action: command,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem(
+    "joplexSafetyLog",
+    JSON.stringify(safetyLog)
+  );
+
+  response.textContent =
+    "Joplex Safety Audit: This safety event has been recorded locally.";
+  speak(response.textContent);
+  return;
+}
  document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 

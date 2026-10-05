@@ -1116,6 +1116,16 @@ if (
   speak(response.textContent);
   return;
 }
+
+if (
+  command.includes("safety status") ||
+  command.includes("security status")
+) {
+  response.textContent =
+    "Joplex Safety Status: ACTIVE. Safety Core, Permission Gate, Confirmation Core, and Safety Audit Log are enabled.";
+  speak(response.textContent);
+  return;
+}
  document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 

@@ -1139,6 +1139,18 @@ if (
   speak(response.textContent);
   return;
 }
+
+if (
+  command.includes("unlock joplex") ||
+  command.includes("release safety lock")
+) {
+  localStorage.removeItem("joplexSafetyLock");
+
+  response.textContent =
+    "Joplex Safety Lock: RELEASED by human command. Normal operation may resume.";
+  speak(response.textContent);
+  return;
+}
  document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 

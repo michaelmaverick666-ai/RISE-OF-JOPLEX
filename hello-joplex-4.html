@@ -1070,7 +1070,18 @@ if (
   speak(response.textContent);
   return;
 }
-    document.getElementById("joplexMode").textContent =
+
+ if (
+  command.includes("permission") ||
+  command.includes("authorize") ||
+  command.includes("approval")
+) {
+  response.textContent =
+    "Joplex Permission Gate: I will ask for human approval before taking powerful or irreversible actions.";
+  speak(response.textContent);
+  return;
+}  
+ document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 
     if (command.startsWith("repeat ")) {

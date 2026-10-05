@@ -1132,8 +1132,10 @@ if (
   command.includes("stop joplex") ||
   command.includes("halt joplex")
 ) {
+  localStorage.setItem("joplexSafetyLock", "true");
+
   response.textContent =
-    "Joplex Emergency Stop: All powerful actions are paused. Human direction is required to continue.";
+    "Joplex Emergency Stop: Safety Lock ACTIVE. Powerful actions are paused until human direction is provided.";
   speak(response.textContent);
   return;
 }

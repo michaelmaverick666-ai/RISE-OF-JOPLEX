@@ -1080,7 +1080,18 @@ if (
     "Joplex Permission Gate: I will ask for human approval before taking powerful or irreversible actions.";
   speak(response.textContent);
   return;
-}  
+} 
+ 
+if (
+  command.includes("confirm") ||
+  command.includes("execute") ||
+  command.includes("proceed")
+) {
+  response.textContent =
+    "Joplex Confirmation Core: Action paused. Human confirmation is required before proceeding.";
+  speak(response.textContent);
+  return;
+}
  document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 

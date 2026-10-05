@@ -1059,6 +1059,17 @@ function runCommand() {
     let response = document.getElementById("commandResponse");
     let history = document.getElementById("commandHistory");
 
+if (
+  command.includes("safety") ||
+  command.includes("dangerous") ||
+  command.includes("risk") ||
+  command.includes("control")
+) {
+  response.textContent =
+    "Joplex Safety Core: Michael remains in control. Powerful actions require permission, verification, and human oversight.";
+  speak(response.textContent);
+  return;
+}
     document.getElementById("joplexMode").textContent =
         "Mode: Processing 🟡";
 

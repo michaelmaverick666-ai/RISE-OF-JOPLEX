@@ -1123,9 +1123,20 @@ function kbAnswer(c) {
     }
     let m = c.match(/^topics (?:in|about|on) (.+)$/);
     if (m) {
-        const key = Object.keys(KB_META).find(k => k === m[1].trim() || KB_META[k][2].toLowerCase().includes(m[1].trim()));
-        return key ? KB_META[key][2] + ": " + KB.filter(e => e.c === key).map(kbTitle).join(", ") + "." : null;
+    const key = Object.keys(KB_META).find(k =>
+        k === m[1].trim() ||
+        KB_META[k][2].toLowerCase().includes(m[1].trim())
+    );
+
+    if (!key) {
+        return "I don't have a knowledge category called " + m[1].trim() + " yet.";
     }
+
+    const topics = KB.filter(e => e.c === key).map(kbTitle);
+
+    return KB_META[key][2] + " (" + topics.length + " topics):\n" +
+        topics.map((topic, i) => (i + 1) + ". " + topic).join("\n");
+}
     if (/^(wealth|savings) (report|status)$/.test(c)) {
         const w = store.json("joplexWealth", {}), g = parseFloat(w.goalAmount), v = parseFloat(w.currentSavings) || 0;
         return g > 0 ? "Wealth Core: " + fmtMoney(v) + " of " + fmtMoney(g) + " saved (" + Math.min(100, v / g * 100).toFixed(0) + "%)."

@@ -1143,15 +1143,22 @@ function kbAnswer(c) {
                      : "No savings goal set yet. Use the Wealth Core panel.";
     }
 if (c.startsWith("search ")) {
-    const query = c.replace("search ", "").trim();
+    const query = c.replace("search ", "").trim().toLowerCase();
 
     if (!query) return "Tell me what you want me to search for.";
 
     const results = KB.filter(e =>
+        kbTitle(e).toLowerCase().includes(query) ||
         e.k.some(k => k.toLowerCase().includes(query)) ||
-        e.a.toLowerCase().includes(query) ||
-        kbTitle(e).toLowerCase().includes(query)
-    );
+        e.a.toLowerCase().includes(query)
+    ).sort((a, b) => {
+        const aTitle = kbTitle(a).toLowerCase().includes(query);
+        const bTitle = kbTitle(b).toLowerCase().includes(query);
+
+        if (aTitle && !bTitle) return -1;
+        if (!aTitle && bTitle) return 1;
+        return 0;
+    });
 
     if (!results.length) {
         return "I couldn't find any knowledge matching '" + query + "'.";

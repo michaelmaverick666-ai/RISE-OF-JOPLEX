@@ -1142,6 +1142,26 @@ function kbAnswer(c) {
         return g > 0 ? "Wealth Core: " + fmtMoney(v) + " of " + fmtMoney(g) + " saved (" + Math.min(100, v / g * 100).toFixed(0) + "%)."
                      : "No savings goal set yet. Use the Wealth Core panel.";
     }
+if (c.startsWith("search ")) {
+    const query = c.replace("search ", "").trim();
+
+    if (!query) return "Tell me what you want me to search for.";
+
+    const results = KB.filter(e =>
+        e.k.some(k => k.toLowerCase().includes(query)) ||
+        e.a.toLowerCase().includes(query) ||
+        kbTitle(e).toLowerCase().includes(query)
+    );
+
+    if (!results.length) {
+        return "I couldn't find any knowledge matching '" + query + "'.";
+    }
+
+    return "Knowledge search results for '" + query + "':\n" +
+        results.slice(0, 10).map((e, i) =>
+            (i + 1) + ". " + kbTitle(e)
+        ).join("\n");
+}
     m = c.match(/^(?:what(?:'s| is| are)|define|explain|tell me about)\s+(?:an? |the )?(.+?)\??$/);
     if (!m) return null;
     const e = KB_INDEX[m[1].trim()];

@@ -1162,9 +1162,26 @@ if (c.startsWith("search ")) {
             (i + 1) + ". " + kbTitle(e)
         ).join("\n");
 }
-    m = c.match(/^(?:what(?:'s| is| are)|define|explain|tell me about)\s+(?:an? |the )?(.+?)\??$/);
-    if (!m) return null;
-    const e = KB_INDEX[m[1].trim()];
+ m = c.match(/^(?:what(?:'s| is| are)|define|explain|tell me about)\s+(?:an? |the )?(.+?)\??$/);
+if (!m) return null;
+
+const query = m[1].trim().toLowerCase();
+let e = KB_INDEX[query];
+
+if (!e) {
+    e = KB.find(item =>
+        item.k.some(k => k.toLowerCase() === query) ||
+        kbTitle(item).toLowerCase() === query
+    );
+}
+
+if (!e) return "I don't have that topic in my Knowledge Core yet.";
+
+return KB_META[e.c][0] + " " + e.a +
+    (e.c === "finance" ? " (General education, not financial advice.)" : "") +
+    (KB_MEDICAL.has(e.k[0]) ? " (Educational only, not medical advice.)" : "") +
+    (e.w ? " 📍 See the " + KB_PANELS[e.w] + " panel." : "");
+    
     if (!e) return null;
     return KB_META[e.c][0] + " " + e.a + (e.c === "finance" ? " (General education, not financial advice.)" : "") + (KB_MEDICAL.has(e.k[0]) ? " (Educational only, not medical advice.)" : "") + (e.w ? " 📍 See the " + KB_PANELS[e.w] + " panel." : "");
 }

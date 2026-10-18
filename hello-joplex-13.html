@@ -1193,6 +1193,22 @@ return KB_META[e.c][0] + " " + e.a +
     return KB_META[e.c][0] + " " + e.a + (e.c === "finance" ? " (General education, not financial advice.)" : "") + (KB_MEDICAL.has(e.k[0]) ? " (Educational only, not medical advice.)" : "") + (e.w ? " 📍 See the " + KB_PANELS[e.w] + " panel." : "");
 }
 
+function joplexPlan(goal) {
+    const cleanGoal = String(goal || "").trim();
+
+    if (!cleanGoal) {
+        return "Tell me the goal you want to achieve.";
+    }
+
+    return "Joplex Goal Planner\n" +
+        "Goal: " + cleanGoal + "\n\n" +
+        "Step 1: Define what success looks like.\n" +
+        "Step 2: Identify the resources you have.\n" +
+        "Step 3: Break the goal into small tasks.\n" +
+        "Step 4: Complete the first practical task.\n" +
+        "Step 5: Review progress and adjust the plan.";
+}
+
 let kbCat = "all";
 function renderKB() {
     const q = document.getElementById("kbSearch").value.toLowerCase().trim();

@@ -1118,6 +1118,21 @@ function kbAnswer(c) {
     const pa = profileAnswer(c);
     if (pa) return pa;
     if (/^(list )?(topics|knowledge topics)$/.test(c)) {
+if (
+    c === "plan my learning" ||
+    c === "plan my learning path" ||
+    c === "learning plan" ||
+    c === "make me a learning plan"
+) {
+    return "🧠 Joplex Learning Plan:\n" +
+        "1. AI Foundations — understand AI and machine learning.\n" +
+        "2. Coding Foundations — HTML, CSS, JavaScript and programming logic.\n" +
+        "3. Cybersecurity — learn security fundamentals and safe defensive practices.\n" +
+        "4. Data & APIs — learn data, JSON, APIs and how systems communicate.\n" +
+        "5. Finance — build financial literacy, budgeting and risk management.\n" +
+        "6. Advanced Joplex — reasoning, memory, verification, planning and tool systems.\n\n" +
+        "Recommended approach: learn one subject at a time, practise it, then build something with it. 🚀";
+}
         return "Joplex knows " + KB.length + " topics: " + Object.keys(KB_META).map(k =>
             KB_META[k][2] + " (" + KB.filter(e => e.c === k).length + ")").join(", ") + ". Say 'topics in finance' to list one.";
     }

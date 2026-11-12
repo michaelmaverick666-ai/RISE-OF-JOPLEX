@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rise of Joplex 21</title>
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ===== 1. Design tokens — Rose & Butterfly ===== */
+:root{
+  --void:#140818; --surface:#1d0d22; --raised:#28122f; --line:#3d1f46; --line-soft:#2a1530;
+  --ink:#fbe9f4; --muted:#c79bb8; --signal:#ff5fa2; --danger:#ff3b6b; --ok:#7dffb0;
+  --accent:var(--signal);
+  --c-rose:#ff5fa2; --c-blossom:#ff8fc4; --c-magenta:#e040fb; --c-lilac:#c084fc; --c-gold:#ffd166; --c-peach:#ff9e7a;
+  --panel-bg:rgba(45,18,52,.55); --blur:blur(16px) saturate(140%);
+  --f-display:"Orbitron","Segoe UI",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px; --nav-h:66px;
+  --glow:0 0 22px rgba(255,95,162,.35);
+}
+html.light{
+  --void:#fff3f8; --surface:#ffffff; --raised:#fff0f6; --line:#ffc2dd; --line-soft:#ffe0ee;
+  --ink:#3a0f2a; --muted:#8a4d6e; --signal:#e0207a; --danger:#c4204a; --ok:#0f7a3d;
+  --c-rose:#e0207a; --c-blossom:#ff6fae; --c-magenta:#a21caf; --c-lilac:#7c3aed; --c-gold:#b45309; --c-peach:#c2410c;
+  --panel-bg:rgba(255,255,255,.62); --glow:0 0 18px rgba(224,32,122,.22);
+}
+html.noglass{ --panel-bg:var(--surface); --blur:none; }
+.accent-rose{--accent:var(--c-rose)} .accent-blossom{--accent:var(--c-blossom)} .accent-magenta{--accent:var(--c-magenta)}
+.accent-lilac{--accent:var(--c-lilac)} .accent-gold{--accent:var(--c-gold)} .accent-peach{--accent:var(--c-peach)}
+
+/* ===== 2. Base ===== */
+*{box-sizing:border-box}
+html{color-scheme:dark light;scroll-padding-top:12px}
+html.light{color-scheme:light}
+body{margin:0;min-height:100vh;background:var(--void);color:var(--ink);font:16px/1.55 var(--f-body);
+  -webkit-text-size-adjust:100%;padding-top:env(safe-area-inset-top,0);overflow-x:hidden}
+body.booting,body.pinlocked{overflow:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background:radial-gradient(ellipse 90% 60% at 12% -10%,rgba(255,95,162,.18),transparent 60%),
+             radial-gradient(ellipse 80% 55% at 90% 110%,rgba(192,132,252,.16),transparent 60%),
+             var(--void)}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;line-height:1.25;margin:0 0 .6em;color:var(--ink)}
+h2{font-size:1.25rem} h3{font-size:1.05rem} h4{font-size:.9rem;margin:1.4em 0 .6em;color:var(--muted);font-weight:500}
+p{margin:0 0 .8em} ul{margin:0}
+a{color:var(--signal);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.hidden,[hidden]{display:none!important}
+
+/* ===== 3. Butterfly background layer ===== */
+#butterflyField{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
+.bfly{position:absolute;opacity:.5;will-change:transform;filter:drop-shadow(0 0 8px rgba(255,95,162,.6))}
+.bfly svg{display:block;animation:flap 0.6s ease-in-out infinite alternate;transform-origin:center}
+@keyframes flap{from{transform:scaleX(1)}to{transform:scaleX(.55)}}
+@keyframes floatUp{
+  0%{transform:translate3d(0,20vh,0) rotate(0deg)}
+  50%{transform:translate3d(30px,-40vh,0) rotate(12deg)}
+  100%{transform:translate3d(-20px,-110vh,0) rotate(-8deg)}
+}
+html.light .bfly{opacity:.35}
+
+/* ===== 4. Command Centre strip ===== */
+#commandCentre{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;max-width:1120px;margin:0 auto;
+  padding:14px 18px;border-bottom:1px solid var(--line)}
+#commandCentre h1{font-size:.95rem;letter-spacing:.14em;margin:0;display:flex;align-items:center;gap:10px;color:var(--signal)}
+#commandCentre h1::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2.4s ease-out infinite}
+#commandCentre>p{margin:0;color:var(--muted);font-size:.85rem}
+#systemStatus{display:flex;gap:6px 8px;flex-wrap:wrap;margin-left:auto}
+#systemStatus p{margin:0;padding:3px 10px;border:1px solid var(--line);border-radius:99px;background:var(--panel-bg);font:.8rem var(--f-data);color:var(--ink);max-width:100%;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(125,255,176,.6)}80%,100%{box-shadow:0 0 0 9px rgba(125,255,176,0)}}
+
+/* ===== 5. App shell ===== */
+.app{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:0;padding:0 14px calc(var(--nav-h) + 28px + env(safe-area-inset-bottom,0))}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-template-columns:repeat(7,1fr);
+  padding:0 0 env(safe-area-inset-bottom,0);background:var(--surface);border-top:1px solid var(--line)}
+.nav button{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  min-height:var(--nav-h);cursor:pointer;color:var(--muted);font:500 .72rem var(--f-body);border-top:3px solid transparent}
+.nav button span{font-size:1.25rem;line-height:1}
+.nav button[aria-current="page"]{color:var(--signal);border-top-color:var(--signal);background:var(--raised)}
+.nav button:focus-visible{outline:2px solid var(--signal);outline-offset:-4px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 6px}
+.topbar .brand{font:700 1.05rem var(--f-display);letter-spacing:.18em;color:var(--signal);text-shadow:var(--glow)}
+.topbar .tools{display:flex;gap:8px;flex-wrap:wrap}
+.module{padding-top:8px;min-width:0}
+.module-head{margin:10px 0 18px}
+.module-head h2{margin:0 0 4px}
+.module-head p{margin:0;color:var(--muted);max-width:60ch}
+.grid-2{display:grid;gap:14px}
+@media(min-width:860px){
+  .app{grid-template-columns:190px minmax(0,1fr);gap:0 28px;padding-bottom:48px}
+  .nav{position:sticky;top:0;align-self:start;grid-template-columns:1fr;border:0;background:none;padding:18px 0;height:max-content}
+  .nav button{flex-direction:row;justify-content:flex-start;gap:12px;min-height:46px;padding:0 14px;border-top:0;border-left:3px solid transparent;font-size:.95rem;border-radius:0 var(--r) var(--r) 0}
+  .nav button[aria-current="page"]{border-left-color:var(--signal);background:var(--panel-bg);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
+  .stage{grid-column:2}
+  .grid-2{grid-template-columns:1fr 1fr}
+}
+
+/* ===== 6. Glass panels with butterfly accent ===== */
+.panel,.knowledge-core,.knowledge-card{
+  position:relative;
+  background:var(--panel-bg);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--r);padding:20px;margin:0 0 14px;text-align:left;
+  box-shadow:0 6px 24px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.06);
+  transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1),border-color .2s
+}
+html.light .panel,html.light .knowledge-core,html.light .knowledge-card{box-shadow:0 6px 24px rgba(224,32,122,.08),inset 0 1px 0 rgba(255,255,255,.6)}
+.panel::after,.knowledge-core::after{
+  content:"";position:absolute;top:10px;right:12px;width:18px;height:18px;opacity:.5;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ff5fa2' d='M12 12c-2-4-5-6-8-5 0 4 3 7 8 5zM12 12c2-4 5-6 8-5 0 4-3 7-8 5zM12 12c-1 4-3 7-6 8 1-4 3-7 6-8zM12 12c1 4 3 7 6 8-1-4-3-7-6-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.panel>h3:first-child,.knowledge-core>h2:first-child{display:flex;align-items:center;gap:8px;color:var(--accent)}
+.knowledge-intro,.core-note{color:var(--muted);font-size:.9rem;max-width:62ch}
+.panel p{max-width:68ch}
+.readout{min-height:1.4em;white-space:pre-line;font:1rem/1.5 var(--f-data);color:var(--ink)}
+.core-out{font:.95rem/1.55 var(--f-body)}
+.readout:empty,.core-out:empty{min-height:0}
+.history-list{padding-left:20px;color:var(--muted);font:.9rem var(--f-data)}
+.core-list{list-style:none;padding:0;margin:12px 0}
+.core-list li{padding:10px 12px;border:1px solid var(--line);border-radius:var(--r);margin-bottom:8px;background:var(--raised);font-size:.95rem}
+.core-meta{display:block;font-size:.78rem;color:var(--muted);margin:2px 0 6px}
+.core-row{display:flex;gap:8px}.core-row>*{flex:1;min-width:0}
+.goal-card{border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:12px 0;background:var(--raised)}
+.goal-card label{display:block;padding:6px 0;font-size:.95rem}
+.step-done{text-decoration:line-through;opacity:.6}
+.progress-track{height:8px;background:var(--raised);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:12px 0}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--c-rose),var(--c-magenta));transition:width .5s ease;box-shadow:0 0 12px var(--c-rose)}
+.fine{font-size:.85rem;color:var(--muted)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+
+/* ===== 7. Controls ===== */
+input,textarea,select{width:100%;padding:12px 14px;margin:0 0 12px;border-radius:10px;border:1px solid var(--line);
+  background:var(--raised);color:var(--ink);font:inherit;font-size:16px}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.85}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 3px rgba(255,95,162,.22)}
+textarea{resize:vertical}
+input[type=checkbox]{width:auto;margin:0 6px 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 16px;border-radius:10px;
+  border:1px solid var(--line);background:var(--raised);color:var(--ink);font:600 .92rem var(--f-body);cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}
+.btn:hover{border-color:var(--accent);box-shadow:var(--glow)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(120deg,var(--c-rose),var(--c-magenta));border-color:transparent;color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-danger{border-color:var(--danger);color:var(--danger);background:transparent}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-ghost{background:transparent;color:var(--muted)}
+
+/* ===== 8. Mind: one core at a time ===== */
+.seg{display:flex;gap:6px;overflow-x:auto;margin:0 0 14px;padding-bottom:2px}
+.seg button{flex:1 0 auto;min-height:44px;padding:8px 14px;border:1px solid var(--line);background:var(--raised);color:var(--muted);border-radius:10px;font:600 .9rem var(--f-body);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);border-color:var(--accent,var(--signal));box-shadow:inset 0 -3px 0 var(--accent,var(--signal))}
+
+/* ===== 9. Learn ===== */
+.knowledge-core{padding:20px;border-left-color:var(--signal)}
+.knowledge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.knowledge-card{padding:16px;margin:0}
+.knowledge-card h3{color:var(--accent);font-size:.95rem}
+.knowledge-card p,.knowledge-card li{font-size:.95rem}
+#kbSearch{max-width:none}
+#kbCatList{padding-left:18px;cursor:pointer}
+.crispr-panel .tag{color:var(--accent);font-weight:600}
+.forensic-panel{--accent:var(--c-magenta)}
+.scan-box{position:relative;height:200px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--void);margin:14px 0}
+.scan-line{position:absolute;width:100%;height:3px;background:var(--signal);box-shadow:0 0 12px var(--signal);animation:scanMove 3s linear infinite}
+.evidence{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--ok);animation:pulse 1.8s infinite}
+.e1{top:45px;left:60px}.e2{top:110px;right:80px}.e3{bottom:36px;left:160px}
+@keyframes scanMove{from{top:0}to{top:100%}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+
+/* ===== 10. Home hero ===== */
+.hero{padding:22px 0 18px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.hero h1{font-size:clamp(1.5rem,5vw,2.2rem);margin-bottom:6px}
+.hero p{color:var(--muted);margin-bottom:16px}
+.banner{border-left-color:var(--c-gold);text-align:center}
+.banner .btn-row{justify-content:center}
+.reset-wrap{margin:8px 0 24px}
+#goalChart svg,#growthChart svg{max-width:100%;height:auto}
+#wealthCurrency{max-width:260px}
+.px-scene{position:relative;height:280px;overflow:hidden;border-radius:var(--r);margin:0 0 16px;border:1px solid var(--line);
+  background:linear-gradient(#1a0a22,#2b0f33 55%,#3d1340);box-shadow:var(--glow)}
+.px-scene .pl{position:absolute;left:50%;top:30px;width:150px;height:150px;margin-left:-75px;border-radius:50%;will-change:transform;
+  background:radial-gradient(circle at 35% 30%,#ffd0e8,#e0207a 44%,#3a0f2a 80%);box-shadow:0 0 70px rgba(255,95,162,.6)}
+.px-scene .pl::after{content:"";position:absolute;inset:-18px -52px;border-radius:50%;border:2px solid rgba(255,143,196,.7);transform:rotate(-18deg) scaleY(.26);box-shadow:0 0 14px rgba(255,143,196,.6)}
+.px-scene .hint{position:absolute;left:0;right:0;top:8px;text-align:center;font:11px var(--f-data);letter-spacing:3px;color:var(--c-blossom);opacity:.8}
+.px-sl{position:absolute;left:0;right:0;bottom:0;height:150px;background-repeat:repeat-x;background-position:0 100%;will-change:transform}
+
+/* ===== 11. Motion & small screens ===== */
+@media(max-width:520px){#commandCentre{padding:12px 14px}#systemStatus{margin-left:0}.panel{padding:16px}.core-row{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){#commandCentre h1::before,.scan-line,.evidence,.bfly svg{animation:none}.progress-fill{transition:none}.bfly{animation:none!important}}
+
+/* ===== 12. Boot & lock screens ===== */
+#bootScreen{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:16px;color:var(--c-rose);
+  background:radial-gradient(ellipse 120% 80% at 50% 50%,rgba(255,95,162,.12),transparent 70%),#140818}
+#bootScreen h1{position:relative;font-size:42px;margin:0;letter-spacing:6px;color:var(--c-rose);text-shadow:0 0 18px rgba(255,95,162,.8);animation:bootGlitch 3.2s steps(1) infinite}
+#bootScreen h1::before,#bootScreen h1::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%}
+#bootScreen h1::before{color:#ff3b6b;clip-path:inset(0 0 55% 0);transform:translate(2px,-1px);opacity:.7;animation:bootGlitchTop 3.2s steps(1) infinite}
+#bootScreen h1::after{color:#7dffb0;clip-path:inset(55% 0 0 0);transform:translate(-2px,1px);opacity:.7;animation:bootGlitchBottom 3.2s steps(1) infinite}
+@keyframes bootGlitch{0%,92%,100%{transform:translate(0,0)}93%{transform:translate(-1px,1px)}95%{transform:translate(1px,-1px)}}
+@keyframes bootGlitchTop{0%,92%,100%{transform:translate(2px,-1px);opacity:.7}93%{transform:translate(-3px,-1px);opacity:.9}95%{transform:translate(3px,1px);opacity:.5}}
+@keyframes bootGlitchBottom{0%,92%,100%{transform:translate(-2px,1px);opacity:.7}93%{transform:translate(3px,1px);opacity:.5}95%{transform:translate(-3px,-1px);opacity:.9}}
+#bootText{margin-top:15px;color:#7dffb0;letter-spacing:1px;text-shadow:0 0 8px rgba(125,255,176,.5)}
+#bootText::after{content:"▌";margin-left:3px;animation:cursorBlink 1s step-end infinite}
+@keyframes cursorBlink{50%{opacity:0}}
+#bootBarTrack{width:220px;max-width:60vw;height:4px;margin-top:22px;background:rgba(255,95,162,.15);border:1px solid rgba(255,95,162,.4);border-radius:99px}
+#bootBar{height:100%;width:0%;background:linear-gradient(90deg,var(--c-rose),var(--c-magenta));box-shadow:0 0 10px var(--c-rose);transition:width .5s ease;border-radius:99px}
+
+#pinScreen{position:fixed;inset:0;z-index:10001;display:none;flex-direction:column;justify-content:center;align-items:center;padding:16px;text-align:center;color:var(--c-rose);
+  background:radial-gradient(ellipse 120% 80% at 50% 50%,rgba(255,95,162,.12),transparent 70%),rgba(20,8,24,.88);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+#pinScreen h1{position:relative;font-size:42px;margin:0;letter-spacing:6px;color:var(--c-rose);text-shadow:0 0 18px rgba(255,95,162,.8);animation:bootGlitch 3.2s steps(1) infinite}
+#pinScreen h1::before,#pinScreen h1::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%}
+#pinScreen h1::before{color:#ff3b6b;clip-path:inset(0 0 55% 0);transform:translate(2px,-1px);opacity:.7;animation:bootGlitchTop 3.2s steps(1) infinite}
+#pinScreen h1::after{color:#7dffb0;clip-path:inset(55% 0 0 0);transform:translate(-2px,1px);opacity:.7;animation:bootGlitchBottom 3.2s steps(1) infinite}
+#pinStatus{margin-top:15px;min-height:24px;color:#7dffb0;letter-spacing:1px}
+#pinStatus::after{content:"▌";margin-left:3px;animation:cursorBlink 1s step-end infinite}
+#pinStatus.bad{color:#ff3b6b}
+#pinScreen input{max-width:260px;margin:18px 0 10px;text-align:center;letter-spacing:3px;font-family:var(--f-data);color:var(--c-rose);border-color:rgba(255,95,162,.5)}
+#pinBarTrack{width:220px;max-width:60vw;height:4px;margin-top:18px;background:rgba(255,95,162,.15);border:1px solid rgba(255,95,162,.4);border-radius:99px}
+#pinBar{height:100%;width:0%;background:var(--c-rose);box-shadow:0 0 10px var(--c-rose);transition:width .5s ease;border-radius:99px}
+
+/* ===== 13. Graphs ===== */
+.stage{min-width:0}
+#gxBar{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.gx-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;align-items:center}
+.gx-row::-webkit-scrollbar{display:none}
+.gx-chip{all:unset;box-sizing:border-box;flex:none;padding:6px 11px;border:1px solid var(--line);border-radius:999px;font:11px var(--f-display);letter-spacing:.5px;color:var(--muted);cursor:pointer;background:var(--raised)}
+.gx-chip[aria-pressed="true"]{color:#fff;background:linear-gradient(120deg,var(--c-rose),var(--c-magenta));border-color:transparent;box-shadow:var(--glow)}
+.gx-chip.reset{color:var(--c-magenta);border-color:var(--c-magenta)}
+.gx-sum{font:12px var(--f-data);color:var(--muted)}
+.gx-card{margin-bottom:14px;padding:14px}
+.gx-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.gx-head h3{margin:0;font:13px var(--f-display);letter-spacing:.8px}
+.gx-mod{font:10px var(--f-data);color:var(--muted);letter-spacing:1px}
+.gx-badge{flex:none;font:9px var(--f-display);letter-spacing:1px;padding:3px 7px;border-radius:4px;border:1px solid}
+.gx-badge.real{color:var(--ok);border-color:var(--ok)}.gx-badge.historical{color:var(--c-gold);border-color:var(--c-gold)}
+.gx-badge.simulated{color:var(--c-peach);border-color:var(--c-peach)}.gx-badge.await{color:var(--muted);border-color:var(--line)}
+.gx-canvas{display:block;width:100%;height:230px;touch-action:manipulation;border-radius:10px;
+  background:linear-gradient(var(--line-soft) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,var(--line-soft) 1px,transparent 1px) 0 0/22px 22px}
+.gx-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font:11px var(--f-data);color:var(--muted)}
+.gx-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px;box-shadow:0 0 6px currentColor}
+.gx-legend.rows{display:block}.gx-legend.rows div{display:flex;justify-content:space-between;padding:3px 0}.gx-legend.rows b{font-weight:600}
+.gx-read{min-height:20px;margin-top:6px;font:12px var(--f-data);color:var(--c-blossom)}
+.gx-note{font:11px var(--f-data);color:var(--muted);margin-top:4px}
+.gx-wait{height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px dashed var(--line);border-radius:var(--r);color:var(--muted);padding:10px}
+.gx-wait b{font:14px var(--f-display);letter-spacing:2px;color:var(--c-blossom);opacity:.8;animation:gxp 2s ease-in-out infinite}
+@keyframes gxp{50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.gx-wait b{animation:none}}
+</style>
+</head>
+<body class="booting">
+<!-- butterfly background -->
+<div id="butterflyField" aria-hidden="true"></div>
+
+<!-- ============ Command Centre ============ -->
+<header id="commandCentre">
+  <h1>JOPLEX COMMAND CENTRE</h1>
+  <p>Mission control for one person</p>
+  <div id="systemStatus">
+    <p>🟢 Status: ONLINE</p>
+    <p id="ccMission">🎯 Mission: 071</p>
+    <p>🧠 Memory: ACTIVE</p>
+    <p>🎤 Voice: READY</p>
+    <p id="modeBadge">🔌 AI: none connected · rule-based, offline</p>
+    <p id="safetyBadge">🛡️ Safety: ARMED</p>
+  </div>
+</header>
+
+<div id="bootScreen">
+  <canvas id="bootPlanet" style="width:240px;height:240px;max-width:70vw;max-height:70vw;display:block;margin:0 auto 18px" aria-hidden="true"></canvas>
+  <h1 data-text="JOPLEX">JOPLEX</h1>
+  <p id="bootText">Initializing...</p>
+  <div id="bootBarTrack"><div id="bootBar"></div></div>
+</div>
+
+<div id="mainContent" style="display:none;">
+<div class="app">
+  <nav class="nav" id="mainNav" aria-label="Joplex modules">
+    <button type="button" data-go="home"><span>🏠</span>Home</button>
+    <button type="button" data-go="console"><span>💬</span>Console</button>
+    <button type="button" data-go="wealth"><span>💰</span>Wealth</button>
+    <button type="button" data-go="mind"><span>🧩</span>Mind</button>
+    <button type="button" data-go="learn"><span>📚</span>Learn</button>
+    <button type="button" data-go="graphs"><span>📊</span>Graphs</button>
+    <button type="button" data-go="vault"><span>🔐</span>Vault</button>
+  </nav>
+
+  <main class="stage">
+    <div class="topbar">
+      <span class="brand">JOPLEX 21</span>
+      <div class="tools">
+        <button id="glassBtn" class="btn">✨ Glass: On</button>
+        <button id="themeToggle" class="btn">☀️ Light Mode</button>
+      </div>
+    </div>
+
+    <div id="backupBanner" class="panel banner" style="display:none;">
+      <span id="backupText"></span>
+      <div class="btn-row"><button class="btn btn-primary" data-act="export">⬇️ Export now</button><button class="btn" data-act="snooze">Remind me in a week</button></div>
+    </div>
+
+    <!-- HOME -->
+    <div class="module" data-module="home">
+      <div class="px-scene" id="pxScene" aria-hidden="true"><div class="hint">SCROLL ▾</div><div class="pl"></div><div class="px-sl"></div></div>
+      <div class="hero">
+        <h1>Welcome to Joplex 🦋</h1>
+        <p>I am building Joplex one mission at a time.</p>
+        <button data-act="show-message" class="btn btn-primary">Activate Joplex</button>
+      </div>
+      <div class="grid-2">
+        <section class="panel accent-blossom">
+          <h3>👤 Identity</h3>
+          <input type="text" id="nameInput" placeholder="Enter your name" maxlength="40" aria-label="Your name">
+          <button data-act="greet" class="btn">Greet Joplex</button>
+          <p id="response" class="readout"></p>
+        </section>
+        <section class="panel accent-gold">
+          <h3>🖥️ System</h3>
+          <p id="joplexMode">Mode: Idle ⚪</p>
+          <p id="lastCommand">Last command: None</p>
+          <p id="commandCount">Commands this session: 0</p>
+          <p id="status">Joplex is offline 🔴</p>
+          <p id="clock">Time loading...</p>
+          <button data-act="activate" class="btn">Activate System</button>
+        </section>
+      </div>
+      <section class="panel accent-magenta">
+        <h3>🎯 Mission Tracker</h3>
+        <div id="missionCard">
+          <p id="missionNumber">Mission: 071</p>
+          <p id="missionStatus">Status: In Progress 🟡</p>
+          <button data-act="complete-mission" class="btn">✅ Complete Mission</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- CONSOLE -->
+    <div class="module" data-module="console" hidden>
+      <section class="panel accent-lilac" id="consolePanel">
+        <h3>💬 Command Console</h3>
+        <input type="text" id="commandInput" placeholder="Enter a command" maxlength="200" aria-label="Command">
+        <div class="btn-row">
+          <button data-act="run" class="btn btn-primary">Run Command</button>
+          <button data-act="listen" class="btn">🎙️ Speak</button>
+        </div>
+        <p id="commandResponse" class="readout"></p>
+        <h4>Command History</h4>
+        <ul id="commandHistory" class="history-list"></ul>
+        <button data-act="clear-history" class="btn btn-ghost">Clear History</button>
+      </section>
+      <section class="panel accent-peach" id="quickActions">
+        <h3>⚡ Quick Actions</h3>
+        <div class="btn-row">
+          <button data-quick="system report" class="btn">📊 System Report</button>
+          <button data-quick="wake up joplex" class="btn">🤖 Wake Up</button>
+          <button data-quick="motivate" class="btn">🔥 Motivate Me</button>
+          <button data-quick="safety status" class="btn">🛡️ Safety Status</button>
+          <button data-quick="unlock joplex" class="btn">🔓 Release Lock</button>
+          <button data-quick="emergency stop" class="btn btn-danger">🛑 Emergency Stop</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- WEALTH -->
+    <div class="module" data-module="wealth" hidden>
+      <section class="panel accent-blossom" id="wealthCore">
+        <h3>💰 Wealth Core</h3>
+        <p class="knowledge-intro">Personal &amp; local: stays in your browser. A planning tool, not financial advice.</p>
+        <select id="wealthCurrency" aria-label="Currency">
+          <option value="USD">Currency: USD</option><option value="GBP">GBP (£)</option><option value="EUR">EUR (€)</option><option value="ZAR">ZAR (R)</option><option value="OTHER">Other (no symbol)</option>
+        </select>
+        <h4>🎯 Savings Goal</h4>
+        <input type="number" id="goalAmount" placeholder="Goal amount" min="0" step="any">
+        <input type="number" id="currentSavings" placeholder="Current savings" min="0" step="any">
+        <input type="number" id="monthlySaving" placeholder="Monthly saving" min="0" step="any">
+        <button data-act="update-goal" class="btn btn-primary">Update Goal</button>
+        <div class="progress-track"><div id="goalProgressBar" class="progress-fill"></div></div>
+        <p id="goalReadout" class="readout"></p>
+        <div id="goalChart"></div>
+
+        <h4>📈 Compound Growth Projection</h4>
+        <input type="number" id="principalInput" placeholder="Starting amount" min="0" step="any">
+        <input type="number" id="monthlyInput" placeholder="Monthly contribution" min="0" step="any">
+        <input type="number" id="rateInput" placeholder="Estimated annual return (%)" step="any">
+        <input type="number" id="yearsInput" placeholder="Years (1-80)" min="1" max="80" step="1">
+        <input type="number" id="inflationInput" placeholder="Inflation (%) optional" step="any">
+        <button data-act="project" class="btn btn-primary">Project Growth</button>
+        <p id="growthReadout" class="readout"></p>
+        <div id="growthChart"></div>
+
+        <h4>🛟 Cash-Flow Check</h4>
+        <input type="number" id="incomeInput" placeholder="Monthly income after tax" min="0" step="any">
+        <input type="number" id="expensesInput" placeholder="Monthly expenses" min="0" step="any">
+        <button data-act="cashflow" class="btn btn-primary">Check Cash Flow</button>
+        <p id="cashReadout" class="readout"></p>
+
+        <div class="btn-row">
+          <button data-act="export-csv" class="btn">⬇️ Export CSV</button>
+          <button data-act="clear-wealth" class="btn btn-danger">Clear Wealth Data</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- MIND -->
+    <div class="module" data-module="mind" hidden>
+      <div class="module-head">
+        <h2>🧩 Advanced Joplex</h2>
+        <p>Four rule-based cores that run only on this device. They structure your thinking and check claims. They are not a learning AI and cannot look anything up online.</p>
+      </div>
+      <div class="seg" id="coreSeg" role="group" aria-label="Choose a core">
+        <button type="button" data-core="reasoningCore">🧠 Reasoning</button>
+        <button type="button" data-core="planningEngine">🗺️ Planning</button>
+        <button type="button" data-core="memoryArch">💾 Memory</button>
+        <button type="button" data-core="verifyCore">🔍 Verification</button>
+      </div>
+
+      <section class="panel accent-rose core-panel" id="reasoningCore">
+        <h3>🧠 Reasoning Core</h3>
+        <p class="core-note">Separate what you know from what you assume, compare real options, then stress-test the result.</p>
+        <input type="text" id="rcQuestion" placeholder="Question or decision" maxlength="160">
+        <textarea id="rcFacts" rows="3" placeholder="Facts you are sure of (one per line)"></textarea>
+        <textarea id="rcAssume" rows="3" placeholder="Assumptions (one per line)"></textarea>
+        <textarea id="rcOptions" rows="3" placeholder="Options (one per line)"></textarea>
+        <div class="btn-row">
+          <button data-act="reason" class="btn btn-primary">Reason It Through</button>
+          <button data-act="reason-log" class="btn btn-ghost">Past Reasoning</button>
+        </div>
+        <p id="reasonOut" class="readout core-out"></p>
+      </section>
+
+      <section class="panel accent-blossom core-panel" id="planningEngine">
+        <h3>🗺️ Goal &amp; Planning Engine</h3>
+        <p class="core-note">Give a goal and a deadline. Joplex splits it into dated steps, tracks progress and tells you the next action.</p>
+        <input type="text" id="gpTitle" placeholder="Goal (e.g. Finish my Wealth Core)" maxlength="80">
+        <input type="date" id="gpDate" aria-label="Deadline">
+        <button data-act="create-goal" class="btn btn-primary">Create Plan</button>
+        <p id="planOut" class="readout core-out"></p>
+        <div id="goalList"></div>
+      </section>
+
+      <section class="panel accent-lilac core-panel" id="memoryArch">
+        <h3>💾 Memory Architecture</h3>
+        <p class="core-note">Working memory (this session), long-term memory (saved on this device) and episodic memory (your command history). Joplex refuses passwords, card and ID numbers.</p>
+        <input type="text" id="memText" placeholder="Something for Joplex to remember" maxlength="200">
+        <div class="core-row">
+          <select id="memType" aria-label="Memory type"><option value="fact">Fact</option><option value="preference">Preference</option><option value="decision">Decision</option><option value="lesson">Lesson</option></select>
+          <select id="memImp" aria-label="Importance"><option value="1">Low importance</option><option value="2" selected>Normal</option><option value="3">Pinned (high)</option></select>
+        </div>
+        <button data-act="mem-save" class="btn btn-primary">Save Memory</button>
+        <h4>Recall</h4>
+        <input type="text" id="memSearch" placeholder="Search or recall memories" maxlength="80" aria-label="Search memories">
+        <button data-act="mem-recall" class="btn">Recall</button>
+        <p id="memStats" class="core-note"></p>
+        <p id="memOut" class="readout core-out"></p>
+        <ul id="memList" class="core-list"></ul>
+        <div class="btn-row">
+          <button data-act="mem-consolidate" class="btn">Consolidate</button>
+          <button data-act="mem-clear" class="btn btn-danger">Clear Long-Term</button>
+        </div>
+      </section>
+
+      <section class="panel accent-gold core-panel" id="verifyCore">
+        <h3>🔍 Verification Core</h3>
+        <p class="core-note">Joplex has no internet and cannot confirm outside facts. It scans for red flags, checks simple arithmetic, compares with its Knowledge Core, and keeps an evidence ledger. Only you can mark a claim human-verified, with a named source.</p>
+        <textarea id="vcClaim" rows="3" placeholder="Paste a claim to check" maxlength="240"></textarea>
+        <input type="text" id="vcSource" placeholder="Source you checked yourself (needed to mark verified)" maxlength="120">
+        <button data-act="check-claim" class="btn btn-primary">Check Claim</button>
+        <p id="verifyOut" class="readout core-out"></p>
+        <ul id="ledgerList" class="core-list"></ul>
+        <button data-act="ledger-clear" class="btn btn-danger">Clear Ledger</button>
+      </section>
+    </div>
+
+    <!-- LEARN -->
+    <div class="module" data-module="learn" hidden>
+      <section id="knowledgeCore" class="knowledge-core">
+        <h2>🧠 Joplex Knowledge Core</h2>
+        <p class="knowledge-intro">A growing collection of knowledge powering the Rise of Joplex.</p>
+        <input type="text" id="kbSearch" placeholder="Search topics (e.g. inflation, DNA, API)" maxlength="60" aria-label="Search knowledge">
+        <div id="kbChips" class="btn-row"></div>
+        <div id="kbIntro"></div>
+        <div id="kbResults" class="knowledge-grid"></div>
+
+        <div class="knowledge-grid">
+          <div class="knowledge-card accent-blossom"><h3>🦋 Identity</h3><p>Joplex is my AI project, built one mission at a time.</p></div>
+          <div class="knowledge-card accent-blossom"><h3>🎯 Goal</h3><p>To build an increasingly capable personal AI system.</p></div>
+          <div class="knowledge-card accent-lilac"><h3>💻 Development</h3><p>Built as a web project using HTML, CSS and JavaScript.</p></div>
+          <div class="knowledge-card accent-gold"><h3>🧠 Learning</h3><p>Joplex learns through missions, experiments, research and new features.</p></div>
+          <div class="knowledge-card accent-peach"><h3>🚀 Vision</h3><p>A powerful personal AI assistant.</p></div>
+          <div class="knowledge-card accent-magenta">
+            <h3>📚 Categories</h3>
+            <ul id="kbCatList"></ul>
+            <p class="knowledge-intro">Tap a category to browse it.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel accent-rose crispr-panel" id="crisprPanel">
+        <h3>🧬 CRISPR</h3>
+        <p><strong class="tag">CRISPR</strong> stands for Clustered Regularly Interspaced Short Palindromic Repeats — biological systems that target specific DNA sequences.</p>
+        <h4>🔬 Key components</h4>
+        <p><strong class="tag">Cas9:</strong> an enzyme that can cut DNA.</p>
+        <p><strong class="tag">Guide RNA:</strong> directs Cas9 toward a particular sequence.</p>
+        <p><strong class="tag">DNA:</strong> stores genetic information.</p>
+        <p class="fine">Educational summary, not medical advice. Reviewed Oct 2026. Verify with a qualified source.</p>
+      </section>
+
+      <section class="panel forensic-panel" id="forensicPanel">
+        <h3>🕵️ Joplex Forensic Vision</h3>
+        <p><strong>Future mission:</strong> assist investigators by scanning scenes and organizing evidence for human verification.</p>
+        <p class="fine">⚠️ Research concept only. This demo uses fake markers. Must never identify or accuse a person; nothing counts as evidence until qualified humans verify it.</p>
+        <div class="scan-box"><div class="scan-line"></div><div class="evidence e1"></div><div class="evidence e2"></div><div class="evidence e3"></div></div>
+        <p id="forensicStatus">Status: Future Research Project</p>
+        <button data-act="forensic" class="btn">Run Scan Simulation</button>
+      </section>
+    </div>
+
+    <!-- GRAPHS -->
+    <div class="module" data-module="graphs" hidden>
+      <div class="module-head"><h2>📊 Visual Intelligence</h2><p>Graphs use only data saved on this device. No data means “Awaiting Data”. Badges show REAL, HISTORICAL or SIMULATED.</p></div>
+      <div id="gxBar"></div><div id="gxGrid"></div>
+    </div>
+
+    <!-- VAULT -->
+    <div class="module" data-module="vault" hidden>
+      <section class="panel accent-blossom" id="profilePanel">
+        <h3>🪪 My Profile</h3>
+        <p class="knowledge-intro">Stays on this device only. Don't enter ID numbers, passwords or bank details; Joplex refuses long number strings.</p>
+        <input type="text" id="pf_fullName" placeholder="Full name" maxlength="80">
+        <input type="text" id="pf_preferred" placeholder="What Joplex should call you" maxlength="40">
+        <input type="text" id="pf_city" placeholder="Where you live (city/country)" maxlength="80">
+        <input type="text" id="pf_role" placeholder="What you do" maxlength="80">
+        <input type="text" id="pf_about" placeholder="Anything else Joplex should know" maxlength="200">
+        <div class="btn-row">
+          <button data-act="save-profile" class="btn btn-primary">Save Profile</button>
+          <button data-act="clear-profile" class="btn btn-danger">Clear Profile</button>
+        </div>
+      </section>
+
+      <section class="panel accent-lilac" id="privacyPanel">
+        <h3>🔐 Privacy</h3>
+        <p><strong>Stored:</strong> name, memory, command history, mission progress, wealth numbers, theme and safety log.</p>
+        <p><strong>Where:</strong> only in this browser (localStorage).</p>
+        <p><strong>Sent anywhere:</strong> nothing. No server, no AI service; the page blocks network requests. Voice uses your browser's own speech service.</p>
+        <p class="fine"><strong>Passcode lock:</strong> hides Joplex on load and after 5 idle minutes. A screen lock, not encryption.</p>
+        <input type="password" id="pinNew" placeholder="New passcode (6+ characters)" maxlength="64" autocomplete="new-password" aria-label="New passcode">
+        <div class="btn-row">
+          <button data-act="set-pin" class="btn btn-primary">🔑 Set / Change Passcode</button>
+          <button data-act="lock-now" class="btn">🔒 Lock Now</button>
+          <button data-act="remove-pin" class="btn btn-ghost">Remove Passcode</button>
+        </div>
+        <p id="backupInfo" class="fine"></p>
+        <div class="btn-row">
+          <button data-act="export" class="btn">⬇️ Export My Data</button>
+          <button data-act="delete-all" class="btn btn-danger">🗑️ Delete Everything</button>
+        </div>
+      </section>
+
+      <div class="reset-wrap"><button data-act="reset" class="btn btn-danger">Reset Joplex Memory</button></div>
+    </div>
+  </main>
+</div>
+</div>
+
+<div id="pinScreen" role="dialog" aria-modal="true">
+  <h1 data-text="JOPLEX">JOPLEX</h1>
+  <div id="pinStatus">Authentication required</div>
+  <input type="password" id="pinInput" placeholder="Enter passcode" autocomplete="current-password" maxlength="64">
+  <button data-act="unlock" class="btn btn-primary">Unlock</button>
+  <div id="pinBarTrack"><div id="pinBar"></div></div>
+</div>
+
+<script>
+/* =========================================================
+   JOPLEX 21 — single bundled script (one scope, ordered).
+   Fixes from v20:
+   - consolidated all load handlers into one init()
+   - removed unreachable returns in kbAnswer()
+   - mission/history restore runs deterministically
+   - speech-recognition state is module-scoped and cleared
+   - action buttons use data-act + one delegated click handler
+   ========================================================= */
+"use strict";
+
+/* ---------- storage ---------- */
+const store = {
+  get(k, d = null){ try{ const v = localStorage.getItem(k); return v === null ? d : v; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, v); return true; }catch(e){ return false; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} },
+  json(k, d){ try{ const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; }catch(e){ return d; } }
+};
+const byId = id => document.getElementById(id);
+const tidy = (s,n) => String(s==null?"":s).replace(/[\u0000-\u001f\u007f]+/g," ").replace(/\s+/g," ").trim().slice(0,n||200);
+const lineList = (s,n) => String(s||"").split(/\n/).map(x=>tidy(x,160)).filter(Boolean).slice(0,n||8);
+const newId = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const arr = k => { const v = store.json(k,[]); return Array.isArray(v) ? v : []; };
+const say = (id,msg) => { const e = byId(id); if(e) e.textContent = msg; };
+function mk(tag,text,cls){ const e=document.createElement(tag); if(text!=null) e.textContent=text; if(cls) e.className=cls; return e; }
+
+const DEFAULT_MISSION = "071";
+const DAY_MS = 86400000;
+const pad2 = n => String(n).padStart(2,"0");
+const isoDay = d => d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
+const parseDay = s => { const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||""); if(!m) return null; const d=new Date(+m[1],+m[2]-1,+m[3]); return d.getMonth()===+m[2]-1?d:null; };
+const today0 = () => { const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); };
+const dayDiff = (a,b) => Math.round((b-a)/DAY_MS);
+const addDays = (d,n) => new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+function ago(iso){ const d=Math.floor((Date.now()-Date.parse(iso))/DAY_MS); return isNaN(d)?"unknown age":d<=0?"today":d+" day"+(d===1?"":"s")+" ago"; }
+
+/* ---------- Knowledge data ---------- */
+const KB = [
+{"c":"science","k":["crispr"],"a":"CRISPR is a technology used to target and modify specific DNA sequences. 🧬"},
+{"c":"science","k":["dna"],"a":"DNA stands for Deoxyribonucleic Acid. It stores the biological instructions used by living organisms. 🧬"},
+{"c":"science","k":["gene"],"a":"A gene is a section of DNA that contains biological information used by cells. 🧬"},
+{"c":"science","k":["mutation"],"a":"A mutation is a change in the DNA sequence. Mutations can happen naturally or be caused by environmental factors. 🧬"},
+{"c":"science","k":["protein"],"a":"A protein is a molecule made from amino acids. Proteins perform many important functions in cells and living organisms. 🧬"},
+{"c":"science","k":["rna"],"a":"RNA stands for Ribonucleic Acid. It helps cells use genetic information and plays an important role in making proteins. 🧬"},
+{"c":"science","k":["chromosomes"],"a":"Chromosomes are structures made of DNA and proteins that carry genetic information inside cells. 🧬"},
+{"c":"science","k":["cell"],"a":"A cell is the basic structural and functional unit of living organisms. 🧫"},
+{"c":"science","k":["genome"],"a":"A genome is the complete set of genetic material in an organism. 🧬"},
+{"c":"science","k":["inheritance"],"a":"Genetic inheritance is the process by which genetic information is passed from parents to offspring. 🧬"},
+{"c":"science","k":["genetics"],"a":"Genetics is the branch of biology that studies genes, heredity and variation. 🧬"},
+{"c":"science","k":["energy"],"a":"Energy is the capacity to cause change or do work. ⚡"},
+{"c":"science","k":["force"],"a":"Force is a push or pull that can change an object's motion, measured in newtons. 💪"},
+{"c":"science","k":["acceleration"],"a":"Acceleration is the rate at which velocity changes over time. 🚀"},
+{"c":"science","k":["electricity"],"a":"Electricity involves the movement or presence of electric charge. ⚡"},
+{"c":"science","k":["wave"],"a":"A wave is a disturbance that transfers energy from one place to another. 🌊"},
+{"c":"science","k":["gravity"],"a":"Gravity is the attraction between objects with mass. 🌍"},
+{"c":"science","k":["atom"],"a":"An atom is the basic unit of ordinary matter. ⚛️"},
+{"c":"science","k":["element"],"a":"An element is a pure substance made of atoms with the same number of protons. 🧲"},
+{"c":"science","k":["molecule"],"a":"A molecule is a group of two or more atoms held together by chemical bonds. 🔗"},
+{"c":"science","k":["compound"],"a":"A compound is a substance made when atoms of different elements chemically combine. 🧪"},
+{"c":"science","k":["chemical reaction"],"a":"A chemical reaction transforms substances into new substances through changes in chemical bonds. ⚗️"},
+{"c":"science","k":["ph"],"a":"pH is a scale describing how acidic or basic an aqueous solution is, commonly 0–14. 🧪"},
+{"c":"science","k":["star"],"a":"A star is a hot ball of plasma producing energy through nuclear fusion. ☀️"},
+{"c":"science","k":["planet"],"a":"A planet is a large body orbiting a star. 🪐"},
+{"c":"science","k":["moon"],"a":"A moon is a natural satellite orbiting a planet. 🌙"},
+{"c":"science","k":["galaxy"],"a":"A galaxy is a vast system of stars, gas, dust and dark matter held by gravity. 🌌"},
+{"c":"science","k":["black hole"],"a":"A black hole is a region where gravity is so strong nothing can escape. 🕳️"},
+{"c":"science","k":["solar system"],"a":"The Solar System is the Sun and the objects orbiting it. ☀️🪐"},
+{"c":"coding","k":["algorithm"],"a":"An algorithm is a step-by-step set of instructions to solve a problem. 💻"},
+{"c":"ai","k":["artificial intelligence","ai"],"a":"AI is technology enabling computers to perform tasks involving learning, reasoning, patterns or language. 🤖"},
+{"c":"tech","k":["data"],"a":"Data is information that can be collected, stored, processed and analyzed. 📊"},
+{"c":"coding","k":["programming"],"a":"Programming is creating instructions that tell a computer what to do. 👨‍💻"},
+{"c":"tech","k":["internet"],"a":"The Internet is a global network of interconnected computer networks. 🌐"},
+{"c":"security","k":["cybersecurity"],"a":"Cybersecurity protects computers, networks and data from unauthorized access. 🔐"},
+{"c":"finance","k":["compound interest","compounding"],"a":"Compound interest is interest earned on your money and on interest already added. Starting early matters."},
+{"c":"finance","k":["inflation"],"a":"Inflation is the general rise in prices over time, lowering what money can buy."},
+{"c":"finance","k":["budget"],"a":"A budget is a plan for spending and saving. A common start is 50/30/20."},
+{"c":"finance","k":["emergency fund"],"a":"An emergency fund is cash for surprises; 3–6 months of essential expenses is common."},
+{"c":"finance","k":["diversification"],"a":"Diversification spreads money across assets so one poor result hurts less."},
+{"c":"finance","k":["index fund","index funds"],"a":"An index fund tracks a market index rather than trying to beat it; usually low-cost."},
+{"c":"finance","k":["stock","stocks","share","shares"],"a":"A stock is a share of ownership in a company; its price can rise or fall."},
+{"c":"finance","k":["bond","bonds"],"a":"A bond is a loan to a government or company paying interest and returning principal."},
+{"c":"finance","k":["etf","exchange traded fund"],"a":"An ETF holds a basket of assets and trades on an exchange like a single stock."},
+{"c":"finance","k":["risk","risk tolerance"],"a":"Higher potential returns usually come with higher chance of loss."},
+{"c":"finance","k":["rule of 72"],"a":"The Rule of 72 estimates doubling time: 72 ÷ annual return %."},
+{"c":"finance","k":["net worth"],"a":"Net worth = assets minus liabilities."},
+{"c":"finance","k":["credit score"],"a":"A credit score summarises how reliably you have repaid borrowing."},
+{"c":"finance","k":["dollar cost averaging","dca"],"a":"Investing a fixed amount regularly regardless of price reduces timing risk."},
+{"c":"finance","k":["debt avalanche","debt snowball"],"a":"Avalanche pays highest-interest first; snowball pays smallest balance first."},
+{"c":"finance","k":["passive income"],"a":"Passive income needs little ongoing effort once set up, but usually takes upfront work."},
+{"c":"finance","k":["cryptocurrency","crypto","bitcoin"],"a":"Cryptocurrency is digital money secured by cryptography; prices can be extremely volatile."},
+{"c":"ai","k":["machine learning"],"a":"Machine learning lets computers learn patterns from data instead of only hand-written rules."},
+{"c":"ai","k":["neural network","neural networks"],"a":"A neural network is layers of connected nodes that learn patterns from data."},
+{"c":"ai","k":["large language model","llm"],"a":"An LLM is trained on huge amounts of text to understand and generate language."},
+{"c":"coding","k":["html"],"a":"HTML defines the structure and content of a web page."},
+{"c":"coding","k":["css"],"a":"CSS controls how a web page looks: colours, fonts, layout and animation."},
+{"c":"coding","k":["javascript","js"],"a":"JavaScript makes web pages interactive; Joplex's commands run on it."},
+{"c":"coding","k":["api"],"a":"An API is a defined way for one program to request data or actions from another."},
+{"c":"coding","k":["variable"],"a":"A variable is a named container storing a value a program can use and change."},
+{"c":"coding","k":["function"],"a":"A function is a reusable block of code performing a task."},
+{"c":"coding","k":["localstorage","local storage"],"a":"localStorage keeps small amounts of text on your device between visits."},
+{"c":"coding","k":["debugging","bug"],"a":"Debugging is finding and fixing errors in code."},
+{"c":"security","k":["phishing"],"a":"Phishing poses as a trusted sender to steal passwords or money."},
+{"c":"security","k":["two factor authentication","2fa","mfa"],"a":"2FA asks for a second proof of identity beyond a password."},
+{"c":"security","k":["encryption"],"a":"Encryption scrambles data so only the right key can read it."},
+{"c":"security","k":["password manager"],"a":"A password manager stores strong unique passwords behind one master password."},
+{"c":"security","k":["data privacy","privacy"],"a":"Data privacy is controlling who can collect, use and share your information."},
+{"c":"security","k":["vpn"],"a":"A VPN encrypts your connection and routes it through another server."},
+{"c":"sustainability","k":["renewable energy"],"a":"Renewable energy comes from sources that replenish naturally."},
+{"c":"sustainability","k":["solar energy","solar power"],"a":"Solar power converts sunlight into electricity or heat."},
+{"c":"sustainability","k":["carbon footprint"],"a":"A carbon footprint is total greenhouse gas emissions caused by a person, product or organisation."},
+{"c":"sustainability","k":["climate change"],"a":"Climate change is the long-term shift in temperatures and weather, mainly driven by fossil fuels."},
+{"c":"sustainability","k":["greenhouse effect"],"a":"The greenhouse effect is how gases trap heat in the atmosphere."},
+{"c":"sustainability","k":["circular economy"],"a":"A circular economy keeps materials in use through reuse, repair and recycling."}
+];
+const KB_META = {
+  finance:["💰","blossom","Wealth & Money"], ai:["🤖","rose","AI & Joplex"], coding:["💻","lilac","Coding & Web"],
+  security:["🔐","magenta","Security & Privacy"], sustainability:["🌱","blossom","Green Tech"],
+  science:["🔬","gold","Science & Biotech"], tech:["🌐","peach","Tech & Devices"]
+};
+const KB_UPPER = new Set(["ai","dna","rna","ph","api","css","html","etf","llm","vpn","2fa","js"]);
+const KB_INDEX = {};
+const KB_MEDICAL = new Set(["crispr","dna","rna","gene","mutation","genetics","genome","inheritance","protein","chromosomes"]);
+const KB_REVIEWED = "Oct 2026";
+const KB_SRC = {
+  finance:["Investor.gov glossary","https://www.investor.gov/introduction-investing/investing-basics/glossary"],
+  ai:["NIST AI Risk Management Framework","https://www.nist.gov/itl/ai-risk-management-framework"],
+  coding:["MDN Web Docs","https://developer.mozilla.org/"],
+  security:["CISA Secure Our World","https://www.cisa.gov/secure-our-world"],
+  sustainability:["NASA Climate","https://science.nasa.gov/climate-change/"],
+  science:["NASA Science","https://science.nasa.gov/"],
+  tech:["MDN Web Docs","https://developer.mozilla.org/"],
+  medical:["NIH Genetics Glossary","https://www.genome.gov/genetics-glossary"]
+};
+const KB_PANELS = { wealthCore:"Wealth Core", privacyPanel:"Privacy", consolePanel:"Command Console", quickActions:"Quick Actions",
+  forensicPanel:"Forensic Vision", crisprPanel:"CRISPR", commandCentre:"Command Centre", reasoningCore:"Reasoning Core",
+  planningEngine:"Planning Engine", memoryArch:"Memory Architecture", verifyCore:"Verification Core" };
+const KB_APPLY = {
+  finance:["wealthCore","Powers the Wealth Core: set a savings goal, project growth in three scenarios, and check cash flow."],
+  ai:["forensicPanel","Joplex's commands are rule-based, not learning AI. These topics explain real AI and its risks."],
+  coding:["consolePanel","How Joplex is built: HTML structure, CSS look, JavaScript commands, and data formats like JSON and CSV."],
+  security:["privacyPanel","Explains the passcode lock, hashing, backups and the safety rules that protect your data."],
+  sustainability:["quickActions","Greener computing: Joplex runs locally with no servers, and Glass off lowers rendering work."],
+  science:["crisprPanel","Backs the CRISPR panel and the Forensic Vision concept, including how evidence is handled."],
+  tech:["commandCentre","How devices and the web work, including offline-first apps like Joplex."]
+};
+const KB_TITLE = e => { const k=e.k[0]; return KB_UPPER.has(k)? k.toUpperCase() : k.charAt(0).toUpperCase()+k.slice(1); };
+
+/* extra applied topics */
+[
+["finance",["savings goal","savings goals"],"A savings goal is a specific amount by a specific time. Dividing the remainder by monthly saving gives a time estimate.","wealthCore"],
+["finance",["savings rate"],"Your savings rate is the share of income you save each month.","wealthCore"],
+["finance",["scenario planning","scenarios"],"Scenario planning compares cautious, expected and optimistic cases.","wealthCore"],
+["finance",["real return","inflation adjusted"],"A real return is the return after subtracting inflation.","wealthCore"],
+["finance",["50/30/20","50/30/20 rule"],"50% needs, 30% wants, 20% saving/debt — a starting guide.","wealthCore"],
+["security",["passcode","passphrase"],"A good passcode is long and unique; length matters more than symbols.","privacyPanel"],
+["security",["hashing","hash"],"Hashing turns data into a fixed-length fingerprint that cannot practically be reversed.","privacyPanel"],
+["security",["backup","backups"],"A backup is a separate copy of data so you can recover from loss.","privacyPanel"],
+["security",["brute force"],"A brute-force attack tries many passwords; lockouts slow it down.","privacyPanel"],
+["security",["content security policy","csp"],"A CSP tells the browser which sources a page may load from.","privacyPanel"],
+["coding",["svg"],"SVG draws shapes with code, so charts stay sharp at any size.","wealthCore"],
+["coding",["json"],"JSON is a simple text format for structured data.","privacyPanel"],
+["coding",["csv"],"CSV is a plain-text table format spreadsheets can open.","wealthCore"],
+["coding",["glassmorphism","backdrop filter"],"Glassmorphism is a frosted, translucent design style via backdrop-filter blur.","quickActions"],
+["coding",["speech recognition","web speech api"],"The Web Speech API turns speech into text; browsers usually process audio on their service.","consolePanel"],
+["ai",["rule based","rule-based system"],"A rule-based system follows fixed if-then rules and does not learn. Joplex's commands work this way.","consolePanel"],
+["ai",["hallucination"],"An AI hallucination is a confident answer that is wrong or invented.",null],
+["ai",["prompt injection"],"Prompt injection hides instructions in content an AI reads.","null"],
+["ai",["computer vision"],"Computer vision interprets images and video; it can be wrong.","forensicPanel"],
+["ai",["false positive"],"A false positive wrongly flags something as present; human verification is essential.","forensicPanel"],
+["science",["chain of custody"],"Chain of custody documents who handled evidence and when.","forensicPanel"],
+["tech",["offline first","offline-first"],"An offline-first app works without a connection and stores data locally.","commandCentre"],
+["tech",["responsive design"],"Responsive design adapts a page to any screen size.",null],
+["sustainability",["green web design"],"Green web design cuts energy use with lighter pages and fewer effects.","quickActions"],
+["sustainability",["e waste","e-waste"],"E-waste is discarded electronics; repair and reuse reduce mining and pollution.",null]
+].forEach(([c,k,a,w]) => { const e={c:c,k:k,a:a}; if(w) e.w=w; KB.push(e); k.forEach(x=>{ KB_INDEX[x]=e; }); });
+KB.forEach(e => e.k.forEach(k => { KB_INDEX[k]=e; }));
+
+/* ---------- action registry ---------- */
+const ACTIONS = {};
+
+/* ---------- safety ---------- */
+function isLocked(){ return store.get("joplexSafetyLock")==="true"; }
+function safetyLog(event,detail){
+  const log = arr("joplexSafetyLog");
+  log.push({event:event,detail:String(detail||"").slice(0,80),time:new Date().toISOString()});
+  store.set("joplexSafetyLog", JSON.stringify(log.slice(-200)));
+}
+function updateSafetyBadge(){
+  const el = byId("safetyBadge");
+  if(el) el.textContent = isLocked()?"🔒 Safety: LOCKED":"🛡️ Safety: ARMED";
+}
+let activeRecognition = null;
+function engageLock(source){
+  store.set("joplexSafetyLock","true");
+  safetyLog("emergency stop",source);
+  updateSafetyBadge();
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  try{ if(activeRecognition) activeRecognition.abort(); }catch(e){}
+}
+function humanConfirm(msg){
+  return new Promise(resolve => {
+    const ov = document.createElement("div");
+    ov.setAttribute("role","alertdialog"); ov.setAttribute("aria-modal","true");
+    ov.style.cssText = "position:fixed;inset:0;z-index:10002;display:flex;align-items:center;justify-content:center;background:rgba(20,8,24,.82);padding:16px";
+    const box = document.createElement("div");
+    box.style.cssText = "max-width:420px;background:#2a1530;color:#fbe9f4;border:1px solid #ff5fa2;border-radius:14px;padding:22px;text-align:center;font-size:16px;line-height:1.5;box-shadow:0 0 40px rgba(255,95,162,.4)";
+    const text = document.createElement("div"); text.textContent = "🛡️ Permission Gate\n\n"+msg; text.style.whiteSpace="pre-line";
+    const row = document.createElement("div"); row.className="btn-row"; row.style.justifyContent="center";
+    const timer = setTimeout(()=>done(false),30000);
+    function onKey(e){ if(e.key==="Escape") done(false); }
+    function done(v){ clearTimeout(timer); document.removeEventListener("keydown",onKey); ov.remove(); resolve(v); }
+    const cancel = document.createElement("button"); cancel.className="btn btn-primary"; cancel.textContent="Cancel"; cancel.onclick=()=>done(false);
+    const ok = document.createElement("button"); ok.className="btn btn-danger"; ok.textContent="Confirm"; ok.onclick=()=>done(true);
+    row.append(cancel,ok); box.append(text,row); ov.appendChild(box); document.body.appendChild(ov);
+    document.addEventListener("keydown",onKey); cancel.focus();
+  });
+}
+async function safeAction(name,prompt,fn){
+  if(isLocked()){ safetyLog("blocked",name); speak("Safety Lock active. That action is blocked."); return false; }
+  if(!(await humanConfirm(prompt))){ safetyLog("declined",name); notify("Cancelled: "+name+"."); return false; }
+  safetyLog("approved",name); fn(); return true;
+}
+function notify(msg){ const el=byId("commandResponse"); if(el) el.textContent=msg; speak(msg); }
+function coreLocked(outId){
+  if(!isLocked()) return false;
+  safetyLog("blocked",outId);
+  say(outId,"🔒 Safety Lock ACTIVE: this action is blocked. Say 'unlock joplex' to release it.");
+  return true;
+}
+
+/* ---------- safe calculator ---------- */
+function safeCalc(src){
+  const t = src.replace(/×/g,"*").replace(/÷/g,"/").match(/\d+\.?\d*|\.\d+|[-+*/%()]/g) || [];
+  let i = 0;
+  const expr = () => { let v=term(); while(t[i]==="+"||t[i]==="-"){ const o=t[i++], r=term(); v = o==="+"? v+r : v-r; } return v; };
+  const term = () => { let v=factor(); while(t[i]==="*"||t[i]==="/"||t[i]==="%"){ const o=t[i++], r=factor(); v = o==="*"? v*r : o==="/"? v/r : v%r; } return v; };
+  const factor = () => {
+    const x = t[i++];
+    if(x==="-") return -factor();
+    if(x==="+") return factor();
+    if(x==="("){ const v=expr(); if(t[i++]!==")") throw new Error("paren"); return v; }
+    if(x===undefined||isNaN(x)) throw new Error("syntax");
+    return parseFloat(x);
+  };
+  const v = expr();
+  if(i!==t.length || !isFinite(v)) throw new Error("bad");
+  return Math.round(v*1e10)/1e10;
+}
+
+/* ---------- profile ---------- */
+const PROFILE_FIELDS = [["pf_fullName","fullName"],["pf_preferred","preferred"],["pf_city","place"],["pf_role","role"],["pf_about","about"]];
+const looksSensitive = v => /\d[\d\s-]{10,}\d/.test(v);
+ACTIONS["save-profile"] = function(){
+  const o = {};
+  for(const [id,k] of PROFILE_FIELDS){
+    const v = byId(id).value.trim().slice(0,200);
+    if(looksSensitive(v)){ notify("That looks like an ID or card number. Joplex won't store those."); return; }
+    o[k]=v;
+  }
+  store.set("joplexProfile", JSON.stringify(o));
+  const call = o.preferred || (o.fullName||"").split(" ")[0];
+  if(call){ store.set("joplexName",call); byId("nameInput").value=call; }
+  safetyLog("profile saved","");
+  notify("🪪 Profile saved.");
+};
+ACTIONS["clear-profile"] = function(){
+  safeAction("clear profile","Erase your saved profile?",()=>{
+    store.del("joplexProfile");
+    PROFILE_FIELDS.forEach(([id])=>{ byId(id).value=""; });
+    notify("Profile cleared.");
+  });
+};
+function loadProfile(){
+  const o = store.json("joplexProfile",{});
+  PROFILE_FIELDS.forEach(([id,k])=>{ if(o[k]) byId(id).value=o[k]; });
+}
+function profileAnswer(c){
+  const o = store.json("joplexProfile",{});
+  if(/^who am i\??$/.test(c)){
+    if(!o.fullName && !o.preferred) return "I don't know you yet. Fill in My Profile and I will.";
+    let t = "You are "+(o.fullName||o.preferred)+(o.preferred&&o.fullName?", and I call you "+o.preferred:"")+".";
+    if(o.place) t+=" You live in "+o.place+".";
+    if(o.role) t+=" You "+o.role.replace(/^i\s+/i,"")+".";
+    if(o.about) t+=" "+o.about;
+    return t;
+  }
+  if(/^(where do i live|where am i from)\??$/.test(c)) return o.place?"You live in "+o.place+".":"I don't know where you live yet.";
+  if(/^what do i do\??$/.test(c)) return o.role?"You "+o.role.replace(/^i\s+/i,"")+".":"I don't know what you do yet.";
+  return null;
+}
+
+/* ---------- knowledge engine (FIXED: no unreachable returns) ---------- */
+function kbAnswer(c){
+  const pa = profileAnswer(c);
+  if(pa) return pa;
+
+  if(/^(list )?(topics|knowledge topics)$/.test(c)){
+    return "Joplex knows "+KB.length+" topics: "+Object.keys(KB_META).map(k=>
+      KB_META[k][2]+" ("+KB.filter(e=>e.c===k).length+")").join(", ")+". Say 'topics in finance' to list one.";
+  }
+
+  let m = c.match(/^topics (?:in|about|on) (.+)$/);
+  if(m){
+    const q = m[1].trim();
+    const key = Object.keys(KB_META).find(k =>
+      k === q || KB_META[k][2].toLowerCase().includes(q)
+    );
+    if(!key) return "I don't have a knowledge category called "+q+" yet.";
+    const topics = KB.filter(e=>e.c===key).map(KB_TITLE);
+    return KB_META[key][2]+" ("+topics.length+" topics):\n"+topics.map((t,i)=>(i+1)+". "+t).join("\n");
+  }
+
+  if(/^(wealth|savings) (report|status)$/.test(c)){
+    const w = store.json("joplexWealth",{}), g=parseFloat(w.goalAmount), v=parseFloat(w.currentSavings)||0;
+    return g>0 ? "Wealth Core: "+fmtMoney(v)+" of "+fmtMoney(g)+" saved ("+Math.min(100,v/g*100).toFixed(0)+"%)."
+               : "No savings goal set yet. Use the Wealth Core panel.";
+  }
+
+  if(c === "plan my learning" || c === "plan my learning path" || c === "learning plan" || c === "make me a learning plan"){
+    return "🧠 Joplex Learning Plan:\n"+
+      "1. AI Foundations — understand AI and machine learning.\n"+
+      "2. Coding Foundations — HTML, CSS, JavaScript and logic.\n"+
+      "3. Cybersecurity — fundamentals and defensive practices.\n"+
+      "4. Data & APIs — data, JSON, APIs and how systems communicate.\n"+
+      "5. Finance — budgeting, literacy and risk management.\n"+
+      "6. Advanced Joplex — reasoning, memory, verification and planning.\n\n"+
+      "Learn one subject at a time, practise it, then build something with it. 🚀";
+  }
+
+  if(c.startsWith("search ")){
+    const q = c.slice(7).trim().toLowerCase();
+    if(!q) return "Tell me what you want me to search for.";
+    const results = KB.filter(e =>
+      KB_TITLE(e).toLowerCase().includes(q) ||
+      e.k.some(k=>k.toLowerCase().includes(q)) ||
+      e.a.toLowerCase().includes(q)
+    ).sort((a,b)=>{
+      const at = KB_TITLE(a).toLowerCase().includes(q), bt = KB_TITLE(b).toLowerCase().includes(q);
+      return at === bt ? 0 : at ? -1 : 1;
+    });
+    if(!results.length) return "I couldn't find any knowledge matching '"+q+"'.";
+    return "Knowledge search results for '"+q+"':\n"+results.slice(0,10).map((e,i)=>(i+1)+". "+KB_TITLE(e)).join("\n");
+  }
+
+  m = c.match(/^(?:what(?:'s| is| are)|define|explain|tell me about)\s+(?:an? |the )?(.+?)\??$/);
+  if(!m) return null;
+  const query = m[1].trim().toLowerCase();
+  let e = KB_INDEX[query];
+  if(!e) e = KB.find(item => item.k.some(k=>k.toLowerCase()===query) || KB_TITLE(item).toLowerCase()===query);
+  if(!e) return "I don't have that topic in my Knowledge Core yet.";
+  const ref = KB_MEDICAL.has(e.k[0]) ? KB_SRC.medical : KB_SRC[e.c];
+  return KB_META[e.c][0]+" "+e.a+
+    (e.c==="finance"?" (General education, not financial advice.)":"")+
+    (KB_MEDICAL.has(e.k[0])?" (Educational only, not medical advice.)":"")+
+    (ref?" 📚 Source: "+ref[0]+", reviewed "+KB_REVIEWED+".":"")+
+    (e.w?" 📍 See the "+KB_PANELS[e.w]+" panel.":"");
+}
+
+/* ---------- wealth helpers ---------- */
+const WEALTH_FIELDS = ["wealthCurrency","goalAmount","currentSavings","monthlySaving","principalInput","monthlyInput","rateInput","yearsInput","inflationInput","incomeInput","expensesInput"];
+const num = id => { const v = parseFloat(byId(id).value); return isFinite(v)? v : NaN; };
+const CUR_SYM = {USD:"$",GBP:"£",EUR:"€",ZAR:"R",OTHER:""};
+const fmtMoney = n => { const el=byId("wealthCurrency"); const c = CUR_SYM[el&&el.value] ?? "$"; return (n<0?"-":"")+c+Math.abs(Math.round(n)).toLocaleString(); };
+function saveWealth(){ const o={}; WEALTH_FIELDS.forEach(id=>{ const e=byId(id); if(e) o[id]=e.value; }); store.set("joplexWealth",JSON.stringify(o)); }
+function loadWealth(){
+  const o = store.json("joplexWealth",{});
+  WEALTH_FIELDS.forEach(id=>{ if(o[id]!==undefined && o[id]!==null){ const e=byId(id); if(e) e.value=o[id]; } });
+}
+function growBalance(p,m,rate,years){ const mr=rate/1200; let b=p; for(let i=0;i<Math.round(years*12);i++) b=b*(1+mr)+m; return b; }
+
+/* SVG charts */
+const SVG_NS = "http://www.w3.org/2000/svg";
+const svgEl = (tag,attrs,text) => { const e=document.createElementNS(SVG_NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!==undefined) e.textContent=text; return e; };
+function fmtShort(n){
+  const el=byId("wealthCurrency"), c=CUR_SYM[el&&el.value]??"$", a=Math.abs(n);
+  return c+(a>=1e9?(a/1e9).toFixed(1)+"B":a>=1e6?(a/1e6).toFixed(1)+"M":a>=1e3?(a/1e3).toFixed(0)+"K":String(Math.round(a)));
+}
+function drawGoalChart(goal,cur,mo){
+  const box = byId("goalChart"); if(!box) return; box.textContent="";
+  if(!(mo>0) || cur>=goal) return;
+  const n = Math.min(Math.ceil((goal-cur)/mo),600);
+  const W=360,H=190,L=54,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B,top=goal*1.1;
+  const step = Math.max(1,Math.ceil(n/60)), ms=[];
+  for(let i=0;i<=n;i+=step) ms.push(i);
+  if(ms[ms.length-1]!==n) ms.push(n);
+  const X = i => L+pw*(i/n), Y = v => T+ph*(1-v/top);
+  const unit = n>24?["Yr ",12]:["Mo ",1];
+  const svg = svgEl("svg",{viewBox:"0 0 "+W+" "+H,width:"100%",role:"img","aria-label":"Savings goal chart"});
+  svg.style.cssText="max-width:520px;display:block;margin:10px auto 0;";
+  for(let i=0;i<=4;i++){ const v=top*i/4; svg.appendChild(svgEl("line",{x1:L,x2:W-R,y1:Y(v),y2:Y(v),stroke:"rgba(200,150,190,.3)","stroke-width":1})); svg.appendChild(svgEl("text",{x:L-6,y:Y(v)+3,"text-anchor":"end","font-size":10,fill:"#c79bb8"},fmtShort(v))); }
+  [0,n/2,n].forEach((t,i)=>svg.appendChild(svgEl("text",{x:X(t),y:H-8,"text-anchor":i===0?"start":i===2?"end":"middle","font-size":10,fill:"#c79bb8"},unit[0]+(Math.round(t/unit[1]*10)/10))));
+  svg.appendChild(svgEl("line",{x1:L,x2:W-R,y1:Y(goal),y2:Y(goal),stroke:"#7dffb0","stroke-width":2,"stroke-dasharray":"5 4"}));
+  svg.appendChild(svgEl("path",{d:"M"+ms.map(i=>X(i).toFixed(1)+","+Y(Math.min(goal,cur+mo*i)).toFixed(1)).join("L"),fill:"none",stroke:"#ff5fa2","stroke-width":2,"stroke-linejoin":"round"}));
+  box.appendChild(svg);
+}
+function drawGrowthChart(p,m,rate,y,inf){
+  const box = byId("growthChart"); if(!box) return; box.textContent="";
+  const W=360,H=210,L=54,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
+  const ts=[]; for(let i=0;i<=Math.floor(y);i++) ts.push(i); if(ts[ts.length-1]!==y) ts.push(y);
+  const series = [
+    ["Cautious "+(rate-2).toFixed(1)+"%","#ff9e7a",ts.map(t=>growBalance(p,m,rate-2,t)),""],
+    ["Expected "+rate.toFixed(1)+"%","#ff5fa2",ts.map(t=>growBalance(p,m,rate,t)),""],
+    ["Optimistic "+(rate+2).toFixed(1)+"%","#7dffb0",ts.map(t=>growBalance(p,m,rate+2,t)),""],
+    ["Money you put in","#c79bb8",ts.map(t=>p+m*Math.round(t*12)),"5 4"]
+  ];
+  if(inf>0) series.push(["Expected, today's money","#c084fc",ts.map(t=>growBalance(p,m,rate,t)/Math.pow(1+inf/100,t)),"2 3"]);
+  let top = Math.max(...series.map(s=>Math.max(...s[2])),1);
+  const mag = Math.pow(10,Math.floor(Math.log10(top))); top = Math.ceil(top/(mag/2))*(mag/2);
+  const X = t => L+pw*(t/y), Y = v => T+ph*(1-Math.max(0,v)/top);
+  const svg = svgEl("svg",{viewBox:"0 0 "+W+" "+H,width:"100%",role:"img","aria-label":"Growth projection chart"});
+  svg.style.cssText="max-width:520px;display:block;margin:10px auto 0;";
+  for(let i=0;i<=4;i++){ const v=top*i/4, yy=Y(v); svg.appendChild(svgEl("line",{x1:L,x2:W-R,y1:yy,y2:yy,stroke:"rgba(200,150,190,.3)","stroke-width":1})); svg.appendChild(svgEl("text",{x:L-6,y:yy+3,"text-anchor":"end","font-size":10,fill:"#c79bb8"},fmtShort(v))); }
+  [0,y/2,y].forEach((t,i)=>svg.appendChild(svgEl("text",{x:X(t),y:H-8,"text-anchor":i===0?"start":i===2?"end":"middle","font-size":10,fill:"#c79bb8"},"Yr "+(Math.round(t*10)/10))));
+  series.forEach(s=>svg.appendChild(svgEl("path",{d:"M"+s[2].map((v,i)=>X(ts[i]).toFixed(1)+","+Y(v).toFixed(1)).join("L"),fill:"none",stroke:s[1],"stroke-width":2,"stroke-dasharray":s[3],"stroke-linejoin":"round"})));
+  box.appendChild(svg);
+}
+
+/* ---------- console commands ---------- */
+let commandCounter = 0, joplexLights = false;
+let savedHistory = arr("joplexHistory").filter(x=>typeof x==="string").slice(-100);
+let currentMission = store.get("joplexCurrentMission") || DEFAULT_MISSION;
+let currentMissionStatus = store.get("joplexMissionStatus") || "In Progress 🟡";
+
+function speak(text){
+  if(!("speechSynthesis" in window) || !text || document.body.classList.contains("pinlocked")) return;
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang="en-GB"; u.rate=1; u.pitch=1;
+    window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function handleSafetyCommand(c){
+  if(/^(emergency stop|stop joplex|halt joplex)$/.test(c)){
+    engageLock("command");
+    return "🛑 Emergency Stop: Safety Lock ACTIVE. State-changing actions are blocked until a human releases the lock.";
+  }
+  if(/^(unlock joplex|release safety lock)$/.test(c)){
+    if(!isLocked()) return "Safety Lock is not active.";
+    humanConfirm("Release the Safety Lock and let Joplex resume normal operation?").then(ok=>{
+      if(ok){ store.del("joplexSafetyLock"); safetyLog("unlock","human confirmed"); updateSafetyBadge(); notify("🔓 Safety Lock RELEASED by human confirmation."); }
+      else { safetyLog("unlock declined",""); notify("Safety Lock stays ACTIVE."); }
+    });
+    return "Awaiting your on-screen confirmation to release the Safety Lock…";
+  }
+  if(/^(safety|safety status|security status)$/.test(c)){
+    return "Joplex Safety Status: "+(isLocked()?"LOCKED":"ARMED")+". Permission Gate, on-screen confirmation, Safety Lock and Audit Log are enabled. "+
+      arr("joplexSafetyLog").length+" events logged. The page is blocked from network access.";
+  }
+  if(/^(audit|audit log|safety log|show safety log)$/.test(c)){
+    const log = arr("joplexSafetyLog").slice(-5);
+    return log.length ? "Last safety events: "+log.map(e=>(e.event||e.action)+(e.detail?" ("+e.detail+")":"")+" @ "+new Date(e.time).toLocaleString()).join(" | ") : "Safety log is empty.";
+  }
+  if(isLocked() && /^(save |remember |lights )/.test(c)){
+    safetyLog("blocked",c);
+    return "🔒 Safety Lock ACTIVE: that action is blocked. Say 'unlock joplex' to release it.";
+  }
+  if(c==="forget memory"){
+    safeAction("forget memory","Erase Joplex's saved memory?",()=>{ store.del("joplexMemory"); notify("🗑️ Memory cleared."); });
+    return "Awaiting your on-screen confirmation…";
+  }
+  if(c==="clear"){
+    ACTIONS["clear-history"]();
+    return "Awaiting your on-screen confirmation…";
+  }
+  return null;
+}
+function unsureReply(c){
+  const words = c.split(" ");
+  const hit = KB.find(e=>e.k.some(k=>words.includes(k)));
+  return hit ? "I'm not sure I understood. Did you mean 'what is "+hit.k[0]+"'?"
+             : "I'm not sure about that, and I won't guess. Try 'help' or 'topics'.";
+}
+function runCommand(){
+  const input = byId("commandInput");
+  const command = input.value.toLowerCase().replace(/\s+/g," ").trim().slice(0,200);
+  const response = byId("commandResponse");
+  let out;
+
+  const safe = handleSafetyCommand(command);
+  if(safe !== null) out = safe;
+  else {
+    const core = coreCommand(command);
+    if(core !== null) out = core;
+    else {
+      const kb = kbAnswer(command);
+      if(kb !== null) out = kb;
+      else if(command.startsWith("repeat ")){
+        const msg = command.slice(7).trim();
+        out = msg ? "🔁 "+msg : "Tell me what you want me to repeat.";
+      }
+      else if(command.includes("motivate")){
+        const msgs=["Keep going. Small progress is still progress. 💪","Build today what your future self will thank you for. 🚀","One mission at a time. Joplex is growing. 🤖","You don't need to know everything. You just need to keep learning. 🧠"];
+        out = msgs[Math.floor(Math.random()*msgs.length)];
+      }
+      else if(command.includes("hello")) out = "Hello! Joplex is ready to assist you. 🦋";
+      else if(/\btime\b/.test(command)) out = "The current time is "+new Date().toLocaleTimeString()+" ⏰";
+      else if(command.includes("current mission")||command.includes("show mission")) out = "Current mission: "+currentMission+".";
+      else if(/\bdate\b/.test(command)) out = "📅 Today is "+new Date().toLocaleDateString();
+      else if(/\bday\b/.test(command)) out = "📅 Today is "+new Date().toLocaleDateString("en-US",{weekday:"long"})+".";
+      else if(command.includes("what is my mission status")) out = "Your mission status is: "+(store.get("joplexMissionStatus")||"unknown")+" 🚀";
+      else if(/\bstatus\b/.test(command)||/\bonline\b/.test(command)) out = "Joplex systems are online 🟢";
+      else if(command.startsWith("save ")){
+        const mem = command.slice(5).trim();
+        if(mem){ store.set("joplexMemory",mem); out="🧠 Memory saved: "+mem; } else out="Tell me what you want me to save.";
+      }
+      else if(command.startsWith("remember ")){
+        const mem = command.slice(9).trim();
+        if(mem){ store.set("joplexMemory",mem); out="🧠 I'll remember: "+mem; } else out="Tell me what you want me to remember.";
+      }
+      else if(command==="show memory"){ const m=store.get("joplexMemory"); out = m?"🧠 Joplex remembers: "+m:"🧠 Joplex has no saved memory yet."; }
+      else if(command.includes("who are you")) out = "I am Joplex, your AI project. 🤖🦋";
+      else if(command==="when was joplex created") out = "Joplex was created during the Rise of Joplex journey. 🚀";
+      else if(command==="what is joplex") out = "Joplex is my AI project. I am building it one mission at a time. 🤖";
+      else if(command==="who created joplex") out = "Michael Maverick created Joplex. 🚀";
+      else if(command==="what version are you") out = "I am Joplex Version 0.2.1. 🦋";
+      else if(command.includes("what is my name")){ const n=store.get("joplexName"); out = n?"Your name is "+n+". 👤":"I don't know your name yet."; }
+      else if(command.includes("what is my goal")) out = "Your goal is to build Joplex. 🚀";
+      else if(command.includes("what is my mission")) out = "Your current mission is Mission "+currentMission+". 🚀";
+      else if(command==="show knowledge") out = "Joplex Knowledge Core is online. 🧠⚡ Categories: "+Object.keys(KB_META).map(k=>KB_META[k][2]).join(", ")+".";
+      else if(command.includes("introduce me")){ const n=store.get("joplexName"); out = n?"This is "+n+". They are building Joplex one mission at a time. 🚀":"I don't know your name yet."; }
+      else if(command.includes("good morning")) out = "Good morning! Let's make today another step forward. ☀️";
+      else if(command.includes("i am back")){ const n=store.get("joplexName"); out = n?"Welcome back, "+n+"! 🦋🚀":"Welcome back! I don't know your name yet."; }
+      else if(command.startsWith("countdown ")){
+        const n = parseInt(command.slice(9).trim());
+        if(n>0 && n<=100){ const c=[]; for(let i=n;i>=0;i--) c.push(i); out="🚀 Countdown: "+c.join(", "); } else out="Give me a number from 1 to 100.";
+      }
+      else if(command.startsWith("count to ")){
+        const n = parseInt(command.slice(9).trim());
+        if(n>0 && n<=100){ const c=[]; for(let i=1;i<=n;i++) c.push(i); out="🔢 "+c.join(", "); } else out="Please give me a number from 1 to 100.";
+      }
+      else if(command.startsWith("choose ")){
+        const choices = command.slice(7).split(" or ");
+        out = choices.length>=2 ? "🦋 Joplex chooses: "+choices[Math.floor(Math.random()*choices.length)] : "Give me at least two choices using 'or'.";
+      }
+      else if(command.includes("random number")) out = "🎲 Your random number is "+(Math.floor(Math.random()*100)+1)+"!";
+      else if(command.includes("roll a die")||command.includes("roll dice")) out = "🎲 The die rolled a "+(Math.floor(Math.random()*6)+1)+"!";
+      else if(command.includes("flip a coin")) out = "The coin landed on "+(Math.random()<0.5?"Heads 🪙":"Tails 🪙");
+      else if(command.includes("compliment")){
+        const c=["You're doing something most people never do: you're actually building. 🔥","You're making progress every time you show up. 🚀","Joplex is getting better because you keep improving it. 🦋","You've come a long way since Mission 001. 💪"];
+        out = c[Math.floor(Math.random()*c.length)];
+      }
+      else if(command.includes("tell me a joke")||command==="joke"){
+        const j=["Why did the computer go to the doctor? Because it had a virus! 😂","Why was the JavaScript developer sad? Because they didn't know how to null their feelings? 💻","What do you call a computer that sings? A Dell-a! 🎤"];
+        out = j[Math.floor(Math.random()*j.length)];
+      }
+      else if(command.includes("how are you")){
+        const r=["I'm doing great! Systems online. 🦋","I'm feeling powerful! Let's keep building. 🔥","All systems running smoothly. ⚡"];
+        out = r[Math.floor(Math.random()*r.length)];
+      }
+      else if(command.includes("thank you")) out = "You're welcome! 🦋💖";
+      else if(command.includes("goodbye")) out = "Goodbye! Keep building. 🚀";
+      else if(command.startsWith("calculate ")){
+        const calc = command.slice(10).trim();
+        if(/^[0-9+\-*/().%\s]+$/.test(calc)){
+          try{ out = "The answer is "+safeCalc(calc)+". 🧮🦋"; }catch(e){ out="I couldn't calculate that. 🤔"; }
+        } else out = "I can only calculate simple math (numbers and + − × ÷ ( ) %). 🧮";
+      }
+      else if(command==="lights on"){
+        joplexLights=true; document.body.style.boxShadow="inset 0 0 120px rgba(255,180,220,0.35)"; out="💡 Joplex lights are now ON.";
+      }
+      else if(command==="lights off"){
+        joplexLights=false; document.body.style.boxShadow="none"; out="🌑 Joplex lights are now OFF.";
+      }
+      else if(command.includes("system report")) out = "All systems operational. Voice, memory, clock and commands online. 🟢";
+      else if(command.includes("wake up joplex")) out = "I'm awake. Ready for the next mission. 🤖⚡";
+      else if(/\bhelp\b/.test(command)) out = "I can motivate you, tell jokes, remember things, tell time/date, roll dice, flip coins, count, search knowledge and more. 🦋";
+      else out = unsureReply(command);
+    }
+  }
+
+  response.textContent = out;
+  speak(out);
+
+  commandCounter++;
+  workNote(command);
+  byId("lastCommand").textContent = "Last command: "+command;
+  byId("commandCount").textContent = "Commands this session: "+commandCounter;
+
+  const hist = byId("commandHistory");
+  const item = document.createElement("li"); item.textContent = command; hist.appendChild(item);
+  savedHistory.push(command); savedHistory = savedHistory.slice(-100);
+  store.set("joplexHistory", JSON.stringify(savedHistory));
+  byId("joplexMode").textContent = "Mode: Idle ⚪";
+}
+
+ACTIONS["run"] = runCommand;
+ACTIONS["listen"] = function(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ notify("Speech recognition is not supported in this browser."); return; }
+  const rec = new SR(); activeRecognition = rec;
+  rec.lang="en-US"; rec.interimResults=false;
+  rec.onresult = ev => {
+    const spoken = ev.results[0][0].transcript.toLowerCase();
+    byId("commandInput").value = spoken.replace(/joe plex/gi,"Joplex");
+    runCommand();
+  };
+  rec.onerror = () => { byId("joplexMode").textContent="Mode: Idle ⚪"; };
+  rec.onend = () => { if(byId("joplexMode").textContent==="Mode: Listening 🎙️") byId("joplexMode").textContent="Mode: Idle ⚪"; activeRecognition=null; };
+  byId("joplexMode").textContent = "Mode: Listening 🎙️";
+  rec.start();
+};
+ACTIONS["clear-history"] = function(){
+  safeAction("clear history","Clear the command history?",()=>{
+    byId("commandHistory").innerHTML=""; savedHistory=[];
+    store.del("joplexHistory"); notify("🧹 Command history cleared.");
+  });
+};
+ACTIONS["reset"] = function(){
+  safeAction("reset memory","Reset Joplex's saved name, memory and command history? Your safety log is kept.",()=>{
+    ["joplexName","joplexMemory","joplexHistory"].forEach(k=>store.del(k));
+    savedHistory=[]; byId("commandHistory").innerHTML="";
+    byId("nameInput").value=""; byId("response").textContent="Joplex memory has been reset. 🧠";
+    speak("Joplex memory has been reset.");
+  });
+};
+ACTIONS["complete-mission"] = function(){
+  safeAction("complete mission","Mark the current mission complete and start the next one?",()=>{
+    const next = String(parseInt(currentMission,10)+1).padStart(3,"0");
+    currentMission = next;
+    byId("missionNumber").textContent = "Mission: "+next;
+    byId("missionStatus").textContent = "Status: In Progress 🟡";
+    byId("ccMission").textContent = "🎯 Mission: "+next;
+    store.set("joplexCurrentMission",next); store.set("joplexMissionStatus","In Progress 🟡");
+    notify("Mission complete. Mission "+next+" is now active.");
+  });
+};
+ACTIONS["show-message"] = function(){
+  const count = (Number(store.get("activations"))||0)+1;
+  store.set("activations",String(count));
+  notify("Joplex Activated! 🦋 Activation #"+count);
+};
+ACTIONS["greet"] = function(){
+  const name = byId("nameInput").value.trim();
+  if(name){
+    store.set("joplexName",name);
+    const g = "Welcome, "+name+"! I am Joplex. Ready to continue our journey. 🦋🤖";
+    byId("response").textContent = g; speak(g); notify(g);
+  } else {
+    const m = "Please enter your name first.";
+    byId("response").textContent = m; speak(m);
+  }
+};
+ACTIONS["activate"] = function(){
+  byId("status").textContent = "Joplex is online 🟢";
+  speak("Joplex is online.");
+};
+
+/* ---------- wealth actions ---------- */
+ACTIONS["update-goal"] = function(){
+  const goal=num("goalAmount"), cur=Math.max(0,num("currentSavings")||0), mo=Math.max(0,num("monthlySaving")||0);
+  const r = byId("goalReadout");
+  if(!(goal>0)){ r.textContent="Enter a savings goal greater than 0."; byId("goalChart").textContent=""; return; }
+  const pct = Math.min(100,cur/goal*100);
+  byId("goalProgressBar").style.width = pct.toFixed(1)+"%";
+  let t = fmtMoney(cur)+" of "+fmtMoney(goal)+" saved ("+pct.toFixed(1)+"%).";
+  if(cur>=goal) t+="\n🎉 Goal reached.";
+  else if(mo>0){
+    const n = Math.ceil((goal-cur)/mo);
+    t += "\nAt "+fmtMoney(mo)+"/month (no growth): about "+Math.floor(n/12)+" yr "+(n%12)+" mo to go.";
+  } else t += "\nAdd a monthly saving amount for a time estimate.";
+  r.textContent = t;
+  drawGoalChart(goal,cur,mo);
+  saveWealth();
+  speak("Savings goal updated. You are at "+pct.toFixed(0)+" percent.");
+};
+ACTIONS["project"] = function(){
+  const p=num("principalInput")||0, m=num("monthlyInput")||0, rate=num("rateInput"), y=num("yearsInput"), inf=num("inflationInput")||0;
+  const r = byId("growthReadout");
+  if(isNaN(rate)||isNaN(y)||y<1||y>80||rate<-50||rate>50||p<0||m<0){
+    byId("growthChart").textContent="";
+    r.textContent = "Enter a return between -50% and 50%, years from 1 to 80, and non-negative amounts."; return;
+  }
+  const contributed = p+m*Math.round(y*12);
+  let t = "Contributed: "+fmtMoney(contributed)+" over "+y+" yrs";
+  [["Cautious",rate-2],["Expected",rate],["Optimistic",rate+2]].forEach(([label,rt])=>{
+    const v = growBalance(p,m,rt,y);
+    t += "\n"+label+" ("+rt.toFixed(1)+"%): "+fmtMoney(v);
+    if(inf>0) t += "  ≈ "+fmtMoney(v/Math.pow(1+inf/100,y))+" in today's money";
+  });
+  if(rate>10) t += "\n⚠️ Returns above about 10% a year are optimistic for long-run planning.";
+  r.textContent = t+"\nAssumptions: constant return, monthly compounding, deposits at month end, no fees or taxes.\nEstimates only. Not guaranteed.";
+  drawGrowthChart(p,m,rate,y,inf);
+  saveWealth();
+};
+ACTIONS["cashflow"] = function(){
+  const inc=num("incomeInput"), exp=num("expensesInput"), sav=Math.max(0,num("currentSavings")||0);
+  const r = byId("cashReadout");
+  if(!(inc>0)||isNaN(exp)||exp<0){ r.textContent="Enter monthly income above 0 and monthly expenses."; return; }
+  const surplus = inc-exp;
+  let t = surplus>=0 ? "Surplus: "+fmtMoney(surplus)+"/month ("+(surplus/inc*100).toFixed(0)+"% of income)."
+                     : "⚠️ Spending exceeds income by "+fmtMoney(-surplus)+"/month.";
+  t += "\nEmergency fund target (3–6 months of expenses): "+fmtMoney(exp*3)+" to "+fmtMoney(exp*6)+".";
+  if(exp>0 && sav>0) t += "\nYour savings cover about "+(sav/exp).toFixed(1)+" months of expenses.";
+  t += "\n50/30/20 guide: needs "+fmtMoney(inc*.5)+", wants "+fmtMoney(inc*.3)+", saving/debt "+fmtMoney(inc*.2)+".";
+  r.textContent = t; saveWealth();
+};
+ACTIONS["export-csv"] = function(){
+  const q = v => '"'+String(v).replace(/"/g,'""').replace(/^[=+\-@]/,"'$&")+'"';
+  const rows = [["field","value"]].concat(WEALTH_FIELDS.map(id=>[id,byId(id).value]));
+  downloadFile("joplex-wealth.csv", rows.map(r=>r.map(q).join(",")).join("\n"), "text/csv");
+};
+ACTIONS["clear-wealth"] = function(){
+  safeAction("clear wealth data","Erase all saved Wealth Core numbers from this browser?",()=>{
+    store.del("joplexWealth");
+    WEALTH_FIELDS.forEach(id=>{ byId(id).value=""; });
+    ["goalReadout","growthReadout","cashReadout"].forEach(id=>{ byId(id).textContent=""; });
+    byId("growthChart").textContent=""; byId("goalChart").textContent="";
+    byId("goalProgressBar").style.width="0%";
+    notify("Wealth data cleared.");
+  });
+};
+
+/* ---------- backups & glass & theme ---------- */
+function downloadFile(name,text,type){
+  const url = URL.createObjectURL(new Blob([text],{type:type}));
+  const a = document.createElement("a"); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+ACTIONS["export"] = function(){
+  const o = {};
+  try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith("joplex") && !k.startsWith("joplexPin")) o[k]=localStorage.getItem(k); } }catch(e){}
+  downloadFile("joplex-data.json",JSON.stringify(o,null,2),"application/json");
+  store.set("joplexLastBackup",new Date().toISOString());
+  updateBackupBanner(); safetyLog("export","all data"); notify("Your data was exported.");
+};
+ACTIONS["snooze"] = function(){ store.set("joplexBackupSnooze",String(Date.now()+7*DAY_MS)); updateBackupBanner(); };
+ACTIONS["delete-all"] = function(){
+  safeAction("delete all data","Permanently delete everything Joplex has stored on this device?",()=>{
+    try{ Object.keys(localStorage).filter(k=>k.startsWith("joplex")).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+    location.reload();
+  });
+};
+function updateBackupBanner(){
+  const b = byId("backupBanner"); if(!b) return;
+  const last = Date.parse(store.get("joplexLastBackup","")||"")||0;
+  const days = Math.floor((Date.now()-last)/DAY_MS);
+  const info = byId("backupInfo");
+  if(info) info.textContent = last ? "Last backup: "+new Date(last).toLocaleDateString() : "No backup yet.";
+  const hasData = ["joplexProfile","joplexWealth","joplexMemory","joplexName"].some(k=>store.get(k));
+  const due = hasData && Date.now()-last>14*DAY_MS && Date.now()>Number(store.get("joplexBackupSnooze","0"));
+  b.style.display = due?"block":"none";
+  if(due) byId("backupText").textContent = last ? "💾 Your last backup was "+days+" days ago." : "💾 You haven't backed up your Joplex data yet.";
+}
+if(store.get("joplexGlass")==="off") document.documentElement.classList.add("noglass");
+function updateGlassBtn(){ const b=byId("glassBtn"); if(b) b.textContent="✨ Glass: "+(document.documentElement.classList.contains("noglass")?"Off":"On"); }
+ACTIONS["glass"] = function(){
+  const off = document.documentElement.classList.toggle("noglass");
+  store.set("joplexGlass",off?"off":"on"); updateGlassBtn();
+};
+function applyTheme(mode){
+  const html = document.documentElement;
+  html.classList.toggle("light",mode==="light");
+  const btn = byId("themeToggle");
+  if(btn) btn.textContent = mode==="light"?"🌙 Dark Mode":"☀️ Light Mode";
+  store.set("joplexTheme",mode);
+}
+ACTIONS["theme"] = function(){ applyTheme(document.documentElement.classList.contains("light")?"dark":"light"); };
+
+/* ---------- passcode ---------- */
+const hexOf = b => [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+async function hashPin(pin,saltHex){
+  const salt = Uint8Array.from(saltHex.match(/../g).map(h=>parseInt(h,16)));
+  const key = await crypto.subtle.importKey("raw",new TextEncoder().encode(pin),"PBKDF2",false,["deriveBits"]);
+  return hexOf(await crypto.subtle.deriveBits({name:"PBKDF2",salt:salt,iterations:200000,hash:"SHA-256"},key,256));
+}
+const pinEnabled = () => !!store.get("joplexPinHash");
+let pinBusy=false, pinTimer=null;
+function pinSay(t,bad){ const e=byId("pinStatus"); e.textContent=t; e.className=bad?"bad":""; }
+function pinBar(pct,bad){ const b=byId("pinBar"); b.style.width=pct+"%"; b.style.background=bad?"#ff3b6b":"#ff5fa2"; b.style.boxShadow="0 0 10px "+(bad?"#ff3b6b":"#ff5fa2"); }
+function pinCountdown(){
+  clearInterval(pinTimer);
+  const tick = () => {
+    const left = Math.ceil((Number(store.get("joplexPinUntil","0"))-Date.now())/1000);
+    if(left<=0){ clearInterval(pinTimer); pinSay("Authentication required"); pinBar(0); }
+    else { pinSay("Access locked. Retry in "+left+"s",true); pinBar(100,true); }
+  };
+  tick(); pinTimer=setInterval(tick,1000);
+}
+function showPinScreen(){
+  document.body.classList.add("pinlocked");
+  byId("pinScreen").style.display="flex";
+  byId("pinInput").value="";
+  pinSay("Authentication required"); pinBar(0);
+  if(Date.now()<Number(store.get("joplexPinUntil","0"))) pinCountdown();
+  setTimeout(()=>byId("pinInput").focus(),50);
+}
+async function unlockScreen(){
+  if(pinBusy) return;
+  if(Date.now()<Number(store.get("joplexPinUntil","0"))){ pinCountdown(); return; }
+  pinBusy=true; pinSay("Verifying..."); pinBar(35);
+  let ok=false;
+  try{ ok = (await hashPin(byId("pinInput").value,store.get("joplexPinSalt",""))) === store.get("joplexPinHash"); }catch(e){}
+  if(ok){
+    clearInterval(pinTimer);
+    store.del("joplexPinFails"); store.del("joplexPinUntil");
+    safetyLog("screen unlocked","");
+    pinBar(100);
+    pinSay("Access granted. Welcome back, "+(store.get("joplexName")||"Commander")+".");
+    setTimeout(()=>{ byId("pinScreen").style.display="none"; document.body.classList.remove("pinlocked"); lastActive=Date.now(); pinBusy=false; },900);
+  } else {
+    const f = Number(store.get("joplexPinFails","0"))+1;
+    store.set("joplexPinFails",String(f));
+    safetyLog("wrong passcode","attempt "+f);
+    byId("pinInput").value=""; pinBar(100,true);
+    if(f>=5){ store.set("joplexPinUntil",String(Date.now()+30000*Math.pow(2,Math.min(f-5,6)))); pinBusy=false; pinCountdown(); }
+    else { pinSay("Access denied. Attempt "+f+" of 5.",true); setTimeout(()=>{ pinBar(0); pinBusy=false; },700); }
+  }
+}
+ACTIONS["set-pin"] = async function(){
+  const el = byId("pinNew"), pin = el.value;
+  if(pin.length<6){ notify("Use at least 6 characters."); return; }
+  if(!(window.crypto && crypto.subtle)){ notify("This browser can't set a passcode here."); return; }
+  const salt = hexOf(crypto.getRandomValues(new Uint8Array(16)));
+  store.set("joplexPinSalt",salt);
+  store.set("joplexPinHash",await hashPin(pin,salt));
+  el.value=""; safetyLog("passcode set","");
+  notify("🔑 Passcode set. Joplex locks on load and after 5 idle minutes.");
+};
+ACTIONS["remove-pin"] = function(){
+  if(!pinEnabled()){ notify("No passcode is set."); return; }
+  safeAction("remove passcode","Remove the passcode lock?",()=>{
+    ["joplexPinHash","joplexPinSalt","joplexPinFails","joplexPinUntil"].forEach(k=>store.del(k));
+    notify("Passcode removed.");
+  });
+};
+ACTIONS["lock-now"] = function(){ if(!pinEnabled()){ notify("Set a passcode first."); return; } showPinScreen(); };
+ACTIONS["unlock"] = unlockScreen;
+let lastActive = Date.now();
+["mousemove","keydown","touchstart","click"].forEach(ev=>document.addEventListener(ev,()=>{ lastActive=Date.now(); },{passive:true}));
+setInterval(()=>{ if(pinEnabled() && !document.body.classList.contains("pinlocked") && Date.now()-lastActive>300000) showPinScreen(); },10000);
+
+/* ---------- advanced cores ---------- */
+const BIAS_RE = /\b(obviously|everyone|nobody|always|never|guaranteed|can't fail|no way|definitely|certainly|for sure|100%)/gi;
+const STAKES_RE = /\b(invest|loan|debt|mortgage|medic|dose|diagnos|surgery|lawsuit|legal|contract|visa|tax|quit my job|insurance)/i;
+function reasonThrough(q,facts,assumed,options){
+  const flags=[]; let score=100;
+  if(q.split(" ").length<4){ flags.push("The question is very short or vague. Say what decision you need."); score-=10; }
+  if(!facts.length){ flags.push("No facts given: any conclusion would be a guess."); score-=30; }
+  else if(assumed.length>facts.length){ flags.push("More assumptions ("+assumed.length+") than facts ("+facts.length+"): treat the result as a hypothesis."); score-=15; }
+  if(options.length<2){ flags.push("Fewer than two options: add a real alternative."); score-=15; }
+  const bias = (q+" "+facts.join(" ")+" "+assumed.join(" ")).match(BIAS_RE)||[];
+  if(bias.length){ flags.push("Absolute wording ("+[...new Set(bias.map(b=>b.toLowerCase()))].slice(0,4).join(", ")+"): is it true every time?"); score-=Math.min(20,bias.length*10); }
+  if(STAKES_RE.test(q+" "+options.join(" "))) flags.push("High-stakes topic: get advice from a qualified person before acting.");
+  score = Math.max(5,score);
+  const label = score>=75?"High":score>=50?"Medium":"Low";
+  const opts = options.slice();
+  if(!opts.some(o=>/\b(do nothing|wait|no change)\b/i.test(o))) opts.push("Do nothing / wait (baseline)");
+  const out = ["🧠 REASONING TRACE","1. QUESTION: "+q,"","2. FACTS:"]
+    .concat(facts.length?facts.map((f,i)=>"  F"+(i+1)+". "+f):["  none provided"])
+    .concat(["","3. ASSUMPTIONS:"])
+    .concat(assumed.length?assumed.map((a,i)=>"  A"+(i+1)+". "+a+" → how could you test this?"):["  none stated. What are you taking for granted?"])
+    .concat(["","4. OPTIONS:"]).concat(opts.map((o,i)=>"  O"+(i+1)+". "+o))
+    .concat(["","5. STRESS TESTS:","  • Which option is easiest to undo? Prefer it when unsure.","  • Pre-mortem: if your top option failed in 6 months, why?","  • What new fact would change your mind?","","6. CHECKS:"])
+    .concat(flags.length?flags.map(f=>"  ⚠️ "+f):["  ✅ No structural problems found."])
+    .concat(["","Reasoning support: "+label+" ("+score+"/100). Rates how well-supported the reasoning is, not whether an option is right."]);
+  return {text:out.join("\n"),score:score};
+}
+ACTIONS["reason"] = function(){
+  if(coreLocked("reasonOut")) return;
+  const q = tidy(byId("rcQuestion").value,160);
+  if(!q){ say("reasonOut","Type the question or decision first."); return; }
+  const r = reasonThrough(q,lineList(byId("rcFacts").value),lineList(byId("rcAssume").value),lineList(byId("rcOptions").value));
+  say("reasonOut",r.text);
+  const log = arr("joplexReasonLog"); log.push({q:q,s:r.score,t:new Date().toISOString()});
+  store.set("joplexReasonLog",JSON.stringify(log.slice(-20)));
+};
+ACTIONS["reason-log"] = function(){
+  const log = arr("joplexReasonLog");
+  say("reasonOut", log.length ? "Past reasoning (latest first):\n"+log.slice(-8).reverse().map(x=>"• "+tidy(x.q,100)+" — "+x.s+"/100, "+ago(x.t)).join("\n") : "No saved reasoning yet.");
+};
+
+const PHASES = ["Define success and constraints","Gather resources and learn what you need","Build the first working version","Test, review and fix problems","Finish and reflect on what you learned"];
+function goals(){ return arr("joplexGoals").filter(g=>g&&typeof g.title==="string"&&Array.isArray(g.steps)).map(g=>Object.assign({},g,{steps:g.steps.filter(s=>s&&typeof s.text==="string")})); }
+function saveGoals(all){ store.set("joplexGoals",JSON.stringify(all)); renderGoals(); }
+function makeGoal(title,deadline){
+  const t0=today0(), total=dayDiff(t0,deadline), n=Math.max(1,Math.min(5,total));
+  const names = n===5?PHASES:PHASES.slice(0,n-1).concat(PHASES[4]);
+  return {id:newId(),title:title,deadline:isoDay(deadline),created:new Date().toISOString(),
+    steps:names.map((t,i)=>({id:newId(),text:t,due:isoDay(addDays(t0,Math.round(total*(i+1)/n))),done:false}))};
+}
+function goalState(g){
+  const t0=today0(), done=g.steps.filter(s=>s.done).length, total=g.steps.length;
+  const late=g.steps.filter(s=>!s.done&&parseDay(s.due)&&parseDay(s.due)<t0).length;
+  const dl=parseDay(g.deadline), left=dl?dayDiff(t0,dl):null;
+  const next=g.steps.filter(s=>!s.done).sort((a,b)=>String(a.due).localeCompare(String(b.due)))[0];
+  let status="🟢 On track";
+  if(total&&done===total) status="✅ Complete";
+  else if(left!==null&&left<0) status="🔴 Overdue";
+  else if(late) status="🟠 Behind ("+late+" step"+(late>1?"s":"")+" overdue)";
+  return {done:done,total:total,left:left,next:next,status:status,pct:total?Math.round(done/total*100):0};
+}
+function createGoalFrom(title,deadline,outId){
+  if(coreLocked(outId)) return "🔒 Safety Lock ACTIVE: planning is read-only.";
+  title = tidy(title,80);
+  if(!title) return "Give the goal a name first.";
+  if(!deadline || dayDiff(today0(),deadline)<1) return "Pick a deadline that is tomorrow or later.";
+  const all = goals();
+  if(all.length>=8) return "You have 8 goals already. Finish or delete one first.";
+  all.push(makeGoal(title,deadline)); saveGoals(all);
+  return "🗺️ Plan created: '"+title+"' with "+all[all.length-1].steps.length+" dated steps.";
+}
+ACTIONS["create-goal"] = function(){
+  const msg = createGoalFrom(byId("gpTitle").value,parseDay(byId("gpDate").value),"planOut");
+  say("planOut",msg);
+  if(msg.indexOf("🗺️")===0) byId("gpTitle").value="";
+};
+function nextAction(){
+  const open = goals().map(g=>({g:g,st:goalState(g)})).filter(x=>x.st.next).sort((a,b)=>String(a.st.next.due).localeCompare(String(b.st.next.due)))[0];
+  return open ? "➡️ Next action: "+open.st.next.text+" (goal '"+open.g.title+"', due "+open.st.next.due+")." : "No open steps. Create a goal in the Planning Engine.";
+}
+function goalSummary(){
+  const all = goals();
+  return all.length ? all.map(g=>{ const s=goalState(g); return "• "+g.title+": "+s.status+", "+s.done+"/"+s.total+" steps"+(s.left!==null&&s.left>=0?", "+s.left+" days left":""); }).join("\n") : "You have no goals yet.";
+}
+function renderGoals(){
+  const box = byId("goalList"); if(!box) return;
+  box.textContent="";
+  const all = goals();
+  if(!all.length){ box.appendChild(mk("p","No goals yet. Create one and Joplex will date the steps for you.","core-note")); return; }
+  all.forEach(g=>{
+    const st=goalState(g), card=mk("div",null,"goal-card");
+    card.appendChild(mk("h4",g.title));
+    card.appendChild(mk("p",st.status+" · "+st.done+"/"+st.total+" steps · "+(st.left===null?"no deadline":st.left<0?Math.abs(st.left)+" days past deadline":st.left+" days left"),"core-note"));
+    const tr=mk("div",null,"progress-track"), fill=mk("div",null,"progress-fill");
+    fill.style.width=st.pct+"%"; tr.appendChild(fill); card.appendChild(tr);
+    g.steps.forEach(s=>{
+      const lab=mk("label"), cb=document.createElement("input");
+      cb.type="checkbox"; cb.checked=!!s.done;
+      cb.addEventListener("change",()=>{ if(coreLocked("planOut")){ cb.checked=!cb.checked; return; } s.done=cb.checked; saveGoals(all); });
+      lab.append(cb," ",mk("span",s.text+" (due "+s.due+")",s.done?"step-done":null));
+      card.appendChild(lab);
+    });
+    if(st.next) card.appendChild(mk("p","➡️ Next: "+st.next.text+" (due "+st.next.due+")","core-note"));
+    const inp=mk("input"); inp.type="text"; inp.maxLength=120; inp.placeholder="Add a step"; inp.setAttribute("aria-label","Add a step to "+g.title);
+    const add=mk("button","Add Step","btn");
+    add.addEventListener("click",()=>{
+      if(coreLocked("planOut")) return;
+      const t=tidy(inp.value,120); if(!t) return;
+      if(g.steps.length>=12){ say("planOut","A goal can hold 12 steps. Finish some first."); return; }
+      g.steps.push({id:newId(),text:t,due:g.deadline,done:false}); saveGoals(all);
+    });
+    const del=mk("button","Delete Goal","btn btn-danger");
+    del.addEventListener("click",()=>safeAction("delete goal","Delete the goal '"+g.title+"' and all its steps?",()=>saveGoals(all.filter(x=>x.id!==g.id))));
+    const row=mk("div",null,"btn-row"); row.append(add,del);
+    card.append(inp,row); box.appendChild(card);
+  });
+}
+
+const MEM_CAP=150, WORK_CAP=7, MEM_TYPES=["fact","preference","decision","lesson"];
+const MEM_SECRET_RE = /\b(password|passcode|passphrase|pin code|cvv|card number|secret key|api key|seed phrase)\b/i;
+let workingMem = [];
+const memories = () => arr("joplexMemLT").filter(m=>m&&typeof m.text==="string");
+const memAge = m => (Date.now()-Date.parse(m.last||m.t))/DAY_MS;
+const memValue = m => (m.imp||1)*10+(m.hits||0)*2-Math.min(30,(memAge(m)||0)/10);
+function saveMem(list){ store.set("joplexMemLT",JSON.stringify(list)); renderMemory(); }
+function workNote(c){ workingMem.push(c); workingMem=workingMem.slice(-WORK_CAP); renderMemory(); }
+function memAdd(text,type,imp){
+  text = tidy(text,200);
+  if(!text) return "Tell me what to remember.";
+  if(looksSensitive(text)||MEM_SECRET_RE.test(text)) return "🔐 I won't store that: it looks like a password, card or ID number.";
+  if(isLocked()){ safetyLog("blocked","memory add"); return "🔒 Safety Lock ACTIVE: memory is read-only."; }
+  type = MEM_TYPES.indexOf(type)>=0?type:"fact"; imp = [1,2,3].indexOf(+imp)>=0?+imp:2;
+  const list = memories(), now = new Date().toISOString();
+  const dup = list.find(m=>m.text.toLowerCase()===text.toLowerCase());
+  if(dup){ dup.imp=Math.max(dup.imp||1,imp); dup.last=now; saveMem(list); return "🧠 Already known, refreshed it: "+text; }
+  list.push({id:newId(),text:text,type:type,imp:imp,src:"told by you",t:now,last:now,hits:0});
+  let note="";
+  if(list.length>MEM_CAP){
+    const pool=list.filter(m=>m.imp<3), victim=(pool.length?pool:list).slice().sort((a,b)=>memValue(a)-memValue(b))[0];
+    list.splice(list.indexOf(victim),1); note="\n(Memory full: let go of the least useful older memory.)";
+  }
+  saveMem(list);
+  return "🧠 Stored ("+type+", importance "+imp+"): "+text+note;
+}
+function memRecall(q){
+  const words = tidy(q,80).toLowerCase().split(" ").filter(w=>w.length>2);
+  const found = memories().map(m=>({m:m,s:words.filter(w=>m.text.toLowerCase().indexOf(w)>=0).length}))
+    .filter(x=>x.s>0).sort((a,b)=>b.s-a.s||memValue(b.m)-memValue(a.m)).slice(0,5);
+  if(!found.length) return "I have no stored memory matching '"+tidy(q,40)+"', and I won't guess.";
+  const list = memories(), now = new Date().toISOString();
+  found.forEach(x=>{ const real=list.find(m=>m.id===x.m.id); if(real){ real.hits=(real.hits||0)+1; real.last=now; } });
+  if(!isLocked()) store.set("joplexMemLT",JSON.stringify(list));
+  return found.map(x=>"• "+x.m.text+" ("+x.m.type+", "+(x.m.src||"told by you")+", saved "+ago(x.m.t)+(memAge(x.m)>180?" ⚠️ old: confirm still true":"")+")").join("\n");
+}
+function renderMemory(){
+  const ul = byId("memList"); if(!ul) return;
+  const f = tidy(byId("memSearch").value,80).toLowerCase(), all = memories();
+  byId("memStats").textContent = "Working "+workingMem.length+"/"+WORK_CAP+" · Long-term "+all.length+"/"+MEM_CAP+" · Episodic "+savedHistory.length+" commands";
+  ul.textContent="";
+  all.filter(m=>!f||m.text.toLowerCase().indexOf(f)>=0).sort((a,b)=>memValue(b)-memValue(a)).slice(0,12).forEach(m=>{
+    const li=mk("li"), del=mk("button","Forget","btn btn-ghost");
+    del.addEventListener("click",()=>safeAction("forget one memory","Forget this memory?\n"+m.text,()=>saveMem(memories().filter(x=>x.id!==m.id))));
+    li.append(mk("span",(m.imp===3?"📌 ":"")+m.text),mk("span",m.type+" · "+(m.src||"told by you")+" · saved "+ago(m.t),"core-meta"),del);
+    ul.appendChild(li);
+  });
+}
+ACTIONS["mem-save"] = function(){
+  const out = memAdd(byId("memText").value,byId("memType").value,byId("memImp").value);
+  say("memOut",out);
+  if(out.indexOf("🧠")===0) byId("memText").value="";
+};
+ACTIONS["mem-recall"] = function(){ say("memOut",memRecall(byId("memSearch").value)); };
+ACTIONS["mem-consolidate"] = function(){
+  safeAction("consolidate memory","Merge duplicate memories and drop low-importance ones not used for a year?",()=>{
+    const seen={}, keep=[]; let dups=0;
+    memories().forEach(m=>{ const k=m.text.toLowerCase(); if(seen[k]){ dups++; seen[k].imp=Math.max(seen[k].imp||1,m.imp||1); } else { seen[k]=m; keep.push(m); } });
+    const fresh = keep.filter(m=>!((m.imp||1)<2 && memAge(m)>365));
+    saveMem(fresh); say("memOut","Consolidated: merged "+dups+" duplicate(s), dropped "+(keep.length-fresh.length)+" stale memory(ies).");
+  });
+};
+ACTIONS["mem-clear"] = function(){ safeAction("clear long-term memory","Erase ALL long-term memories? This cannot be undone.",()=>{ store.del("joplexMemLT"); renderMemory(); say("memOut","Long-term memory cleared."); }); };
+
+const FLAG_RULES = [
+  [/\b(guaranteed|risk[- ]free|no risk|can't lose|double your money|get rich|easy money)/i,"Too-good-to-be-true money claim: real investments carry risk."],
+  [/\b(always|never|everyone|nobody|all experts|100%|proven fact|undeniable)/i,"Absolute wording: real facts usually have exceptions."],
+  [/\b(cures?|miracle|detox|instantly|overnight)\b/i,"Miracle-style wording deserves extra suspicion."],
+  [/\b(experts|studies|scientists|research|they) (say|show|prove|found|agree)\b/i,"Unnamed authority: who said it, and where is the source?"],
+  [/\b(act now|last chance|limited time|urgent|don't tell)/i,"Pressure wording: scams rush you."],
+  [/\d+(\.\d+)?\s?%/,"Contains a statistic: it needs a named source and a date."]
+];
+function arithCheck(claim){
+  const m = /([0-9+\-*\/().%\s]{3,})=\s*(-?\d+(?:\.\d+)?)(?!\d)/.exec(claim);
+  if(!m || !/[0-9)]\s*[+\-*\/%]\s*[0-9(]/.test(m[1])) return null;
+  try{
+    const real=safeCalc(m[1].trim()), said=parseFloat(m[2]);
+    return Math.abs(real-said)<1e-9 ? {ok:true,text:"Arithmetic check passed: "+m[1].trim()+" = "+real+"."}
+      : {ok:false,text:"Arithmetic check FAILED: "+m[1].trim()+" = "+real+", not "+said+"."};
+  }catch(e){ return null; }
+}
+function verifyClaim(claim){
+  const c = tidy(claim,240); if(!c) return null;
+  const flags = FLAG_RULES.filter(r=>r[0].test(c)).map(r=>r[1]), ar=arithCheck(c);
+  const padded = " "+c.toLowerCase().replace(/[^a-z0-9 ]/g," ").split(" ").filter(Boolean).join(" ")+" ";
+  const hits = KB.filter(e=>e.k.some(k=>k.length>1&&padded.indexOf(" "+k+" ")>=0)).slice(0,3);
+  let status="unverified", label="⚪ UNVERIFIED";
+  if(ar&&!ar.ok){ status="contradicted"; label="❌ CONTRADICTED"; }
+  else if(flags.length>=2){ status="risky"; label="⚠️ HIGH RISK"; }
+  else if(hits.length){ status="local"; label="🟡 LOCAL REFERENCE FOUND"; }
+  const lines=[label+": "+c,""];
+  if(ar) lines.push((ar.ok?"✅ ":"❌ ")+ar.text);
+  flags.forEach(f=>lines.push("⚠️ "+f));
+  hits.forEach(e=>{ const s=KB_MEDICAL.has(e.k[0])?KB_SRC.medical:KB_SRC[e.c]; lines.push("📚 "+KB_TITLE(e)+": "+e.a+(s?" ["+s[0]+", reviewed "+KB_REVIEWED+"]":"")); });
+  if(hits.length) lines.push("A local match means Joplex knows the term, not that your claim is proven.");
+  if(!ar&&!hits.length) lines.push("No local evidence either way. Joplex will not guess.");
+  lines.push("","To verify: check a named source yourself, type it in the source box, then press Mark Verified.");
+  return {status:status,label:label,claim:c,text:lines.join("\n")};
+}
+function ledgerAdd(v){
+  if(isLocked()) return;
+  const led=arr("joplexLedger"), old=led.find(x=>x&&x.claim===v.claim), now=new Date().toISOString();
+  if(old){ if(old.status!=="human"){ old.status=v.status; old.label=v.label; } old.t=now; }
+  else led.push({id:newId(),claim:v.claim,status:v.status,label:v.label,source:"",t:now});
+  store.set("joplexLedger",JSON.stringify(led.slice(-30))); renderLedger();
+}
+ACTIONS["check-claim"] = function(){
+  if(coreLocked("verifyOut")) return;
+  const v = verifyClaim(byId("vcClaim").value);
+  if(!v){ say("verifyOut","Paste a claim to check first."); return; }
+  say("verifyOut",v.text); ledgerAdd(v);
+};
+function markVerified(id){
+  if(coreLocked("verifyOut")) return;
+  const src = tidy(byId("vcSource").value,120);
+  if(src.length<4){ say("verifyOut","Type the source you checked yourself first. Joplex cannot fetch or confirm it."); return; }
+  const led = arr("joplexLedger"), it = led.find(x=>x&&x.id===id);
+  if(!it) return;
+  it.status="human"; it.label="✅ HUMAN-VERIFIED"; it.source=src; it.t=new Date().toISOString();
+  store.set("joplexLedger",JSON.stringify(led)); renderLedger();
+  say("verifyOut","Marked human-verified by you. Joplex did not check the source itself.");
+}
+function renderLedger(){
+  const ul = byId("ledgerList"); if(!ul) return;
+  ul.textContent="";
+  const led = arr("joplexLedger").filter(x=>x&&typeof x.claim==="string");
+  if(!led.length){ ul.appendChild(mk("li","Ledger is empty. Checked claims appear here.")); return; }
+  led.slice().reverse().forEach(x=>{
+    const li=mk("li"), ok=mk("button","Mark Verified","btn"), rm=mk("button","Remove","btn btn-ghost");
+    ok.addEventListener("click",()=>markVerified(x.id));
+    rm.addEventListener("click",()=>safeAction("remove ledger entry","Remove this ledger entry?",()=>{ store.set("joplexLedger",JSON.stringify(arr("joplexLedger").filter(y=>y&&y.id!==x.id))); renderLedger(); }));
+    li.append(mk("span",tidy(x.label,30)+" "+tidy(x.claim,120)),mk("span",(x.source?"Source: "+tidy(x.source,120)+" · ":"")+ago(x.t),"core-meta"),ok,rm);
+    ul.appendChild(li);
+  });
+}
+ACTIONS["ledger-clear"] = function(){ safeAction("clear evidence ledger","Clear the whole evidence ledger?",()=>{ store.del("joplexLedger"); renderLedger(); say("verifyOut","Ledger cleared."); }); };
+
+function coreCommand(c){
+  let m;
+  if((m=/^remember (.+)$/.exec(c))){ const out=memAdd(m[1]); if(out.indexOf("🧠")===0) store.set("joplexMemory",tidy(m[1],200)); return out; }
+  if((m=/^(?:recall|what do you remember about) (.+)$/.exec(c))) return memRecall(m[1]);
+  if(c==="memory report"||c==="memory status") return "Working "+workingMem.length+"/"+WORK_CAP+", long-term "+memories().length+"/"+MEM_CAP+", episodic "+savedHistory.length+" commands.";
+  if((m=/^verify (.+)$/.exec(c))){ const v=verifyClaim(m[1]); if(!v) return null; ledgerAdd(v); return v.text.split("\n\n")[0]; }
+  if(c==="evidence ledger"){ const led=arr("joplexLedger"); return led.length?"Ledger: "+led.length+" claim(s), "+led.filter(x=>x&&x.status==="human").length+" human-verified.":"The evidence ledger is empty."; }
+  if((m=/^think (?:about )?(.+)$/.exec(c))){ byId("rcQuestion").value=tidy(m[1],160); goToPanel("reasoningCore"); return "🧠 Loaded into the Reasoning Core. Add facts and options, then press Reason It Through."; }
+  if((m=/^(?:new goal|set goal) (.+?)(?: in (\d{1,3}) days?)?$/.exec(c))) return createGoalFrom(m[1],addDays(today0(),+(m[2]||30)),"commandResponse");
+  if(c==="my goals"||c==="goal status") return goalSummary();
+  if(c==="next step"||c==="next action") return nextAction();
+  return null;
+}
+
+/* ---------- knowledge UI ---------- */
+let kbCat = "all";
+function renderKbIntro(){
+  const box = byId("kbIntro"); if(!box) return; box.textContent="";
+  const ap = KB_APPLY[kbCat]; if(!ap) return;
+  const p = document.createElement("div"); p.textContent=ap[1]; p.style.cssText="max-width:560px;margin:0 auto 10px;font-size:15px;";
+  const g = document.createElement("button"); g.className="btn btn-primary"; g.textContent="📍 Go to "+KB_PANELS[ap[0]];
+  g.onclick=()=>goToPanel(ap[0]);
+  box.append(p,g);
+}
+function renderKB(){
+  const search = byId("kbSearch"); if(!search) return;
+  const q = search.value.toLowerCase().trim();
+  const chips = byId("kbChips"); chips.textContent="";
+  [["all","📚 All ("+KB.length+")"]].concat(Object.keys(KB_META).map(c=>[c,KB_META[c][0]+" "+KB_META[c][2]+" ("+KB.filter(e=>e.c===c).length+")"])).forEach(([id,label])=>{
+    const b=document.createElement("button");
+    b.className="btn"+(id===kbCat?" btn-primary":"");
+    b.textContent=label;
+    b.onclick=()=>{ kbCat=id; renderKB(); };
+    chips.appendChild(b);
+  });
+  renderKbIntro();
+  const box = byId("kbResults"); box.textContent="";
+  const hits = KB.filter(e=>(kbCat==="all"||e.c===kbCat)&&(!q||e.k.some(k=>k.includes(q))||e.a.toLowerCase().includes(q)));
+  if(!hits.length){ box.appendChild(mk("p","No match yet. Joplex hasn't learned that topic.")); return; }
+  hits.slice(0,12).forEach(e=>{
+    const d=mk("div",null,"knowledge-card accent-"+(KB_META[e.c][1]||"rose"));
+    d.appendChild(mk("h3",KB_META[e.c][0]+" "+KB_TITLE(e)));
+    d.appendChild(mk("p",e.a));
+    const src=mk("p",null,"knowledge-intro"); src.style.fontSize="13px";
+    const ref = KB_MEDICAL.has(e.k[0])?KB_SRC.medical:KB_SRC[e.c];
+    src.append("Summary by Joplex · Reviewed "+KB_REVIEWED+" · Further reading: ");
+    const a=document.createElement("a"); a.href=ref[1]; a.textContent=ref[0]; a.target="_blank"; a.rel="noopener noreferrer";
+    src.append(a, KB_MEDICAL.has(e.k[0])?" · Not medical advice":" · Verify important facts");
+    d.appendChild(src);
+    if(e.w){ const g=mk("button","📍 Open in Joplex: "+KB_PANELS[e.w],"btn"); g.onclick=()=>goToPanel(e.w); d.appendChild(g); }
+    box.appendChild(d);
+  });
+  if(hits.length>12) box.appendChild(mk("p","Showing 12 of "+hits.length+". Search or pick a category to narrow.","knowledge-intro"));
+}
+function renderCatList(){
+  const ul = byId("kbCatList"); if(!ul) return;
+  ul.textContent="";
+  Object.keys(KB_META).forEach(k=>{
+    const li=document.createElement("li");
+    li.textContent=KB_META[k][0]+" "+KB_META[k][2]+" ("+KB.filter(e=>e.c===k).length+") → "+KB_PANELS[KB_APPLY[k][0]];
+    li.onclick=()=>{ kbCat=k; renderKB(); byId("kbSearch").scrollIntoView({block:"center"}); };
+    ul.appendChild(li);
+  });
+}
+
+/* ---------- navigation ---------- */
+const TABS = ["home","console","wealth","mind","learn","graphs","vault"];
+const CORES = ["reasoningCore","planningEngine","memoryArch","verifyCore"];
+function showTab(id){
+  if(TABS.indexOf(id)<0) id="home";
+  document.querySelectorAll(".module").forEach(m=>{ m.hidden = m.getAttribute("data-module")!==id; });
+  document.querySelectorAll("#mainNav button").forEach(b=>{
+    if(b.getAttribute("data-go")===id) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+  });
+  store.set("joplexTab",id); window.scrollTo(0,0);
+}
+function showCore(id){
+  if(CORES.indexOf(id)<0) id=CORES[0];
+  CORES.forEach(c=>{ const el=byId(c); if(el) el.hidden = c!==id; });
+  document.querySelectorAll("#coreSeg button").forEach(b=>b.setAttribute("aria-pressed",String(b.getAttribute("data-core")===id)));
+  store.set("joplexCore",id);
+}
+function goToPanel(id){
+  const el = byId(id); if(!el) return;
+  const mod = el.closest(".module"); if(mod) showTab(mod.getAttribute("data-module"));
+  if(CORES.indexOf(id)>=0) showCore(id);
+  el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  el.style.outline="2px solid #ff5fa2";
+  setTimeout(()=>{ el.style.outline=""; },1800);
+}
+
+/* ---------- boot sequence ---------- */
+const bootMessages = ["Initializing Joplex...","Loading systems...","AI Core Online...","Welcome, Commander."];
+let bootIndex = 0;
+function bootSequence(){
+  const bt = byId("bootText"), bb = byId("bootBar");
+  if(bt) bt.textContent = bootMessages[bootIndex];
+  if(bb) bb.style.width = Math.round(((bootIndex+1)/bootMessages.length)*100)+"%";
+  bootIndex++;
+  if(bootIndex<bootMessages.length) setTimeout(bootSequence,1000);
+  else setTimeout(()=>{
+    byId("bootScreen").style.display="none";
+    byId("mainContent").style.display="block";
+    document.body.classList.remove("booting");
+  },800);
+}
+
+/* ---------- boot planet canvas ---------- */
+function startBootPlanet(){
+  const c = byId("bootPlanet"); if(!c) return;
+  const x = c.getContext("2d"), S=240, d=window.devicePixelRatio||1;
+  c.width=c.height=S*d; x.scale(d,d);
+  const R=88,cx=S/2,cy=S/2,TILT=0.45,RING=R+22,RT=-0.35;
+  const still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let a=0; const nodes=[];
+  for(let i=0;i<64;i++){ const u=Math.random()*2-1,t=Math.random()*6.283,r=Math.sqrt(1-u*u); nodes.push([r*Math.cos(t),u,r*Math.sin(t)]); }
+  const P = p => {
+    const X=p[0]*Math.cos(a)+p[2]*Math.sin(a);
+    let Z=-p[0]*Math.sin(a)+p[2]*Math.cos(a);
+    const Y=p[1]*Math.cos(TILT)-Z*Math.sin(TILT);
+    Z=p[1]*Math.sin(TILT)+Z*Math.cos(TILT);
+    return [cx+X*R,cy-Y*R,Z];
+  };
+  const line = (pts,col) => { for(let i=1;i<pts.length;i++){ const A=pts[i-1],B=pts[i],z=(A[2]+B[2])/2; x.strokeStyle=col.replace("A",z>0?0.55:0.12); x.beginPath(); x.moveTo(A[0],A[1]); x.lineTo(B[0],B[1]); x.stroke(); } };
+  const ring = front => { x.strokeStyle=front?"rgba(255,80,140,.8)":"rgba(255,80,140,.25)"; x.beginPath(); x.ellipse(cx,cy,RING,RING*0.28,RT,front?0:Math.PI,front?Math.PI:Math.PI*2); x.stroke(); };
+  function frame(){
+    if(!c.offsetParent && !still) return;
+    const bar = byId("bootBar");
+    const pct = bar ? (parseFloat(bar.style.width)||0) : 0;
+    a += 0.01 + pct*0.00012;
+    x.clearRect(0,0,S,S);
+    x.shadowColor="#ff5fa2"; x.shadowBlur=12; x.lineWidth=1; ring(false);
+    const g = x.createRadialGradient(cx-28,cy-28,8,cx,cy,R);
+    g.addColorStop(0,"rgba(255,143,196,.24)"); g.addColorStop(1,"rgba(30,8,36,.92)");
+    x.fillStyle=g; x.beginPath(); x.arc(cx,cy,R,0,7); x.fill();
+    for(let lo=0;lo<12;lo++){ const pts=[]; for(let la=-90;la<=90;la+=10){ const ph=la*Math.PI/180,th=lo*Math.PI/6; pts.push(P([Math.cos(ph)*Math.cos(th),Math.sin(ph),Math.cos(ph)*Math.sin(th)])); } line(pts,"rgba(255,95,162,A)"); }
+    for(let la=-60;la<=60;la+=30){ const pts=[],ph=la*Math.PI/180; for(let t=0;t<=360;t+=10){ const th=t*Math.PI/180; pts.push(P([Math.cos(ph)*Math.cos(th),Math.sin(ph),Math.cos(ph)*Math.sin(th)])); } line(pts,"rgba(255,95,162,A)"); }
+    const q=nodes.map(P);
+    x.lineWidth=0.6;
+    for(let i=0;i<q.length;i++) for(let j=i+1;j<q.length;j++){
+      if(q[i][2]<0||q[j][2]<0) continue;
+      const dx=nodes[i][0]-nodes[j][0],dy=nodes[i][1]-nodes[j][1],dz=nodes[i][2]-nodes[j][2];
+      if(dx*dx+dy*dy+dz*dz<0.28){ x.strokeStyle="rgba(125,255,176,.55)"; x.beginPath(); x.moveTo(q[i][0],q[i][1]); x.lineTo(q[j][0],q[j][1]); x.stroke(); }
+    }
+    x.shadowColor="#7dffb0"; x.fillStyle="#7dffb0";
+    q.forEach(p=>{ if(p[2]<0) return; x.beginPath(); x.arc(p[0],p[1],1.8,0,7); x.fill(); });
+    x.lineWidth=1; ring(true);
+    const s=a*2.2, ex=Math.cos(s)*RING, ey=Math.sin(s)*RING*0.28;
+    const sx=cx+ex*Math.cos(RT)-ey*Math.sin(RT), sy=cy+ex*Math.sin(RT)+ey*Math.cos(RT);
+    x.shadowColor="#ff5090"; x.fillStyle="#ff5090"; x.beginPath(); x.arc(sx,sy,3.5,0,7); x.fill();
+    if(!still) requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+/* ---------- butterflies ---------- */
+function initButterflies(){
+  const field = byId("butterflyField"); if(!field) return;
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const bflySVG = (color) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%"><path fill="'+color+'" d="M12 12c-2-4-5-6-8-5 0 4 3 7 8 5zM12 12c2-4 5-6 8-5 0 4-3 7-8 5zM12 12c-1 4-3 7-6 8 1-4 3-7 6-8zM12 12c1 4 3 7 6 8-1-4-3-7-6-8z"/><ellipse cx="12" cy="12" rx="0.8" ry="3.5" fill="#fff" opacity=".6"/></svg>';
+  const colors = ["#ff5fa2","#ff8fc4","#e040fb","#c084fc","#ffd166"];
+  const N = reduce ? 4 : 12;
+  for(let i=0;i<N;i++){
+    const b = document.createElement("div");
+    b.className = "bfly";
+    const size = 18 + Math.random()*28;
+    b.style.width = b.style.height = size+"px";
+    b.style.left = (Math.random()*100)+"vw";
+    b.style.top = (60 + Math.random()*40)+"vh";
+    b.innerHTML = bflySVG(colors[i%colors.length]);
+    if(!reduce){
+      b.style.animation = "floatUp "+(16+Math.random()*16)+"s linear infinite";
+      b.style.animationDelay = (-Math.random()*20)+"s";
+      b.style.animationDuration = (16+Math.random()*16)+"s";
+    }
+    field.appendChild(b);
+  }
+}
+
+/* ---------- parallax & reveal ---------- */
+function initParallax(){
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce) return;
+  const scene = byId("pxScene");
+  const sl = scene && scene.querySelector(".px-sl");
+  if(sl){
+    const c = document.createElement("canvas"); c.width=600; c.height=150;
+    const g = c.getContext("2d");
+    for(let i=0;i<20;i++){ g.fillStyle = i%3? "#2a1530" : "#3d1f46"; const h=40+Math.random()*100, w=30+Math.random()*60; g.fillRect(i*32, 150-h, w, h); }
+    sl.style.backgroundImage = "url("+c.toDataURL()+")";
+  }
+  let ticking=false;
+  function update(){
+    ticking=false;
+    const y = window.pageYOffset||0;
+    const pl = scene && scene.querySelector(".pl");
+    if(pl) pl.style.transform = "translate3d(0,"+(y*0.35)+"px,0)";
+    if(sl) sl.style.backgroundPosition = (-y*0.4)+"px 100%";
+  }
+  window.addEventListener("scroll",()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update); } },{passive:true});
+  if("IntersectionObserver" in window){
+    const io = new IntersectionObserver(es=>{
+      es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.remove("px-hide"); io.unobserve(e.target); } });
+    },{threshold:0.08});
+    document.querySelectorAll(".panel,.knowledge-core").forEach(p=>{ p.classList.add("px-hide"); io.observe(p); });
+  }
+}
+
+/* ---------- graph engine (from v20, cleaned) ---------- */
+function initGraphs(){
+  if(!byId("gxGrid")) return;
+  const C = {rose:"#ff5fa2",blossom:"#ff8fc4",magenta:"#e040fb",lilac:"#c084fc",gold:"#ffd166",peach:"#ff9e7a"};
+  const PAL = [C.rose,C.blossom,C.magenta,C.lilac,C.gold,C.peach];
+  const MODS = {knowledge:"Knowledge Core",mission:"Mission Tracker",finance:"Finance Core",learning:"Learning Core",health:"System Health",science:"Science Research",company:"Company Growth"};
+  const KIND_LABEL = {waffle:"Dots",line:"Line",area:"Area",bar:"Bar",pie:"Pie",doughnut:"Doughnut",radar:"Radar",live:"Live",network:"Network"};
+  let F = {range:"all",module:"all"}, defs=[], cards={}, calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const J = (k,d)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } };
+  const A = k => { const v=J(k,[]); return Array.isArray(v)?v:[]; };
+  const cutoff = () => F.range==="all"?0:Date.now()-Number(F.range)*DAY_MS;
+  const day = t => new Date(t).toISOString().slice(0,10);
+  function byDay(items,tf){ const m={}; items.forEach(x=>{ const t=Date.parse(x[tf]); if(!isNaN(t)){ const k=day(t); m[k]=(m[k]||0)+1; } }); return Object.keys(m).sort().map(k=>[k,m[k]]); }
+  function counts(items,f){ const m={}; items.forEach(x=>{ const k=f(x); if(k) m[k]=(m[k]||0)+1; }); return m; }
+  function fromMap(m,name){ const k=Object.keys(m); return k.length?{labels:k,series:[{name:name,data:k.map(x=>m[x])}]}:null; }
+  function register(d){ defs.push(d); if(cards._ready) build(d); }
+  register({id:"memGrowth",module:"knowledge",title:"Knowledge growth",kinds:["area","line","bar"],needs:"Save memories to start tracking growth.",
+    source:()=>{ const d=byDay(A("joplexMemLT").filter(m=>m&&m.t),"t"); if(!d.length) return null; let run=0; const all=d.map(r=>{run+=r[1];return [r[0],run];}); const c=cutoff(); const v=all.filter(r=>Date.parse(r[0])>=c-DAY_MS); if(!v.length) return null; return {status:"historical",note:"Cumulative memories saved, by day.",labels:v.map(r=>r[0].slice(5)),series:[{name:"Total memories",data:v.map(r=>r[1])}]}; } });
+  register({id:"memTypes",module:"knowledge",title:"Topics learned",kinds:["doughnut","pie","bar","radar","waffle"],needs:"No long-term memories saved yet.",source:()=>{ const d=fromMap(counts(A("joplexMemLT"),m=>m&&m.type),"Memories"); return d&&Object.assign(d,{status:"real",note:"Current memories grouped by type."}); } });
+  register({id:"knowNet",module:"knowledge",title:"Knowledge network",kinds:["network"],needs:"Network appears once memories exist.",
+    source:()=>{ const mem=A("joplexMemLT").filter(m=>m&&m.text).slice(-36); if(!mem.length) return null; const nodes=[{id:"core",label:"Joplex",c:C.rose,r:9}],links=[],seen={}; mem.forEach((m,i)=>{ const t=m.type||"fact"; if(!seen[t]){ seen[t]=1; nodes.push({id:"t"+t,label:t,c:PAL[Object.keys(seen).length%6],r:7}); links.push(["core","t"+t]); } nodes.push({id:"m"+i,label:String(m.text).slice(0,28),c:C.blossom,r:3.5}); links.push(["t"+t,"m"+i]); }); return {status:"real",note:"Each dot is a saved memory linked to its type.",nodes:nodes,links:links}; } });
+  register({id:"ledger",module:"knowledge",title:"Claim verification",kinds:["pie","doughnut","bar","waffle"],needs:"No checked claims yet.",source:()=>{ const d=fromMap(counts(A("joplexLedger"),x=>x&&(x.label||x.status)),"Claims"); return d&&Object.assign(d,{status:"real",note:"Claims in the verification ledger by status."}); } });
+  register({id:"mission",module:"mission",title:"Missions",kinds:["doughnut","bar","pie","waffle"],needs:"Current mission number not found.",
+    source:()=>{ const raw=localStorage.getItem("joplexCurrentMission"), n=raw?parseInt(String(raw).replace(/\D/g,""),10):NaN; if(!(n>=1)) return null; return {status:"real",note:"Completed = mission number − 1.",labels:["Completed","Active"],series:[{name:"Missions",data:[n-1,1]}]}; } });
+  register({id:"steps",module:"mission",title:"Goal steps",kinds:["doughnut","pie","bar","waffle"],needs:"Create a goal with steps in Mind → Planning.",
+    source:()=>{ const g=A("joplexGoals").filter(x=>x&&Array.isArray(x.steps)); let done=0,tot=0; g.forEach(x=>x.steps.forEach(s=>{ tot++; if(s&&s.done) done++; })); if(!tot) return null; return {status:"real",note:g.length+" goal(s).",labels:["Done","Open"],series:[{name:"Steps",data:[done,tot-done]}]}; } });
+  register({id:"savings",module:"finance",title:"Savings vs goal",kinds:["doughnut","bar","pie"],needs:"Enter savings and a goal in the Wealth tab.",
+    source:()=>{ const w=J("joplexWealth",{}), g=parseFloat(w.goalAmount), v=parseFloat(w.currentSavings)||0; if(!(g>0)) return null; return {status:"real",note:"Your saved figures.",labels:["Saved","Remaining"],series:[{name:"Amount",data:[v,Math.max(g-v,0)]}]}; } });
+  register({id:"trading",module:"finance",title:"Profits, losses & trading",kinds:["line","bar"],needs:"Joplex does not store trading records yet.",source:()=>null});
+  register({id:"reason",module:"learning",title:"Reasoning scores",kinds:["line","area","bar"],needs:"Run reasoning checks to build a score history.",
+    source:()=>{ const c=cutoff(), l=A("joplexReasonLog").filter(x=>x&&typeof x.s==="number"&&Date.parse(x.t)>=c); if(!l.length) return null; return {status:"historical",note:"Score of each reasoning run.",labels:l.map(x=>day(x.t).slice(5)),series:[{name:"Score",data:l.map(x=>x.s)}]}; } });
+  register({id:"courses",module:"learning",title:"Courses & skills",kinds:["radar","bar"],needs:"No course or skill tracking exists yet.",source:()=>null});
+  register({id:"storage",module:"health",title:"Memory usage (KB)",kinds:["bar","doughnut","radar","pie"],needs:"Nothing stored yet.",
+    source:()=>{ const rows=[]; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(/^joplex|^activations/.test(k)) rows.push([k.replace("joplex",""),+(((k.length+localStorage.getItem(k).length)*2)/1024).toFixed(2)]); } }catch(e){} rows.sort((a,b)=>b[1]-a[1]); const r=rows.slice(0,8); if(!r.length) return null; return {status:"real",note:"Actual size of each saved item.",labels:r.map(x=>x[0]),series:[{name:"KB",data:r.map(x=>x[1])}]}; } });
+  register({id:"safety",module:"health",title:"Safety events",kinds:["bar","line","area"],needs:"No safety events logged.",
+    source:()=>{ const c=cutoff(), d=byDay(A("joplexSafetyLog").filter(x=>x&&Date.parse(x.time)>=c),"time"); if(!d.length) return null; return {status:"historical",note:"Safety log entries per day.",labels:d.map(r=>r[0].slice(5)),series:[{name:"Events",data:d.map(r=>r[1])}]}; } });
+  let buf=[]; for(let i=0;i<30;i++) buf.push(40+Math.sin(i/4)*15);
+  register({id:"live",module:"health",title:"Processing activity (live)",kinds:["live","area","bar"],needs:"",
+    source:()=>{ if(!buf.length) for(let i=0;i<30;i++) buf.push(40+Math.sin(i/4)*15); return {status:"simulated",note:"SIMULATED animation. Not a real measurement.",labels:buf.map((_,i)=>""+i),series:[{name:"Load %",data:buf.slice()}]}; },
+    tick:()=>{ const l=buf[buf.length-1]; buf.push(Math.max(8,Math.min(95,l+(Math.random()-0.5)*18))); if(buf.length>30) buf.shift(); } });
+  register({id:"science",module:"science",title:"Research categories & discoveries",kinds:["doughnut","bar"],needs:"Science Research data is not stored yet.",source:()=>null});
+  register({id:"company",module:"company",title:"Projects & goals progress",kinds:["bar","radar","doughnut"],needs:"Create goals to track projects.",
+    source:()=>{ const g=A("joplexGoals").filter(x=>x&&Array.isArray(x.steps)&&x.steps.length); if(!g.length) return null; return {status:"real",note:"% of steps completed per goal.",labels:g.map(x=>String(x.title).slice(0,14)),series:[{name:"% complete",data:g.map(x=>Math.round(100*x.steps.filter(s=>s&&s.done).length/x.steps.length))}]}; } });
+  register({id:"targets",module:"company",title:"Financial targets & business growth",kinds:["line","bar"],needs:"No company revenue or target data is stored yet.",source:()=>null});
+
+  function wUnit(t){ if(t<=200) return 1; const m=t/200,p=Math.pow(10,Math.floor(Math.log10(m))),n=m/p; return p*(n>=5?5:n>=2?2:1); }
+  function rr(x,a,b,w,h,r){ x.beginPath(); x.moveTo(a+r,b); x.arcTo(a+w,b,a+w,b+h,r); x.arcTo(a+w,b+h,a,b+h,r); x.arcTo(a,b+h,a,b,r); x.arcTo(a,b,a+w,b,r); x.closePath(); }
+  function waffle(x,W,H,d,p,hits,k,sel){
+    const v=d.series[0].data,tot=v.reduce((a,b)=>a+b,0); if(!tot) return; const u=wUnit(tot);
+    const cnt=v.map(n=>n>0?Math.max(1,Math.round(n/u)):0),N=cnt.reduce((a,b)=>a+b,0); let best=0,cols=10,pad=4,gap=3;
+    for(let cc=5;cc<=40;cc++){ const rw=Math.ceil(N/cc),cs0=Math.min((W-pad*2)/cc,(H-pad*2)/rw); if(cs0>best){ best=cs0; cols=cc; } }
+    const rows=Math.ceil(N/cols),cs=best,ox=(W-cols*cs)/2,oy=(H-rows*cs)/2,shown=Math.ceil(N*p); let i=0;
+    for(let ci=0;ci<cnt.length;ci++) for(let j=0;j<cnt[ci];j++,i++){
+      if(i>=shown) return; const r=Math.floor(i/cols),c=i%cols,bx=ox+c*cs+gap/2,by=oy+r*cs+gap/2,sz=cs-gap;
+      x.fillStyle=PAL[ci%6]; x.globalAlpha=sel!=null&&hits[sel]&&hits[sel].ci!==ci?0.35:1; rr(x,bx,by,sz,sz,sz*0.24); x.fill(); x.globalAlpha=1;
+      hits.push({x:bx+sz/2,y:by+sz/2,r:cs/2+1,ci:ci,t:d.labels[ci]+": "+fmt(v[ci])+" ("+Math.round(v[ci]/tot*100)+"%)"});
+    }
+  }
+  function nice(m){ const p=Math.pow(10,Math.floor(Math.log10(m))),n=m/p; return (n<=1?1:n<=2?2:n<=5?5:10)*p; }
+  function col(){ const s=getComputedStyle(document.body); return {ink:s.color,line:getComputedStyle(document.documentElement).getPropertyValue("--line").trim()||"#3d1f46"}; }
+  function fmt(v){ return Math.abs(v)>=1000?v.toLocaleString():String(+(+v).toFixed(2)); }
+  function draw(c,kind,d,p,sel){
+    const cv=c.cv,dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight; if(!W) return;
+    if(cv.width!==W*dpr){ cv.width=W*dpr; cv.height=H*dpr; }
+    const x=cv.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.clearRect(0,0,W,H);
+    const k=col(),hits=[]; x.font="10px 'Share Tech Mono',monospace"; x.textBaseline="middle";
+    if(kind==="network") net(x,W,H,d,c,p,hits,sel);
+    else if(kind==="waffle") waffle(x,W,H,d,p,hits,k,sel);
+    else if(kind==="pie"||kind==="doughnut") pie(x,W,H,d,kind,p,hits,k,sel);
+    else if(kind==="radar"&&d.labels.length>=3) radar(x,W,H,d,p,hits,k,sel);
+    else xy(x,W,H,d,kind==="radar"?"bar":kind,p,hits,k,sel);
+    c.hits=hits;
+  }
+  function xy(x,W,H,d,kind,p,hits,k,sel){
+    const L=38,R=10,T=12,B=24,w=W-L-R,h=H-T-B,n=d.labels.length,ns=d.series.length;
+    const max=nice(Math.max.apply(null,[1e-9].concat(d.series.reduce((a,s)=>a.concat(s.data),[])))),bar=kind==="bar";
+    x.strokeStyle=k.line; x.fillStyle=k.ink; x.globalAlpha=0.9; x.lineWidth=1; x.textAlign="right";
+    for(let g=0;g<=4;g++){ const gy=T+h-(g/4)*h; x.globalAlpha=0.35; x.beginPath(); x.moveTo(L,gy); x.lineTo(W-R,gy); x.stroke(); x.globalAlpha=0.8; x.fillText(fmt(max*g/4),L-5,gy); }
+    x.globalAlpha=1; x.textAlign="center";
+    const px = i => bar?L+(i+0.5)*w/n:L+(n===1?w/2:i*w/(n-1)), step=Math.ceil(n/5);
+    for(let i=0;i<n;i+=step){ x.fillStyle=k.ink; x.globalAlpha=0.75; x.fillText(String(d.labels[i]).slice(0,8),Math.min(W-18,Math.max(L+8,px(i))),H-9); }
+    x.globalAlpha=1;
+    d.series.forEach((s,si)=>{
+      const c=PAL[si%6],pts=s.data.map((v,i)=>[px(i),T+h-(v/max)*h*p]);
+      x.shadowColor=c; x.shadowBlur=10;
+      if(bar){ const bw=Math.max(3,Math.min(34,w/n*0.7/ns)); x.fillStyle=c; pts.forEach((q,i)=>{ const bx=q[0]-bw*ns/2+si*bw; x.fillRect(bx,q[1],bw-1,T+h-q[1]); hits.push({x:bx+bw/2,y:q[1],r:Math.max(16,bw),t:d.labels[i]+" · "+s.name+": "+fmt(s.data[i])}); }); }
+      else {
+        if(kind==="area"||kind==="live"){ const gr=x.createLinearGradient(0,T,0,T+h); gr.addColorStop(0,c+"66"); gr.addColorStop(1,c+"05"); x.fillStyle=gr; x.shadowBlur=0; x.beginPath(); x.moveTo(pts[0][0],T+h); pts.forEach(q=>x.lineTo(q[0],q[1])); x.lineTo(pts[pts.length-1][0],T+h); x.fill(); x.shadowBlur=10; }
+        x.strokeStyle=c; x.lineWidth=2; x.lineJoin="round"; x.beginPath(); pts.forEach((q,i)=>i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1])); x.stroke();
+        pts.forEach((q,i)=>{ if(n<=40){ x.fillStyle=c; x.beginPath(); x.arc(q[0],q[1],3,0,7); x.fill(); } hits.push({x:q[0],y:q[1],r:18,t:d.labels[i]+" · "+s.name+": "+fmt(s.data[i])}); });
+      }
+      x.shadowBlur=0;
+    });
+    mark(x,hits,sel);
+  }
+  function pie(x,W,H,d,kind,p,hits,k,sel){
+    const data=d.series[0].data,tot=data.reduce((a,b)=>a+b,0),cx=W/2,cy=H/2,R=Math.min(W,H)/2-14,r0=kind==="doughnut"?R*0.58:0; let a=-Math.PI/2;
+    if(!tot) return; x.lineWidth=2; x.strokeStyle=getComputedStyle(document.body).backgroundColor||"#140818";
+    data.forEach((v,i)=>{
+      const sw=v/tot*Math.PI*2*p,c=PAL[i%6],on=sel===i; x.fillStyle=c; x.shadowColor=c; x.shadowBlur=on?22:10;
+      x.beginPath(); x.arc(cx,cy,R+(on?5:0),a,a+sw); if(r0) x.arc(cx,cy,r0,a+sw,a,true); else x.lineTo(cx,cy); x.closePath(); x.fill(); x.shadowBlur=0; x.stroke();
+      hits.push({arc:[cx,cy,r0,R+6,a,a+v/tot*Math.PI*2],t:d.labels[i]+": "+fmt(v)+" ("+Math.round(v/tot*100)+"%)"}); a+=sw;
+    });
+    if(r0){ x.fillStyle=k.ink; x.textAlign="center"; x.font="bold 16px Orbitron,sans-serif"; x.fillText(fmt(tot),cx,cy-4); x.font="10px 'Share Tech Mono',monospace"; x.globalAlpha=0.7; x.fillText("TOTAL",cx,cy+14); x.globalAlpha=1; }
+  }
+  function radar(x,W,H,d,p,hits,k,sel){
+    const n=d.labels.length,cx=W/2,cy=H/2+4,R=Math.min(W,H)/2-30,max=nice(Math.max.apply(null,[1e-9].concat(d.series[0].data)));
+    const P=(i,f)=>{ const an=-Math.PI/2+i*2*Math.PI/n; return [cx+Math.cos(an)*R*f,cy+Math.sin(an)*R*f]; };
+    x.strokeStyle=k.line; x.fillStyle=k.ink; x.textAlign="center";
+    for(let g=1;g<=4;g++){ x.globalAlpha=0.4; x.beginPath(); for(let i=0;i<n;i++){ const q=P(i,g/4); i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]); } x.closePath(); x.stroke(); }
+    for(let i2=0;i2<n;i2++){ const e=P(i2,1),l=P(i2,1.14); x.globalAlpha=0.4; x.beginPath(); x.moveTo(cx,cy); x.lineTo(e[0],e[1]); x.stroke(); x.globalAlpha=0.85; x.fillText(String(d.labels[i2]).slice(0,9),l[0],l[1]); }
+    x.globalAlpha=1;
+    d.series.forEach((s,si)=>{
+      const c=PAL[si%6]; x.shadowColor=c; x.shadowBlur=12; x.strokeStyle=c; x.fillStyle=c+"33"; x.lineWidth=2; x.beginPath();
+      s.data.forEach((v,i)=>{ const q=P(i,v/max*p); i?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]); }); x.closePath(); x.fill(); x.stroke(); x.shadowBlur=0;
+      s.data.forEach((v,i)=>{ const q=P(i,v/max*p); x.fillStyle=c; x.beginPath(); x.arc(q[0],q[1],3,0,7); x.fill(); hits.push({x:q[0],y:q[1],r:20,t:d.labels[i]+" · "+s.name+": "+fmt(v)}); });
+    });
+    mark(x,hits,sel);
+  }
+  function net(x,W,H,d,c,p,hits,sel){
+    const key=d.nodes.length+":"+d.links.length;
+    if(!c.pos||c.posKey!==key){
+      const idx={},N=d.nodes.map((n,i)=>{ idx[n.id]=i; const a=i*2.4; return {x:0.5+Math.cos(a)*0.3,y:0.5+Math.sin(a)*0.3,vx:0,vy:0}; });
+      for(let it=0;it<140;it++){
+        N.forEach((a,i)=>{ N.forEach((b,j)=>{ if(i===j) return; const dx=a.x-b.x,dy=a.y-b.y,q=dx*dx+dy*dy+0.002,f=0.0009/q; a.vx+=dx*f; a.vy+=dy*f; }); a.vx+=(0.5-a.x)*0.01; a.vy+=(0.5-a.y)*0.01; });
+        d.links.forEach(l=>{ const a=N[idx[l[0]]],b=N[idx[l[1]]]; if(!a||!b) return; const dx=b.x-a.x,dy=b.y-a.y; a.vx+=dx*0.03; a.vy+=dy*0.03; b.vx-=dx*0.03; b.vy-=dy*0.03; });
+        N.forEach(a=>{ a.x+=a.vx*=0.6; a.y+=a.vy*=0.6; });
+      }
+      c.pos=N; c.posIdx=idx; c.posKey=key;
+    }
+    const S=n=>[18+Math.max(0,Math.min(1,n.x))*(W-36),14+Math.max(0,Math.min(1,n.y))*(H-28)];
+    x.lineWidth=1; x.strokeStyle="rgba(255,95,162,.35)"; x.shadowColor=C.rose; x.shadowBlur=6;
+    d.links.forEach(l=>{ const a=c.pos[c.posIdx[l[0]]],b=c.pos[c.posIdx[l[1]]]; if(!a||!b) return; const A1=S(a),B1=S(b); x.beginPath(); x.moveTo(A1[0],A1[1]); x.lineTo(B1[0],B1[1]); x.stroke(); });
+    d.nodes.forEach((n,i)=>{ const q=S(c.pos[i]); x.fillStyle=n.c; x.shadowColor=n.c; x.shadowBlur=sel===i?24:12; x.beginPath(); x.arc(q[0],q[1],n.r*p+(sel===i?3:0),0,7); x.fill(); hits.push({x:q[0],y:q[1],r:16,t:n.label}); });
+    x.shadowBlur=0;
+  }
+  function mark(x,hits,sel){ if(sel==null||!hits[sel]||hits[sel].x==null) return; x.strokeStyle="#fff"; x.lineWidth=1.5; x.beginPath(); x.arc(hits[sel].x,hits[sel].y,7,0,7); x.stroke(); }
+  function hitAt(c,px,py){
+    let best=-1,bd=1e9; c.hits.forEach((h,i)=>{
+      if(h.arc){ const dx=px-h.arc[0],dy=py-h.arc[1],r=Math.sqrt(dx*dx+dy*dy),an=Math.atan2(dy,dx); while(an<h.arc[4]) an+=6.2832; if(r>=h.arc[2]&&r<=h.arc[3]&&an<=h.arc[5]){ best=i; bd=0; } }
+      else { const dd=Math.hypot(px-h.x,py-h.y); if(dd<h.r&&dd<bd){ bd=dd; best=i; } }
+    }); return best;
+  }
+  function chip(txt,on,fn,cls){ const b=document.createElement("button"); b.type="button"; b.className="gx-chip "+(cls||""); b.textContent=txt; b.setAttribute("aria-pressed",on?"true":"false"); b.onclick=fn; return b; }
+  function build(def){
+    const el=document.createElement("section"); el.className="panel gx-card accent-"+["rose","blossom","magenta","lilac","gold","peach"][defs.indexOf(def)%6]; el.dataset.mod=def.module;
+    el.innerHTML='<div class="gx-head"><div><h3></h3><div class="gx-mod"></div></div><span class="gx-badge"></span></div><div class="gx-kinds gx-row"></div><div class="gx-body"></div>';
+    el.querySelector("h3").textContent=def.title; el.querySelector(".gx-mod").textContent=(MODS[def.module]||def.module).toUpperCase();
+    byId("gxGrid").appendChild(el); cards[def.id]={el:el,def:def,kind:def.kinds[0],hash:"",sel:null};
+  }
+  function paint(c,anim){
+    const def=c.def,d=def.source(F),body=c.el.querySelector(".gx-body"),badge=c.el.querySelector(".gx-badge"),kinds=c.el.querySelector(".gx-kinds");
+    c.data=d;
+    if(!d){ badge.className="gx-badge await"; badge.textContent="NO DATA"; kinds.innerHTML=""; body.innerHTML='<div class="gx-wait"><b>AWAITING DATA</b><span class="gx-note"></span></div>'; body.querySelector(".gx-note").textContent=def.needs||""; c.cv=null; c.hash=""; return false; }
+    badge.className="gx-badge "+d.status; badge.textContent=d.status.toUpperCase();
+    const list=def.kinds.filter(k=>k!=="radar"||d.labels.length>=3); if(list.indexOf(c.kind)<0) c.kind=list[0];
+    kinds.innerHTML=""; if(list.length>1) list.forEach(k=>kinds.appendChild(chip(KIND_LABEL[k],k===c.kind,()=>{ c.kind=k; c.sel=null; paint(c,true); })));
+    if(!c.cv){
+      body.innerHTML='<canvas class="gx-canvas"></canvas><div class="gx-legend"></div><div class="gx-read">Tap the graph for exact values.</div><div class="gx-note"></div>';
+      c.cv=body.querySelector("canvas"); c.read=body.querySelector(".gx-read");
+      c.cv.addEventListener("click",e=>{ const r=c.cv.getBoundingClientRect(),i=hitAt(c,e.clientX-r.left,e.clientY-r.top); c.sel=i<0?null:i; c.read.textContent=i<0?"Tap the graph for exact values.":"▸ "+c.hits[i].t; draw(c,c.kind,c.data,1,c.sel); });
+    }
+    body.querySelector(".gx-note").textContent=d.note||"";
+    const lg=body.querySelector(".gx-legend"),pieLike=c.kind==="pie"||c.kind==="doughnut"; lg.innerHTML=""; lg.className="gx-legend"+(c.kind==="waffle"?" rows":"");
+    if(c.kind==="waffle"){
+      const wt=d.series[0].data.reduce((a,b)=>a+b,0); body.querySelector(".gx-note").textContent=(d.note||"")+" Each dot = "+fmt(wUnit(wt))+".";
+      d.labels.forEach((l,i)=>{ const r=document.createElement("div"),a=document.createElement("span"),q=document.createElement("b"),ic=document.createElement("i"); ic.style.background=ic.style.color=PAL[i%6]; a.appendChild(ic); a.appendChild(document.createTextNode(l)); q.style.color=PAL[i%6]; q.textContent=fmt(d.series[0].data[i])+" ("+(wt?Math.round(d.series[0].data[i]/wt*100):0)+"%)"; r.appendChild(a); r.appendChild(q); lg.appendChild(r); });
+    } else
+    (c.kind==="network"?[["Joplex",C.rose],["type",C.magenta],["memory",C.blossom]]:pieLike?d.labels.map((l,i)=>[l,PAL[i%6]]):d.series.map((s,i)=>[s.name,PAL[i%6]])).forEach(r=>{ const s=document.createElement("span"),i=document.createElement("i"); i.style.background=i.style.color=r[1]; s.appendChild(i); s.appendChild(document.createTextNode(r[0])); lg.appendChild(s); });
+    const h=c.kind+JSON.stringify(d.series||d.nodes.length),live=d.status==="simulated";
+    if(anim||h!==c.hash){ c.hash=h; run(c,calm||live&&!anim?1:0); } else draw(c,c.kind,d,1,c.sel);
+    return true;
+  }
+  function run(c,from){
+    if(from===1) return draw(c,c.kind,c.data,1,c.sel);
+    const t0=performance.now(),token=c.tok={}; (function f(t){ if(c.tok!==token) return; const p=Math.min(1,(t-t0)/650); draw(c,c.kind,c.data,1-Math.pow(1-p,3),c.sel); if(p<1) requestAnimationFrame(f); })(t0);
+  }
+  let timer=0;
+  function refresh(){
+    let live=0,wait=0;
+    defs.forEach(def=>{ const c=cards[def.id]; if(!c) return; const show=F.module==="all"||F.module===def.module; c.el.hidden=!show; if(!show) return; if(paint(c,false)) live++; else wait++; });
+    const s=byId("gxSum"); if(s) s.textContent=live+" graph(s) with data · "+wait+" awaiting data";
+  }
+  function sched(){ clearTimeout(timer); timer=setTimeout(()=>{ if(byId("gxGrid")&&byId("gxGrid").offsetParent) refresh(); },350); }
+  function bar(){
+    const b=byId("gxBar"); b.innerHTML="";
+    const r1=document.createElement("div"),r2=document.createElement("div"); r1.className=r2.className="gx-row";
+    [["All time","all"],["30 days","30"],["7 days","7"]].forEach(r=>r1.appendChild(chip(r[0],F.range===r[1],()=>{ F.range=r[1]; bar(); refresh(); })));
+    r1.appendChild(chip("↺ Reset filters",false,()=>{ F={range:"all",module:"all"}; Object.keys(cards).forEach(k=>{ if(cards[k].def){ cards[k].kind=cards[k].def.kinds[0]; cards[k].sel=null; } }); bar(); refresh(); },"reset"));
+    r2.appendChild(chip("All",F.module==="all",()=>{ F.module="all"; bar(); refresh(); }));
+    Object.keys(MODS).forEach(m=>r2.appendChild(chip(MODS[m],F.module===m,()=>{ F.module=m; bar(); refresh(); })));
+    const sm=document.createElement("div"); sm.className="gx-sum"; sm.id="gxSum"; b.appendChild(r1); b.appendChild(r2); b.appendChild(sm);
+  }
+  bar(); cards._ready=true; defs.forEach(build); refresh();
+  try{ const os=Storage.prototype.setItem,orm=Storage.prototype.removeItem; Storage.prototype.setItem=function(){ const r=os.apply(this,arguments); if(this===localStorage) sched(); return r; }; Storage.prototype.removeItem=function(){ const r=orm.apply(this,arguments); if(this===localStorage) sched(); return r; }; }catch(e){}
+  window.addEventListener("resize",sched); window.addEventListener("storage",sched);
+  setInterval(()=>{ if(document.hidden||!byId("gxGrid").offsetParent) return; defs.forEach(def=>{ const c=cards[def.id]; if(def.tick&&c&&!c.el.hidden){ def.tick(); if(c.cv&&c.data&&c.data.status==="simulated"){ c.data=def.source(F); draw(c,"live",c.data,1,null); } } }); },900);
+}
+
+/* ---------- delegated action handler ---------- */
+document.addEventListener("click",e=>{
+  const actEl = e.target.closest("[data-act]");
+  if(actEl){ const fn = ACTIONS[actEl.getAttribute("data-act")]; if(fn){ e.preventDefault(); fn(); } return; }
+  const quick = e.target.closest("[data-quick]");
+  if(quick){ e.preventDefault(); byId("commandInput").value = quick.getAttribute("data-quick"); runCommand(); return; }
+  const go = e.target.closest("[data-go]");
+  if(go){ e.preventDefault(); showTab(go.getAttribute("data-go")); return; }
+  const core = e.target.closest("[data-core]");
+  if(core){ e.preventDefault(); showCore(core.getAttribute("data-core")); }
+});
+
+/* ---------- single init ---------- */
+function init(){
+  // theme
+  applyTheme(store.get("joplexTheme")==="light"?"light":"dark");
+  updateGlassBtn();
+  updateSafetyBadge();
+
+  // boot planet + boot sequence
+  startBootPlanet();
+  bootSequence();
+
+  // restore name & history & mission
+  const savedName = store.get("joplexName");
+  if(savedName){
+    const ni = byId("nameInput"); if(ni) ni.value = savedName;
+    const resp = byId("response");
+    if(resp) resp.textContent = "Welcome back, "+savedName+"! Joplex is online and ready. 🦋🚀";
+  }
+  const hist = byId("commandHistory");
+  if(hist) savedHistory.forEach(cmd=>{ const li=document.createElement("li"); li.textContent=cmd; hist.appendChild(li); });
+  const mn = byId("missionNumber"), ms = byId("missionStatus"), cc = byId("ccMission");
+  if(mn) mn.textContent = "Mission: "+currentMission;
+  if(ms) ms.textContent = "Status: "+currentMissionStatus;
+  if(cc) cc.textContent = "🎯 Mission: "+currentMission;
+
+  // mind date default
+  const d = byId("gpDate");
+  if(d){ d.value = isoDay(addDays(today0(),30)); d.min = isoDay(addDays(today0(),1)); }
+
+  // aria labels for core inputs
+  document.querySelectorAll("#reasoningCore input,#reasoningCore textarea,#planningEngine input,#memoryArch input,#verifyCore input,#verifyCore textarea").forEach(el=>{
+    if(!el.getAttribute("aria-label") && el.placeholder) el.setAttribute("aria-label", el.placeholder);
+  });
+
+  // render panels
+  loadWealth();
+  loadProfile();
+  renderKB();
+  renderCatList();
+  renderGoals();
+  renderMemory();
+  renderLedger();
+  updateBackupBanner();
+
+  // pin events
+  const pinIn = byId("pinInput");
+  if(pinIn) pinIn.addEventListener("keydown",e=>{ if(e.key==="Enter") unlockScreen(); });
+  if(pinEnabled()) showPinScreen();
+
+  // clock
+  const clock = byId("clock");
+  const tickClock = ()=>{ if(clock) clock.textContent = "Current time: "+new Date().toLocaleTimeString(); };
+  tickClock(); setInterval(tickClock,1000);
+
+  // navigation restore
+  showCore(store.get("joplexCore"));
+  showTab(store.get("joplexTab"));
+
+  // decorations
+  initButterflies();
+  initParallax();
+
+  // charts module
+  initGraphs();
+}
+
+// single, ordered load
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+</script>
+</body>
+</html>

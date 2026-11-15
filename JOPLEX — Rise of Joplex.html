@@ -1,0 +1,2635 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JOPLEX — Rise of Joplex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ==========================================================================
+       JOPLEX — RISE OF JOPLEX | DESIGN TOKENS & CORE VARIABLES
+       ========================================================================== */
+    :root {
+      --bg: #05070c;
+      --bg-2: #0a0f18;
+      --surface: rgba(14, 21, 34, 0.72);
+      --surface-strong: rgba(16, 24, 38, 0.90);
+      --surface-soft: rgba(255, 255, 255, 0.035);
+      --border: rgba(255, 255, 255, 0.11);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --text: #eef4ff;
+      --text-dim: #9db0c9;
+      --text-muted: #6e829e;
+      --accent: #3ef2d0;
+      --accent-2: #7c8cff;
+      --accent-3: #ff9c54;
+      --danger: #ff6b81;
+      --success: #46e89b;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      --radius-xl: 26px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --font-display: 'Chakra Petch', 'Space Grotesk', system-ui, sans-serif;
+      --font-body: 'Inter', 'IBM Plex Sans', system-ui, sans-serif;
+      --mx: 0px;
+      --my: 0px;
+      --eye-color: #3ef2d0;
+      --eye-glow: rgba(62, 242, 208, 0.35);
+      --ring-speed: 18s;
+      --pupil-scale: 1;
+    }
+
+    html[data-theme="light"] {
+      --bg: #f3f6fb;
+      --bg-2: #e7edf6;
+      --surface: rgba(255, 255, 255, 0.80);
+      --surface-strong: rgba(255, 255, 255, 0.94);
+      --surface-soft: rgba(12, 24, 44, 0.04);
+      --border: rgba(15, 23, 42, 0.10);
+      --border-strong: rgba(15, 23, 42, 0.20);
+      --text: #0f172a;
+      --text-dim: #475569;
+      --text-muted: #64748b;
+      --accent: #0ea5a4;
+      --accent-2: #4f46e5;
+      --accent-3: #ea580c;
+      --danger: #e11d48;
+      --success: #059669;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.55;
+      overflow-x: hidden;
+      transition: background 0.35s ease, color 0.35s ease;
+    }
+
+    /* Ambient Mesh Gradient Layer */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 16% 18%, color-mix(in srgb, var(--eye-color) 16%, transparent), transparent 44%),
+        radial-gradient(circle at 84% 22%, rgba(124, 140, 255, 0.14), transparent 46%),
+        radial-gradient(circle at 50% 88%, rgba(255, 156, 84, 0.10), transparent 48%);
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       2. REACTIVE LIVING EYES BACKDROP (#eyeWall)
+       ========================================================================== */
+    #eyeWall {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.58;
+      transition: opacity 0.5s ease, filter 0.5s ease;
+      overflow: hidden;
+    }
+
+    html[data-theme="light"] #eyeWall {
+      opacity: 0.28;
+    }
+
+    #eyeWall.eyes-hidden {
+      opacity: 0 !important;
+      visibility: hidden;
+    }
+
+    .living-eyes-rig {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(32px, 11vw, 150px);
+      transform: translate3d(calc(var(--mx) * 0.35), calc(var(--my) * 0.35), 0);
+      transition: transform 0.12s ease-out;
+      filter: drop-shadow(0 0 38px var(--eye-glow));
+    }
+
+    .cyber-eye {
+      position: relative;
+      width: clamp(140px, 22vw, 270px);
+      height: clamp(82px, 13vw, 158px);
+      border-radius: 52% 48% 50% 50% / 60% 60% 40% 40%;
+      background: radial-gradient(ellipse at center, rgba(10, 18, 30, 0.92) 35%, color-mix(in srgb, var(--eye-color) 22%, rgba(8, 14, 24, 0.96)) 100%);
+      border: 1.5px solid color-mix(in srgb, var(--eye-color) 55%, transparent);
+      box-shadow:
+        inset 0 0 32px color-mix(in srgb, var(--eye-color) 35%, transparent),
+        0 0 40px color-mix(in srgb, var(--eye-color) 20%, transparent);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center center;
+    }
+
+    .cyber-eye::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      border: 1px dashed color-mix(in srgb, var(--eye-color) 32%, transparent);
+      pointer-events: none;
+    }
+
+    .eye-iris {
+      position: relative;
+      width: clamp(64px, 10vw, 118px);
+      height: clamp(64px, 10vw, 118px);
+      border-radius: 50%;
+      background:
+        repeating-conic-gradient(
+          from 0deg,
+          color-mix(in srgb, var(--eye-color) 55%, transparent) 0deg 4deg,
+          transparent 4deg 12deg
+        ),
+        radial-gradient(circle, var(--eye-color) 18%, color-mix(in srgb, var(--eye-color) 35%, #06101c) 68%, #040812 100%);
+      border: 2px solid var(--eye-color);
+      box-shadow: 0 0 26px var(--eye-glow), inset 0 0 16px rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate3d(var(--mx), var(--my), 0) scale(var(--pupil-scale));
+      transition: transform 0.1s ease-out, background 0.35s ease, border-color 0.35s ease;
+    }
+
+    .eye-pupil {
+      width: 42%;
+      height: 42%;
+      border-radius: 50%;
+      background: #020408;
+      border: 1.5px solid color-mix(in srgb, var(--eye-color) 75%, white);
+      box-shadow: 0 0 12px var(--eye-color);
+      position: relative;
+    }
+
+    .eye-pupil::after {
+      content: "";
+      position: absolute;
+      top: 16%;
+      left: 18%;
+      width: 28%;
+      height: 28%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .eye-scanline {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--eye-color) 16%, transparent) 50%, transparent 100%);
+      background-size: 100% 8px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    @keyframes eyeBlinkAnim {
+      0%, 92%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.04); }
+    }
+
+    .eyeBlink {
+      animation: eyeBlinkAnim var(--blink-interval, 5.5s) infinite ease-in-out;
+    }
+
+    /* ==========================================================================
+       SPINNING RINGED PLANET (.planet & .planet.sm)
+       ========================================================================== */
+    .planet-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 112px;
+      height: 112px;
+      flex-shrink: 0;
+    }
+
+    .planet-wrap.sm {
+      width: 64px;
+      height: 64px;
+    }
+
+    .planet {
+      position: relative;
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.7) 0%, transparent 28%),
+        radial-gradient(circle at 65% 70%, rgba(7, 13, 26, 0.9) 10%, transparent 65%),
+        linear-gradient(135deg, var(--accent), var(--accent-2) 60%, #1d2747 100%);
+      box-shadow:
+        0 0 32px color-mix(in srgb, var(--accent) 45%, transparent),
+        inset -10px -10px 22px rgba(0, 0, 0, 0.65);
+      transform-style: preserve-3d;
+    }
+
+    .planet.sm {
+      width: 38px;
+      height: 38px;
+      box-shadow:
+        0 0 20px color-mix(in srgb, var(--accent) 40%, transparent),
+        inset -6px -6px 12px rgba(0, 0, 0, 0.65);
+    }
+
+    .planet::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 168%;
+      height: 44%;
+      border-radius: 50%;
+      border: 3px solid color-mix(in srgb, var(--accent) 75%, white);
+      border-top-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
+      transform: translate(-50%, -50%) rotateX(68deg) rotateZ(-18deg);
+      animation: orbitSpin var(--ring-speed) linear infinite;
+    }
+
+    .planet::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 205%;
+      height: 54%;
+      border-radius: 50%;
+      border: 1.5px dashed color-mix(in srgb, var(--accent-2) 80%, white);
+      transform: translate(-50%, -50%) rotateX(68deg) rotateZ(24deg);
+      animation: orbitSpinReverse calc(var(--ring-speed) * 1.45) linear infinite;
+    }
+
+    @keyframes orbitSpin {
+      0% { transform: translate(-50%, -50%) rotateX(68deg) rotateZ(0deg); }
+      100% { transform: translate(-50%, -50%) rotateX(68deg) rotateZ(360deg); }
+    }
+
+    @keyframes orbitSpinReverse {
+      0% { transform: translate(-50%, -50%) rotateX(68deg) rotateZ(360deg); }
+      100% { transform: translate(-50%, -50%) rotateX(68deg) rotateZ(0deg); }
+    }
+
+    /* ==========================================================================
+       1. BOOT SEQUENCE (#bootScreen)
+       ========================================================================== */
+    #bootScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: radial-gradient(circle at center, #0c1322 0%, #04060b 100%);
+      color: #eef4ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      transition: opacity 0.65s ease, visibility 0.65s ease, transform 0.65s ease;
+    }
+
+    #bootScreen.boot-done {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .boot-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.1rem, 6vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      margin-top: 18px;
+      background: linear-gradient(90deg, #ffffff, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 32px rgba(62, 242, 208, 0.25);
+    }
+
+    .boot-sub {
+      font-size: 0.85rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #9db0c9;
+      margin-top: 4px;
+    }
+
+    .boot-terminal {
+      margin-top: 26px;
+      width: min(440px, 92vw);
+      background: rgba(14, 21, 34, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .boot-status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Chakra Petch', monospace;
+      font-size: 0.88rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .boot-progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    #bootBar {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 14px var(--accent);
+      transition: width 0.28s ease;
+    }
+
+    .skip-boot-btn {
+      margin-top: 22px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .skip-boot-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* ==========================================================================
+       MAIN LAYOUT & GLASSMORPHIC BENTO COMPONENTS
+       ========================================================================== */
+    #mainContent {
+      position: relative;
+      z-index: 2;
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 18px 18px 115px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #mainContent.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .glass-card {
+      background: var(--surface);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      transition: border-color 0.25s ease, transform 0.25s ease, background 0.35s ease;
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    /* ==========================================================================
+       3. TOP BAR & 'HELLO JOPLEX' COMMAND CENTRE
+       ========================================================================== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .joplex-orb {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: conic-gradient(from 45deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+      box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+      position: relative;
+      animation: orbRotate 8s linear infinite;
+    }
+
+    .joplex-orb::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: var(--bg-2);
+    }
+
+    @keyframes orbRotate {
+      to { transform: rotate(360deg); }
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.12rem;
+      letter-spacing: 0.1em;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 14%, transparent);
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulseGlow 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.45); opacity: 0.55; }
+    }
+
+    .topbar-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .pill-btn.active {
+      background: color-mix(in srgb, var(--accent) 18%, transparent);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Command Centre Hero */
+    #commandCentre {
+      padding: 24px 26px;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .hero-identity {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .hero-kicker {
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .hero-greeting {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3.2vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .name-edit-btn {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .name-edit-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .hero-subtitle {
+      color: var(--text-dim);
+      font-size: 0.94rem;
+      margin-top: 4px;
+      max-width: 620px;
+    }
+
+    .telemetry-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .telemetry-pill {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      min-width: 106px;
+    }
+
+    .telemetry-label {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .telemetry-val {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-top: 2px;
+    }
+
+    /* Intent & Quick Assistant Strip */
+    .intent-bar {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .intent-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .intent-chip {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .intent-chip:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 14%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .focus-mode-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-soft);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    .mode-pill {
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-pill.active {
+      background: var(--accent);
+      color: #041019;
+    }
+
+    /* ==========================================================================
+       4. FLOATING PILL TAB BAR (.tabbar)
+       ========================================================================== */
+    .tabbar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px;
+      border-radius: 999px;
+      background: var(--surface-strong);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-strong);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+      max-width: 95vw;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-family: var(--font-display);
+      font-size: 0.86rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.22s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: var(--surface-soft);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #040b14;
+      box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    /* Tab Panels */
+    .tab-panel {
+      display: none;
+      animation: panelFade 0.35s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes panelFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       TAB 1: HELLO JOPLEX BENTO GRID
+       ========================================================================== */
+    .bento-grid-2 {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 880px) {
+      .bento-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bento-card {
+      padding: 22px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    /* Interactive Console & History List */
+    .companion-output {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      min-height: 92px;
+      font-size: 0.94rem;
+      color: var(--text);
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .companion-speaker {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .command-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .cyber-input {
+      width: 100%;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cyber-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #040b14;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 11px 18px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 32%, transparent);
+    }
+
+    .history-list {
+      list-style: none;
+      max-height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .history-item {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 0.83rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .history-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Momentum & Goal Tracker */
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.35s ease;
+    }
+
+    .goal-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .goal-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      transition: all 0.2s ease;
+    }
+
+    .goal-item.completed span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .goal-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      flex: 1;
+      font-size: 0.88rem;
+    }
+
+    .goal-check {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .icon-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+
+    .icon-del-btn:hover {
+      color: var(--danger);
+      background: rgba(255, 107, 129, 0.12);
+    }
+
+    /* Neural Scratchpad */
+    .scratchpad-area {
+      width: 100%;
+      min-height: 135px;
+      resize: vertical;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 13px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .scratchpad-area:focus {
+      border-color: var(--accent);
+    }
+
+    .scratchpad-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       TAB 2: PERSONAL WEALTH & SMART COACH (Preserved & Upgraded Classes)
+       ========================================================================== */
+    .wealth-shell {
+      padding: 24px;
+    }
+
+    .wealth-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wealth-head h2 {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: color-mix(in srgb, var(--success) 16%, transparent);
+      color: var(--success);
+      border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
+    }
+
+    .money-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .money-field {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .money-field label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .available-card {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--surface-soft)), color-mix(in srgb, var(--accent-2) 14%, var(--surface-soft)));
+      border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .available-amount {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .coach-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .allocation, .phone-card, .advice-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+
+    .allocation h3, .phone-card h3, .advice-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.02rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alloc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+
+    .alloc-row:last-child {
+      border-bottom: none;
+    }
+
+    .alloc-val {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .wealth-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ==========================================================================
+       TAB 3: KNOWLEDGE CORE (.knowledge-core & .knowledge-grid)
+       ========================================================================== */
+    .knowledge-core {
+      padding: 24px;
+    }
+
+    .knowledge-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .knowledge-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 16px;
+    }
+
+    .k-card {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      transition: transform 0.22s ease, border-color 0.22s ease;
+    }
+
+    .k-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .k-cat {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+
+    .k-title {
+      font-family: var(--font-display);
+      font-size: 1.06rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .k-body {
+      font-size: 0.87rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+
+    /* Modal for New Knowledge Card */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(3, 6, 12, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(480px, 95vw);
+      padding: 24px;
+    }
+
+    /* ==========================================================================
+       TAB 4: SYSTEM & EYE CALIBRATION LAB
+       ========================================================================== */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .swatch-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0 18px;
+    }
+
+    .swatch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .swatch-btn.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+
+    .swatch-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .slider-group {
+      margin-bottom: 16px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Toast Message Box (No alert() used anywhere) */
+    #toastBox {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 950;
+      background: var(--surface-strong);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    #toastBox.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Accessibility & Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        border-radius: var(--radius-lg);
+      }
+      #commandCentre {
+        padding: 18px;
+      }
+      .tab-btn {
+        padding: 9px 13px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. BOOT SEQUENCE (#bootScreen)
+       ======================================================================== -->
+  <div id="bootScreen" role="dialog" aria-label="JOPLEX Boot Sequence">
+    <div class="planet-wrap">
+      <div class="planet"></div>
+    </div>
+    <h1 class="boot-title">JOPLEX</h1>
+    <p class="boot-sub">Rise of Joplex • Cybernetic Companion OS</p>
+
+    <div class="boot-terminal">
+      <div class="boot-status-row">
+        <span id="bootStatusText">Initializing Living Eyes...</span>
+        <span id="bootPercent">0%</span>
+      </div>
+      <div class="boot-progress-track">
+        <div id="bootBar"></div>
+      </div>
+    </div>
+
+    <button type="button" class="skip-boot-btn" id="skipBootBtn">Skip Intro →</button>
+  </div>
+
+  <!-- ========================================================================
+       2. REACTIVE LIVING EYES BACKDROP (#eyeWall)
+       ======================================================================== -->
+  <div id="eyeWall" aria-hidden="true">
+    <div class="living-eyes-rig">
+      <!-- Left Cybernetic Eye -->
+      <div class="cyber-eye eyeBlink" id="leftEye">
+        <div class="eye-iris">
+          <div class="eye-pupil"></div>
+        </div>
+        <div class="eye-scanline"></div>
+      </div>
+      <!-- Right Cybernetic Eye -->
+      <div class="cyber-eye eyeBlink" id="rightEye">
+        <div class="eye-iris">
+          <div class="eye-pupil"></div>
+        </div>
+        <div class="eye-scanline"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Non-blocking Toast Feedback -->
+  <div id="toastBox" role="status" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       MAIN APPLICATION SHELL (#mainContent)
+       ======================================================================== -->
+  <main id="mainContent">
+    <!-- Top Bar -->
+    <header class="topbar glass-card">
+      <div class="brand-cluster">
+        <div class="joplex-orb" aria-hidden="true"></div>
+        <span class="brand-title">JOPLEX</span>
+        <span class="live-badge">
+          <span class="pulse-dot"></span>
+          Hello Joplex • Active
+        </span>
+      </div>
+
+      <div class="topbar-controls">
+        <button type="button" class="pill-btn" id="themeToggleBtn" aria-label="Switch Theme">
+          <span id="themeIcon">☀️</span> <span id="themeLabel">Light Editorial</span>
+        </button>
+        <button type="button" class="pill-btn active" id="eyesToggleBtn" aria-label="Toggle Living Eyes">
+          👁️ <span id="eyesLabel">Eyes: ON</span>
+        </button>
+        <button type="button" class="pill-btn" id="audioToggleBtn" aria-label="Toggle Ambient Synth Pulse">
+          🔊 <span id="audioLabel">Pulse: OFF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 3. 'HELLO JOPLEX' HERO & COMMAND CENTRE -->
+    <section id="commandCentre" class="glass-card" aria-label="Hello Joplex Command Centre">
+      <div class="hero-top">
+        <div class="hero-identity">
+          <div class="planet-wrap sm">
+            <div class="planet sm"></div>
+          </div>
+          <div>
+            <div class="hero-kicker">RISE OF JOPLEX • NEURAL COMPANION INTERFACE</div>
+            <h2 class="hero-greeting">
+              <span id="greetingText">Hello, Joplex — Good Evening</span>
+              <button type="button" class="name-edit-btn" id="editNameBtn" title="Personalize your Commander name">✎ Rename</button>
+            </h2>
+            <p class="hero-subtitle" id="heroSubtitle">
+              Living Eyes synchronized. Your wealth telemetry, daily momentum, and knowledge matrix are online.
+            </p>
+          </div>
+        </div>
+
+        <div class="telemetry-pills">
+          <div class="telemetry-pill">
+            <span class="telemetry-label">System</span>
+            <span class="telemetry-val" style="color: var(--success);">● Online</span>
+          </div>
+          <div class="telemetry-pill">
+            <span class="telemetry-label">Living Eyes</span>
+            <span class="telemetry-val" id="eyeStatusPill">Tracking</span>
+          </div>
+          <div class="telemetry-pill">
+            <span class="telemetry-label">Focus Streak</span>
+            <span class="telemetry-val" id="streakPill">1 Day 🔥</span>
+          </div>
+          <div class="telemetry-pill">
+            <span class="telemetry-label">Local Time</span>
+            <span class="telemetry-val" id="clockPill">--:--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline Name Editor (Hidden by default) -->
+      <div id="nameEditorRow" style="display:none; margin-top:14px; gap:8px; align-items:center; flex-wrap:wrap;">
+        <input type="text" id="commanderNameInput" class="cyber-input" style="max-width:260px;" placeholder="Enter your name or title..." />
+        <button type="button" class="primary-btn" id="saveNameBtn">Save Identity</button>
+        <button type="button" class="pill-btn" id="cancelNameBtn">Cancel</button>
+      </div>
+
+      <!-- Quick Assistant & Mood/Intent Bar -->
+      <div class="intent-bar">
+        <div class="intent-chips">
+          <button type="button" class="intent-chip" data-prompt="Hello Joplex">👋 Hello Joplex</button>
+          <button type="button" class="intent-chip" data-prompt="Daily Briefing">📡 Daily Briefing</button>
+          <button type="button" class="intent-chip" data-prompt="Motivational Spark">⚡ Motivational Spark</button>
+          <button type="button" class="intent-chip" data-prompt="System Check">🛡️ System Check</button>
+        </div>
+
+        <div class="focus-mode-group" role="group" aria-label="Companion Focus Mode">
+          <button type="button" class="mode-pill active" data-mode="balanced">Balanced</button>
+          <button type="button" class="mode-pill" data-mode="deep">Deep Focus</button>
+          <button type="button" class="mode-pill" data-mode="creative">Creative</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 1: HELLO JOPLEX (COMMAND & FOCUS HUB)
+         ====================================================================== -->
+    <section id="tab-hello" class="tab-panel active" role="tabpanel">
+      <div class="bento-grid-2">
+        <!-- Left Column: Hello Joplex Interactive Console -->
+        <div class="glass-card bento-card">
+          <div class="card-header">
+            <h3 class="card-title">🤖 Hello Joplex Interactive Console</h3>
+            <span class="card-tag">Neural Dialogue</span>
+          </div>
+
+          <div class="companion-output" id="companionOutput">
+            <div class="companion-speaker">
+              <span class="pulse-dot"></span> JOPLEX CORE RESPONSE
+            </div>
+            <div id="companionReplyText">
+              Hello, Commander. Living Eyes are locked on your horizon. Ask for a Daily Briefing, log a command, or select a quick prompt above.
+            </div>
+          </div>
+
+          <form class="command-form" id="commandForm">
+            <input type="text" id="commandInput" class="cyber-input" placeholder="Say 'Hello Joplex', ask for advice, or log a command..." autocomplete="off" />
+            <button type="submit" class="primary-btn">Send ↵</button>
+          </form>
+
+          <div class="card-header" style="margin-top:8px; margin-bottom:8px;">
+            <span style="font-size:0.78rem; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em;">Live Activity & Command Log</span>
+            <button type="button" class="name-edit-btn" id="clearHistoryBtn">Clear Log</button>
+          </div>
+          <ul class="history-list" id="historyList"></ul>
+        </div>
+
+        <!-- Right Column: Daily Momentum & Neural Scratchpad -->
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <!-- Daily Momentum & Goal Tracker -->
+          <div class="glass-card bento-card">
+            <div class="card-header">
+              <h3 class="card-title">🎯 Daily Momentum & Goals</h3>
+              <span class="card-tag" id="goalPercentBadge">0% Complete</span>
+            </div>
+
+            <div class="progress-header">
+              <span>Execution Progress</span>
+              <span id="goalCountText">0 / 0 Tasks</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="goalProgressFill"></div>
+            </div>
+
+            <ul class="goal-list" id="goalList"></ul>
+
+            <form class="command-form" id="goalForm" style="margin-bottom:0;">
+              <input type="text" id="newGoalInput" class="cyber-input" placeholder="Add a high-impact mission..." autocomplete="off" />
+              <button type="submit" class="primary-btn">+ Add</button>
+            </form>
+          </div>
+
+          <!-- Quick Notes / Scratchpad -->
+          <div class="glass-card bento-card">
+            <div class="card-header">
+              <h3 class="card-title">📝 Neural Scratchpad</h3>
+              <span class="card-tag">Auto-Saved</span>
+            </div>
+            <textarea id="scratchpadInput" class="scratchpad-area" placeholder="Capture instant ideas, reminders, or architectural thoughts..."></textarea>
+            <div class="scratchpad-footer">
+              <span id="wordCountText">0 words • 0 chars</span>
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="pill-btn" id="copyNotesBtn" style="padding:5px 11px; font-size:0.76rem;">📋 Copy</button>
+                <button type="button" class="pill-btn" id="clearNotesBtn" style="padding:5px 11px; font-size:0.76rem;">🗑️ Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 2: WEALTH CORE (PERSONAL WEALTH & SMART COACH)
+         ====================================================================== -->
+    <section id="tab-wealth" class="tab-panel" role="tabpanel">
+      <div class="glass-card wealth-shell">
+        <div class="wealth-head">
+          <div>
+            <h2>💎 Personal Wealth & Smart Coach</h2>
+            <p style="font-size:0.86rem; color:var(--text-dim);">Real-time cashflow clarity, 50/30/20 allocation, and runway intelligence.</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <select id="currencySelect" class="cyber-input" style="width:auto; padding:8px 12px;" aria-label="Select Currency">
+              <option value="R">ZAR (R)</option>
+              <option value="$">USD ($)</option>
+              <option value="€">EUR (€)</option>
+              <option value="£">GBP (£)</option>
+            </select>
+            <span class="plan-badge" id="wealthHealthBadge">● OPTIMAL SURPLUS</span>
+          </div>
+        </div>
+
+        <!-- Financial Inputs -->
+        <div class="money-grid">
+          <div class="money-field">
+            <label for="incomeInput">Monthly Net Income</label>
+            <input type="number" id="incomeInput" class="cyber-input" min="0" step="100" value="28000" />
+          </div>
+          <div class="money-field">
+            <label for="essentialsInput">Fixed Essentials (Rent, Bills)</label>
+            <input type="number" id="essentialsInput" class="cyber-input" min="0" step="100" value="13500" />
+          </div>
+          <div class="money-field">
+            <label for="savingsInput">Monthly Savings / Invest</label>
+            <input type="number" id="savingsInput" class="cyber-input" min="0" step="100" value="5500" />
+          </div>
+          <div class="money-field">
+            <label for="bufferInput">Current Cash Buffer</label>
+            <input type="number" id="bufferInput" class="cyber-input" min="0" step="500" value="42000" />
+          </div>
+        </div>
+
+        <!-- Available Free Cash Hero Banner -->
+        <div class="available-card">
+          <div>
+            <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); font-weight:600;">
+              Available Free Cash (After Essentials & Savings)
+            </div>
+            <div class="available-amount" id="availableCash">R 9,000</div>
+          </div>
+          <div style="display:flex; gap:18px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:0.74rem; color:var(--text-muted); text-transform:uppercase;">Safe Daily Spend</div>
+              <div style="font-family:var(--font-display); font-size:1.25rem; font-weight:700;" id="safeDailySpend">R 300 / day</div>
+            </div>
+            <div>
+              <div style="font-size:0.74rem; color:var(--text-muted); text-transform:uppercase;">Emergency Runway</div>
+              <div style="font-family:var(--font-display); font-size:1.25rem; font-weight:700; color:var(--success);" id="runwayMonths">3.1 Months</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coach Grid -->
+        <div class="coach-grid">
+          <div class="allocation">
+            <h3>📊 50 / 30 / 20 Smart Allocation</h3>
+            <div class="alloc-row">
+              <span>50% Needs Benchmark</span>
+              <span class="alloc-val" id="allocNeeds">R 14,000</span>
+            </div>
+            <div class="alloc-row">
+              <span>30% Lifestyle & Wants</span>
+              <span class="alloc-val" id="allocWants">R 8,400</span>
+            </div>
+            <div class="alloc-row">
+              <span>20% Future & Investments</span>
+              <span class="alloc-val" id="allocFuture">R 5,600</span>
+            </div>
+            <div class="alloc-row">
+              <span>Your Actual Savings Rate</span>
+              <span class="alloc-val" style="color:var(--accent);" id="actualSavingsRate">19.6%</span>
+            </div>
+          </div>
+
+          <div class="phone-card">
+            <h3>📱 Upgrade & Goal Runway Estimator</h3>
+            <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:10px;">
+              Target upgrade or milestone cost (e.g. Flagship Device / Setup):
+            </p>
+            <input type="number" id="targetGoalCost" class="cyber-input" min="100" step="500" value="18000" style="margin-bottom:12px;" />
+            <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px;">
+              <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Estimated Time to Unlock</div>
+              <div style="font-family:var(--font-display); font-size:1.2rem; font-weight:700; color:var(--accent); margin-top:2px;" id="goalRunwayResult">
+                2.0 Months (using 100% free surplus)
+              </div>
+            </div>
+          </div>
+
+          <div class="advice-card">
+            <h3>🧠 Joplex Wealth Coach Insight</h3>
+            <p id="coachAdviceText" style="font-size:0.88rem; color:var(--text-dim); line-height:1.6;">
+              Your fixed essentials sit at 48.2% of net income—right inside the golden 50% threshold. Automating your savings transfer on payday locks in momentum before lifestyle creep occurs.
+            </p>
+          </div>
+        </div>
+
+        <div class="wealth-actions">
+          <button type="button" class="pill-btn" id="resetWealthBtn">↺ Reset Defaults</button>
+          <button type="button" class="primary-btn" id="saveWealthBtn">💾 Save Wealth Snapshot</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 3: KNOWLEDGE CORE (.knowledge-core & .knowledge-grid)
+         ====================================================================== -->
+    <section id="tab-knowledge" class="tab-panel" role="tabpanel">
+      <div class="glass-card knowledge-core">
+        <div class="wealth-head">
+          <div>
+            <h2>📚 Joplex Knowledge Matrix</h2>
+            <p style="font-size:0.86rem; color:var(--text-dim);">Curated mental models, Rise of Joplex lore, financial rules, and deep-work protocols.</p>
+          </div>
+          <button type="button" class="primary-btn" id="openKnowledgeModalBtn">+ Add Knowledge Card</button>
+        </div>
+
+        <div class="knowledge-toolbar">
+          <div class="filter-pills" id="knowledgeFilters">
+            <button type="button" class="pill-btn active" data-cat="All">All</button>
+            <button type="button" class="pill-btn" data-cat="Joplex Vision">Joplex Vision</button>
+            <button type="button" class="pill-btn" data-cat="Mental Models">Mental Models</button>
+            <button type="button" class="pill-btn" data-cat="Wealth Rules">Wealth Rules</button>
+            <button type="button" class="pill-btn" data-cat="Deep Work">Deep Work</button>
+          </div>
+          <input type="search" id="knowledgeSearch" class="cyber-input" style="max-width:270px;" placeholder="Search matrix..." />
+        </div>
+
+        <div class="knowledge-grid" id="knowledgeGrid"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB 4: SYSTEM & LAB (EYE CALIBRATION & CUSTOMIZATION)
+         ====================================================================== -->
+    <section id="tab-lab" class="tab-panel" role="tabpanel">
+      <div class="lab-grid">
+        <div class="glass-card bento-card">
+          <div class="card-header">
+            <h3 class="card-title">👁️ Living Eyes Calibration</h3>
+            <span class="card-tag">Optics Engine</span>
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-dim);">
+            Tune the cybernetic iris spectrum, cursor tracking responsiveness, and blink cadence.
+          </p>
+
+          <div class="swatch-row" id="eyeColorSwatches">
+            <button type="button" class="swatch-btn active" data-color="#3ef2d0" data-glow="rgba(62, 242, 208, 0.35)">
+              <span class="swatch-dot" style="background:#3ef2d0;"></span> Aqua
+            </button>
+            <button type="button" class="swatch-btn" data-color="#8b5cf6" data-glow="rgba(139, 92, 246, 0.35)">
+              <span class="swatch-dot" style="background:#8b5cf6;"></span> Violet
+            </button>
+            <button type="button" class="swatch-btn" data-color="#f59e0b" data-glow="rgba(245, 158, 11, 0.35)">
+              <span class="swatch-dot" style="background:#f59e0b;"></span> Amber
+            </button>
+            <button type="button" class="swatch-btn" data-color="#f43f5e" data-glow="rgba(244, 63, 94, 0.35)">
+              <span class="swatch-dot" style="background:#f43f5e;"></span> Rose
+            </button>
+            <button type="button" class="swatch-btn" data-color="#84cc16" data-glow="rgba(132, 204, 22, 0.35)">
+              <span class="swatch-dot" style="background:#84cc16;"></span> Lime
+            </button>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Cursor Tracking Sensitivity</span>
+              <span id="sensVal">1.0x</span>
+            </div>
+            <input type="range" id="sensitivitySlider" min="0.2" max="2.2" step="0.1" value="1.0" />
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>Blink Interval Cadence</span>
+              <span id="blinkVal">5.5s</span>
+            </div>
+            <input type="range" id="blinkSlider" min="2.5" max="10" step="0.5" value="5.5" />
+          </div>
+
+          <div class="slider-group" style="margin-bottom:0;">
+            <div class="slider-label">
+              <span>Planet Ring Orbit Speed</span>
+              <span id="ringSpeedVal">18s</span>
+            </div>
+            <input type="range" id="ringSpeedSlider" min="4" max="32" step="2" value="18" />
+          </div>
+        </div>
+
+        <div class="glass-card bento-card">
+          <div class="card-header">
+            <h3 class="card-title">🗄️ Neural Data Vault</h3>
+            <span class="card-tag">LocalStorage Backup</span>
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-dim); margin-bottom:16px;">
+            All JOPLEX preferences, goals, scratchpad notes, wealth snapshots, and custom knowledge cards stay private on your device.
+          </p>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button type="button" class="pill-btn" id="exportDataBtn" style="justify-content:center;">
+              📤 Export JOPLEX JSON Backup
+            </button>
+            <label class="pill-btn" style="justify-content:center; cursor:pointer;">
+              📥 Import JOPLEX JSON Backup
+              <input type="file" id="importDataInput" accept=".json" style="display:none;" />
+            </label>
+            <button type="button" class="pill-btn" id="replayBootBtn" style="justify-content:center;">
+              🚀 Replay Boot Sequence
+            </button>
+            <button type="button" class="pill-btn" id="factoryResetBtn" style="justify-content:center; border-color:var(--danger); color:var(--danger);">
+              ⚠️ Factory Reset All Local Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       FLOATING PILL TAB BAR (.tabbar)
+       ======================================================================== -->
+  <nav class="tabbar" aria-label="Primary Core Navigation">
+    <button type="button" class="tab-btn active" data-tab="hello">👋 Hello Joplex</button>
+    <button type="button" class="tab-btn" data-tab="wealth">💎 Wealth Core</button>
+    <button type="button" class="tab-btn" data-tab="knowledge">📚 Knowledge</button>
+    <button type="button" class="tab-btn" data-tab="lab">⚙️ System Lab</button>
+  </nav>
+
+  <!-- ========================================================================
+       ADD KNOWLEDGE CARD MODAL
+       ======================================================================== -->
+  <div class="modal-backdrop" id="knowledgeModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="glass-card modal-box">
+      <div class="card-header">
+        <h3 class="card-title" id="modalTitle">✨ Add Knowledge Card</h3>
+        <button type="button" class="icon-del-btn" id="closeModalBtn" aria-label="Close modal">✕</button>
+      </div>
+      <form id="newKnowledgeForm" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:0.76rem; color:var(--text-dim); display:block; margin-bottom:4px;">Category</label>
+          <select id="kCatInput" class="cyber-input">
+            <option value="Joplex Vision">Joplex Vision</option>
+            <option value="Mental Models">Mental Models</option>
+            <option value="Wealth Rules">Wealth Rules</option>
+            <option value="Deep Work">Deep Work</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.76rem; color:var(--text-dim); display:block; margin-bottom:4px;">Title</label>
+          <input type="text" id="kTitleInput" class="cyber-input" required placeholder="e.g. Second-Order Thinking" />
+        </div>
+        <div>
+          <label style="font-size:0.76rem; color:var(--text-dim); display:block; margin-bottom:4px;">Insight Summary</label>
+          <textarea id="kBodyInput" class="scratchpad-area" style="min-height:95px; margin-bottom:0;" required placeholder="Write concise, actionable wisdom..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px;">
+          <button type="button" class="pill-btn" id="cancelModalBtn">Cancel</button>
+          <button type="submit" class="primary-btn">Save to Matrix</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       APPLICATION LOGIC & REACTIVE ENGINES
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'joplex_rise_state_v2';
+
+      const DEFAULT_KNOWLEDGE = [
+        {
+          id: 'k1',
+          category: 'Joplex Vision',
+          title: 'Rise of Joplex: Symbiotic Intelligence',
+          body: 'Technology should feel alive, attentive, and calm—never noisy. JOPLEX blends situational awareness with personal financial and cognitive clarity.'
+        },
+        {
+          id: 'k2',
+          category: 'Mental Models',
+          title: 'First-Principles Decomposition',
+          body: 'Boil complex challenges down to fundamental truths and reason upward rather than copying legacy assumptions.'
+        },
+        {
+          id: 'k3',
+          category: 'Wealth Rules',
+          title: 'Pay Your Future Self First',
+          body: 'Treat savings and investments as a non-negotiable fixed bill on payday. Spend only what remains after your future is funded.'
+        },
+        {
+          id: 'k4',
+          category: 'Deep Work',
+          title: '90-Minute Ultradian Sprints',
+          body: 'Human focus peaks in 90-minute cycles. Eliminate context switching during a sprint, then step away for 15 minutes of true recovery.'
+        },
+        {
+          id: 'k5',
+          category: 'Mental Models',
+          title: 'Inversion Thinking',
+          body: 'Instead of only asking how to succeed, list everything that guarantees failure—and systematically eliminate those traps.'
+        },
+        {
+          id: 'k6',
+          category: 'Wealth Rules',
+          title: 'Asymmetric Optionality',
+          body: 'Protect your downside with an emergency runway so you can take bold, high-upside creative and career bets.'
+        }
+      ];
+
+      const DEFAULT_STATE = {
+        theme: 'dark',
+        eyesEnabled: true,
+        commanderName: 'Commander',
+        focusMode: 'balanced',
+        eyeColor: '#3ef2d0',
+        eyeGlow: 'rgba(62, 242, 208, 0.35)',
+        sensitivity: 1.0,
+        blinkInterval: 5.5,
+        ringSpeed: 18,
+        streak: 1,
+        lastVisitDate: new Date().toDateString(),
+        goals: [
+          { id: 'g1', text: 'Complete 90-minute Deep Focus block', done: true },
+          { id: 'g2', text: 'Review monthly wealth allocation snapshot', done: false },
+          { id: 'g3', text: 'Log one insight in the Knowledge Matrix', done: false }
+        ],
+        scratchpad: '',
+        history: [
+          { text: 'System initialized. Hello Joplex companion ready.', time: 'Boot' }
+        ],
+        wealth: {
+          currency: 'R',
+          income: 28000,
+          essentials: 13500,
+          savings: 5500,
+          buffer: 42000,
+          targetGoalCost: 18000
+        },
+        knowledge: DEFAULT_KNOWLEDGE
+      };
+
+      // Load and merge state safely
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return structuredClone(DEFAULT_STATE);
+          const parsed = JSON.parse(raw);
+          return {
+            ...structuredClone(DEFAULT_STATE),
+            ...parsed,
+            wealth: { ...DEFAULT_STATE.wealth, ...(parsed.wealth || {}) },
+            knowledge: Array.isArray(parsed.knowledge) && parsed.knowledge.length ? parsed.knowledge : structuredClone(DEFAULT_KNOWLEDGE)
+          };
+        } catch (err) {
+          return structuredClone(DEFAULT_STATE);
+        }
+      }
+
+      let state = loadState();
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          // Ignore quota errors gracefully
+        }
+      }
+
+      // Toast helper
+      const toastBox = document.getElementById('toastBox');
+      let toastTimer = null;
+      function showToast(msg) {
+        toastBox.textContent = msg;
+        toastBox.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastBox.classList.remove('show'), 2800);
+      }
+
+      // ======================================================================
+      // 1. BOOT SEQUENCE (#bootScreen)
+      // ======================================================================
+      const bootScreen = document.getElementById('bootScreen');
+      const bootBar = document.getElementById('bootBar');
+      const bootStatusText = document.getElementById('bootStatusText');
+      const bootPercent = document.getElementById('bootPercent');
+      const mainContent = document.getElementById('mainContent');
+
+      const bootSteps = [
+        { pct: 25, text: 'Initializing Living Eyes...' },
+        { pct: 55, text: 'Syncing Hello Joplex Companion...' },
+        { pct: 85, text: 'Calibrating Wealth & Knowledge Cores...' },
+        { pct: 100, text: `Welcome back, ${state.commanderName}.` }
+      ];
+
+      let bootTimers = [];
+
+      function finishBoot() {
+        bootTimers.forEach(clearTimeout);
+        bootScreen.classList.add('boot-done');
+        mainContent.classList.add('visible');
+      }
+
+      function runBootSequence() {
+        bootScreen.classList.remove('boot-done');
+        mainContent.classList.remove('visible');
+        bootBar.style.width = '0%';
+        bootPercent.textContent = '0%';
+
+        bootSteps.forEach((step, idx) => {
+          const t = setTimeout(() => {
+            bootBar.style.width = step.pct + '%';
+            bootPercent.textContent = step.pct + '%';
+            bootStatusText.textContent = idx === 3 ? `Welcome back, ${state.commanderName}.` : step.text;
+          }, (idx + 1) * 420);
+          bootTimers.push(t);
+        });
+
+        bootTimers.push(setTimeout(finishBoot, 2150));
+      }
+
+      document.getElementById('skipBootBtn').addEventListener('click', finishBoot);
+
+      // ======================================================================
+      // 2. REACTIVE LIVING EYES BACKDROP
+      // ======================================================================
+      const eyeWall = document.getElementById('eyeWall');
+      const rootEl = document.documentElement;
+
+      function updateEyePosition(clientX, clientY) {
+        if (!state.eyesEnabled) return;
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const maxOffset = 22 * state.sensitivity;
+        const nx = Math.max(-1, Math.min(1, (clientX - cx) / cx));
+        const ny = Math.max(-1, Math.min(1, (clientY - cy) / cy));
+        rootEl.style.setProperty('--mx', `${(nx * maxOffset).toFixed(1)}px`);
+        rootEl.style.setProperty('--my', `${(ny * maxOffset * 0.72).toFixed(1)}px`);
+      }
+
+      window.addEventListener('mousemove', (e) => updateEyePosition(e.clientX, e.clientY), { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+          updateEyePosition(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      function applyVisualPreferences() {
+        rootEl.setAttribute('data-theme', state.theme);
+        document.getElementById('themeIcon').textContent = state.theme === 'dark' ? '☀️' : '🌙';
+        document.getElementById('themeLabel').textContent = state.theme === 'dark' ? 'Light Editorial' : 'Dark Cyber';
+
+        eyeWall.classList.toggle('eyes-hidden', !state.eyesEnabled);
+        const eyesBtn = document.getElementById('eyesToggleBtn');
+        eyesBtn.classList.toggle('active', state.eyesEnabled);
+        document.getElementById('eyesLabel').textContent = state.eyesEnabled ? 'Eyes: ON' : 'Eyes: OFF';
+        document.getElementById('eyeStatusPill').textContent = state.eyesEnabled ? 'Tracking' : 'Standby';
+
+        rootEl.style.setProperty('--eye-color', state.eyeColor);
+        rootEl.style.setProperty('--eye-glow', state.eyeGlow);
+        rootEl.style.setProperty('--blink-interval', state.blinkInterval + 's');
+        rootEl.style.setProperty('--ring-speed', state.ringSpeed + 's');
+
+        // Sync Lab Controls
+        document.getElementById('sensitivitySlider').value = state.sensitivity;
+        document.getElementById('sensVal').textContent = Number(state.sensitivity).toFixed(1) + 'x';
+        document.getElementById('blinkSlider').value = state.blinkInterval;
+        document.getElementById('blinkVal').textContent = state.blinkInterval + 's';
+        document.getElementById('ringSpeedSlider').value = state.ringSpeed;
+        document.getElementById('ringSpeedVal').textContent = state.ringSpeed + 's';
+
+        document.querySelectorAll('#eyeColorSwatches .swatch-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.color === state.eyeColor);
+        });
+      }
+
+      document.getElementById('themeToggleBtn').addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        saveState();
+        applyVisualPreferences();
+      });
+
+      document.getElementById('eyesToggleBtn').addEventListener('click', () => {
+        state.eyesEnabled = !state.eyesEnabled;
+        saveState();
+        applyVisualPreferences();
+        showToast(state.eyesEnabled ? 'Living Eyes activated' : 'Living Eyes entered standby');
+      });
+
+      // Ambient Web Audio Synth Pulse (Zero external files)
+      let audioCtx = null;
+      let pulseOsc = null;
+      let pulseGain = null;
+      let audioActive = false;
+
+      document.getElementById('audioToggleBtn').addEventListener('click', () => {
+        try {
+          if (!audioActive) {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            pulseOsc = audioCtx.createOscillator();
+            pulseGain = audioCtx.createGain();
+            pulseOsc.type = 'sine';
+            pulseOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
+            pulseGain.gain.setValueAtTime(0.018, audioCtx.currentTime);
+            pulseOsc.connect(pulseGain);
+            pulseGain.connect(audioCtx.destination);
+            pulseOsc.start();
+            audioActive = true;
+            document.getElementById('audioToggleBtn').classList.add('active');
+            document.getElementById('audioLabel').textContent = 'Pulse: ON';
+            showToast('Ambient cybernetic hum engaged');
+          } else {
+            if (pulseOsc) pulseOsc.stop();
+            audioActive = false;
+            document.getElementById('audioToggleBtn').classList.remove('active');
+            document.getElementById('audioLabel').textContent = 'Pulse: OFF';
+            showToast('Ambient hum muted');
+          }
+        } catch (err) {
+          showToast('Audio unavailable in this browser context');
+        }
+      });
+
+      // ======================================================================
+      // 3. GREETING, CLOCK, STREAK & FOCUS MODES
+      // ======================================================================
+      function updateGreetingAndClock() {
+        const now = new Date();
+        const hr = now.getHours();
+        let period = 'Good Evening';
+        if (hr < 12) period = 'Good Morning';
+        else if (hr < 18) period = 'Good Afternoon';
+
+        document.getElementById('greetingText').textContent = `Hello, Joplex — ${period}, ${state.commanderName}`;
+        document.getElementById('clockPill').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      // Check streak
+      const todayStr = new Date().toDateString();
+      if (state.lastVisitDate !== todayStr) {
+        state.streak += 1;
+        state.lastVisitDate = todayStr;
+        saveState();
+      }
+      document.getElementById('streakPill').textContent = `${state.streak} Day${state.streak > 1 ? 's' : ''} 🔥`;
+
+      updateGreetingAndClock();
+      setInterval(updateGreetingAndClock, 15000);
+
+      // Name Customization
+      const nameEditorRow = document.getElementById('nameEditorRow');
+      const commanderNameInput = document.getElementById('commanderNameInput');
+
+      document.getElementById('editNameBtn').addEventListener('click', () => {
+        commanderNameInput.value = state.commanderName;
+        nameEditorRow.style.display = 'flex';
+        commanderNameInput.focus();
+      });
+
+      document.getElementById('cancelNameBtn').addEventListener('click', () => {
+        nameEditorRow.style.display = 'none';
+      });
+
+      document.getElementById('saveNameBtn').addEventListener('click', () => {
+        const clean = commanderNameInput.value.trim();
+        if (clean) {
+          state.commanderName = clean;
+          saveState();
+          updateGreetingAndClock();
+          showToast(`Identity updated: ${clean}`);
+        }
+        nameEditorRow.style.display = 'none';
+      });
+
+      // Focus Modes
+      const modeSubtitles = {
+        balanced: 'Living Eyes synchronized. Your wealth telemetry, daily momentum, and knowledge matrix are online.',
+        deep: 'Deep Focus Protocol engaged. Distractions minimized; Living Eyes dilated for peak execution.',
+        creative: 'Creative Synthesis active. Lateral connections and neural scratchpad primed for breakthroughs.'
+      };
+
+      function applyFocusMode(mode) {
+        state.focusMode = mode;
+        document.querySelectorAll('.mode-pill').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+        document.getElementById('heroSubtitle').textContent = modeSubtitles[mode] || modeSubtitles.balanced;
+        const scale = mode === 'deep' ? '1.14' : mode === 'creative' ? '1.08' : '1';
+        rootEl.style.setProperty('--pupil-scale', scale);
+        saveState();
+      }
+
+      document.querySelectorAll('.mode-pill').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          applyFocusMode(btn.dataset.mode);
+          showToast(`Focus mode: ${btn.textContent}`);
+        });
+      });
+
+      // ======================================================================
+      // 4. FLOATING PILL TAB BAR NAVIGATION
+      // ======================================================================
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanels = document.querySelectorAll('.tab-panel');
+
+      function switchTab(tabKey) {
+        tabBtns.forEach((b) => b.classList.toggle('active', b.dataset.tab === tabKey));
+        tabPanels.forEach((p) => p.classList.toggle('active', p.id === `tab-${tabKey}`));
+      }
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      // ======================================================================
+      // TAB 1: HELLO JOPLEX CONSOLE, GOALS & SCRATCHPAD
+      // ======================================================================
+      const companionReplyText = document.getElementById('companionReplyText');
+      const historyList = document.getElementById('historyList');
+      let typeTimer = null;
+
+      function typeResponse(text) {
+        clearInterval(typeTimer);
+        companionReplyText.textContent = '';
+        let i = 0;
+        typeTimer = setInterval(() => {
+          companionReplyText.textContent += text.charAt(i);
+          i++;
+          if (i >= text.length) clearInterval(typeTimer);
+        }, 14);
+      }
+
+      function renderHistory() {
+        historyList.innerHTML = '';
+        state.history.slice(0, 12).forEach((entry) => {
+          const li = document.createElement('li');
+          li.className = 'history-item';
+          li.innerHTML = `<span>${escapeHtml(entry.text)}</span><span class="history-time">${escapeHtml(entry.time)}</span>`;
+          historyList.appendChild(li);
+        });
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function generateCompanionReply(prompt) {
+        const p = prompt.toLowerCase();
+        const doneCount = state.goals.filter((g) => g.done).length;
+        const totalGoals = state.goals.length;
+        const freeCash = Math.max(0, state.wealth.income - state.wealth.essentials - state.wealth.savings);
+
+        if (p.includes('hello') || p.includes('hi') || p.includes('hey')) {
+          return `Hello, ${state.commanderName}! All systems are nominal. You have completed ${doneCount} of ${totalGoals} daily missions, and your free cash surplus stands at ${state.wealth.currency} ${freeCash.toLocaleString()}. What shall we conquer next?`;
+        }
+        if (p.includes('briefing') || p.includes('status')) {
+          return `Daily Briefing for ${state.commanderName}: Momentum is at ${totalGoals ? Math.round((doneCount / totalGoals) * 100) : 0}%. Available monthly surplus is ${state.wealth.currency} ${freeCash.toLocaleString()}. Recommended next action: finish your top uncompleted mission before checking notifications.`;
+        }
+        if (p.includes('spark') || p.includes('motivat')) {
+          const sparks = [
+            'Small, relentless daily compounding beats sporadic bursts of intensity. Win the next 30 minutes.',
+            'Your future self is built by the standards you hold when nobody is watching. Rise with clarity.',
+            'Clarity precedes mastery: pick your single highest-leverage task and execute with zero hesitation.'
+          ];
+          return sparks[Math.floor(Math.random() * sparks.length)];
+        }
+        if (p.includes('check') || p.includes('system')) {
+          return `Diagnostics Green: Living Eyes (${state.eyesEnabled ? 'Active Tracking' : 'Standby'}), Theme (${state.theme.toUpperCase()}), Knowledge Matrix (${state.knowledge.length} cards indexed), Local Vault synced.`;
+        }
+        return `Logged "${prompt}" into your JOPLEX neural stream. Ready for your next directive, ${state.commanderName}.`;
+      }
+
+      function handleUserPrompt(rawText) {
+        const text = rawText.trim();
+        if (!text) return;
+        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        state.history.unshift({ text: `You: ${text}`, time: timeStr });
+        saveState();
+        renderHistory();
+        typeResponse(generateCompanionReply(text));
+      }
+
+      document.getElementById('commandForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('commandInput');
+        handleUserPrompt(inp.value);
+        inp.value = '';
+      });
+
+      document.querySelectorAll('.intent-chip').forEach((chip) => {
+        chip.addEventListener('click', () => handleUserPrompt(chip.dataset.prompt));
+      });
+
+      document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+        state.history = [{ text: 'Activity log cleared.', time: 'Now' }];
+        saveState();
+        renderHistory();
+      });
+
+      // Goals & Momentum
+      function renderGoals() {
+        const goalList = document.getElementById('goalList');
+        goalList.innerHTML = '';
+        state.goals.forEach((goal) => {
+          const li = document.createElement('li');
+          li.className = `goal-item ${goal.done ? 'completed' : ''}`;
+          li.innerHTML = `
+            <label class="goal-left">
+              <input type="checkbox" class="goal-check" ${goal.done ? 'checked' : ''} data-id="${goal.id}" />
+              <span>${escapeHtml(goal.text)}</span>
+            </label>
+            <button type="button" class="icon-del-btn" data-del="${goal.id}" title="Remove task">✕</button>
+          `;
+          goalList.appendChild(li);
+        });
+
+        const total = state.goals.length;
+        const done = state.goals.filter((g) => g.done).length;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        document.getElementById('goalPercentBadge').textContent = `${pct}% Complete`;
+        document.getElementById('goalCountText').textContent = `${done} / ${total} Tasks`;
+        document.getElementById('goalProgressFill').style.width = `${pct}%`;
+      }
+
+      document.getElementById('goalList').addEventListener('change', (e) => {
+        if (e.target.matches('.goal-check')) {
+          const id = e.target.dataset.id;
+          const item = state.goals.find((g) => g.id === id);
+          if (item) {
+            item.done = e.target.checked;
+            saveState();
+            renderGoals();
+          }
+        }
+      });
+
+      document.getElementById('goalList').addEventListener('click', (e) => {
+        const delId = e.target.dataset.del;
+        if (delId) {
+          state.goals = state.goals.filter((g) => g.id !== delId);
+          saveState();
+          renderGoals();
+        }
+      });
+
+      document.getElementById('goalForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('newGoalInput');
+        const val = inp.value.trim();
+        if (!val) return;
+        state.goals.push({ id: 'g_' + Date.now(), text: val, done: false });
+        inp.value = '';
+        saveState();
+        renderGoals();
+      });
+
+      // Scratchpad
+      const scratchpadInput = document.getElementById('scratchpadInput');
+      const wordCountText = document.getElementById('wordCountText');
+
+      function updateScratchpadStats() {
+        const val = scratchpadInput.value;
+        const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+        wordCountText.textContent = `${words} word${words === 1 ? '' : 's'} • ${val.length} chars`;
+      }
+
+      scratchpadInput.value = state.scratchpad || '';
+      updateScratchpadStats();
+
+      scratchpadInput.addEventListener('input', () => {
+        state.scratchpad = scratchpadInput.value;
+        updateScratchpadStats();
+        saveState();
+      });
+
+      document.getElementById('copyNotesBtn').addEventListener('click', () => {
+        scratchpadInput.select();
+        document.execCommand('copy');
+        showToast('Scratchpad copied to clipboard');
+      });
+
+      document.getElementById('clearNotesBtn').addEventListener('click', () => {
+        scratchpadInput.value = '';
+        state.scratchpad = '';
+        updateScratchpadStats();
+        saveState();
+        showToast('Scratchpad cleared');
+      });
+
+      // ======================================================================
+      // TAB 2: WEALTH CORE CALCULATIONS
+      // ======================================================================
+      const currencySelect = document.getElementById('currencySelect');
+      const incomeInput = document.getElementById('incomeInput');
+      const essentialsInput = document.getElementById('essentialsInput');
+      const savingsInput = document.getElementById('savingsInput');
+      const bufferInput = document.getElementById('bufferInput');
+      const targetGoalCost = document.getElementById('targetGoalCost');
+
+      function syncWealthInputsFromState() {
+        currencySelect.value = state.wealth.currency;
+        incomeInput.value = state.wealth.income;
+        essentialsInput.value = state.wealth.essentials;
+        savingsInput.value = state.wealth.savings;
+        bufferInput.value = state.wealth.buffer;
+        targetGoalCost.value = state.wealth.targetGoalCost;
+      }
+
+      function recalcWealth() {
+        const cur = currencySelect.value;
+        const income = Math.max(0, Number(incomeInput.value) || 0);
+        const essentials = Math.max(0, Number(essentialsInput.value) || 0);
+        const savings = Math.max(0, Number(savingsInput.value) || 0);
+        const buffer = Math.max(0, Number(bufferInput.value) || 0);
+        const goalCost = Math.max(1, Number(targetGoalCost.value) || 1);
+
+        state.wealth = { currency: cur, income, essentials, savings, buffer, targetGoalCost: goalCost };
+
+        const available = income - essentials - savings;
+        const daily = Math.max(0, Math.round(available / 30));
+        const runway = essentials > 0 ? (buffer / essentials).toFixed(1) : '∞';
+        const savingsRate = income > 0 ? ((savings / income) * 100).toFixed(1) : '0.0';
+
+        document.getElementById('availableCash').textContent = `${cur} ${available.toLocaleString()}`;
+        document.getElementById('availableCash').style.color = available < 0 ? 'var(--danger)' : 'var(--accent)';
+        document.getElementById('safeDailySpend').textContent = `${cur} ${daily.toLocaleString()} / day`;
+        document.getElementById('runwayMonths').textContent = `${runway} Months`;
+
+        document.getElementById('allocNeeds').textContent = `${cur} ${Math.round(income * 0.5).toLocaleString()}`;
+        document.getElementById('allocWants').textContent = `${cur} ${Math.round(income * 0.3).toLocaleString()}`;
+        document.getElementById('allocFuture').textContent = `${cur} ${Math.round(income * 0.2).toLocaleString()}`;
+        document.getElementById('actualSavingsRate').textContent = `${savingsRate}%`;
+
+        // Goal Runway
+        const monthlyPower = available > 0 ? available : savings;
+        if (monthlyPower > 0) {
+          const monthsNeeded = (goalCost / monthlyPower).toFixed(1);
+          document.getElementById('goalRunwayResult').textContent = `${monthsNeeded} Months (${cur} ${monthlyPower.toLocaleString()}/mo capacity)`;
+        } else {
+          document.getElementById('goalRunwayResult').textContent = 'Increase surplus to unlock timeline';
+        }
+
+        // Health Badge & Personalized Coach Insight
+        const badge = document.getElementById('wealthHealthBadge');
+        const advice = document.getElementById('coachAdviceText');
+        const essentialsRatio = income > 0 ? (essentials / income) * 100 : 0;
+
+        if (available < 0) {
+          badge.textContent = '● DEFICIT ALERT';
+          badge.style.color = 'var(--danger)';
+          advice.textContent = `Outflows exceed net income by ${cur} ${Math.abs(available).toLocaleString()}. Trim non-essential subscriptions or recalibrate your monthly savings target temporarily until cashflow turns positive.`;
+        } else if (Number(savingsRate) >= 20 && essentialsRatio <= 52) {
+          badge.textContent = '● ELITE TRAJECTORY';
+          badge.style.color = 'var(--success)';
+          advice.textContent = `Strong discipline: Essentials are ${essentialsRatio.toFixed(1)}% of income while your savings rate is ${savingsRate}%. Consider channeling 40% of your ${cur} ${available.toLocaleString()} free cash into high-yield compounding assets.`;
+        } else {
+          badge.textContent = '● BALANCED FLOW';
+          badge.style.color = 'var(--accent)';
+          advice.textContent = `You have ${cur} ${available.toLocaleString()} in unallocated free cash. Boosting your savings by just ${cur} ${Math.round(income * 0.05).toLocaleString()}/mo accelerates long-term independence noticeably.`;
+        }
+      }
+
+      [currencySelect, incomeInput, essentialsInput, savingsInput, bufferInput, targetGoalCost].forEach((el) => {
+        el.addEventListener('input', recalcWealth);
+      });
+
+      document.getElementById('saveWealthBtn').addEventListener('click', () => {
+        recalcWealth();
+        saveState();
+        showToast('Wealth snapshot saved to JOPLEX Vault');
+      });
+
+      document.getElementById('resetWealthBtn').addEventListener('click', () => {
+        state.wealth = { ...DEFAULT_STATE.wealth };
+        syncWealthInputsFromState();
+        recalcWealth();
+        saveState();
+        showToast('Wealth metrics reset to defaults');
+      });
+
+      // ======================================================================
+      // TAB 3: KNOWLEDGE CORE
+      // ======================================================================
+      let activeCategory = 'All';
+      const knowledgeGrid = document.getElementById('knowledgeGrid');
+      const knowledgeSearch = document.getElementById('knowledgeSearch');
+
+      function renderKnowledge() {
+        const query = knowledgeSearch.value.trim().toLowerCase();
+        knowledgeGrid.innerHTML = '';
+
+        const filtered = state.knowledge.filter((item) => {
+          const catMatch = activeCategory === 'All' || item.category === activeCategory;
+          const textMatch = !query || item.title.toLowerCase().includes(query) || item.body.toLowerCase().includes(query);
+          return catMatch && textMatch;
+        });
+
+        if (!filtered.length) {
+          knowledgeGrid.innerHTML = `<p style="color:var(--text-dim); grid-column:1/-1;">No matching knowledge cards found. Click "+ Add Knowledge Card" to create one.</p>`;
+          return;
+        }
+
+        filtered.forEach((item) => {
+          const card = document.createElement('article');
+          card.className = 'k-card';
+          card.innerHTML = `
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="k-cat">${escapeHtml(item.category)}</span>
+                <button type="button" class="icon-del-btn" data-kdel="${item.id}" title="Delete card">✕</button>
+              </div>
+              <h4 class="k-title">${escapeHtml(item.title)}</h4>
+              <p class="k-body" style="margin-top:8px;">${escapeHtml(item.body)}</p>
+            </div>
+          `;
+          knowledgeGrid.appendChild(card);
+        });
+      }
+
+      document.getElementById('knowledgeFilters').addEventListener('click', (e) => {
+        if (e.target.matches('[data-cat]')) {
+          activeCategory = e.target.dataset.cat;
+          document.querySelectorAll('#knowledgeFilters .pill-btn').forEach((b) => {
+            b.classList.toggle('active', b.dataset.cat === activeCategory);
+          });
+          renderKnowledge();
+        }
+      });
+
+      knowledgeSearch.addEventListener('input', renderKnowledge);
+
+      knowledgeGrid.addEventListener('click', (e) => {
+        const delId = e.target.dataset.kdel;
+        if (delId) {
+          state.knowledge = state.knowledge.filter((k) => k.id !== delId);
+          saveState();
+          renderKnowledge();
+          showToast('Knowledge card removed');
+        }
+      });
+
+      // Modal Controls
+      const knowledgeModal = document.getElementById('knowledgeModal');
+      document.getElementById('openKnowledgeModalBtn').addEventListener('click', () => knowledgeModal.classList.add('open'));
+      document.getElementById('closeModalBtn').addEventListener('click', () => knowledgeModal.classList.remove('open'));
+      document.getElementById('cancelModalBtn').addEventListener('click', () => knowledgeModal.classList.remove('open'));
+
+      document.getElementById('newKnowledgeForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const cat = document.getElementById('kCatInput').value;
+        const title = document.getElementById('kTitleInput').value.trim();
+        const body = document.getElementById('kBodyInput').value.trim();
+        if (!title || !body) return;
+
+        state.knowledge.unshift({ id: 'k_' + Date.now(), category: cat, title, body });
+        saveState();
+        renderKnowledge();
+        e.target.reset();
+        knowledgeModal.classList.remove('open');
+        showToast('New card added to Knowledge Matrix');
+      });
+
+      // ======================================================================
+      // TAB 4: SYSTEM LAB & DATA VAULT
+      // ======================================================================
+      document.getElementById('eyeColorSwatches').addEventListener('click', (e) => {
+        const btn = e.target.closest('.swatch-btn');
+        if (!btn) return;
+        state.eyeColor = btn.dataset.color;
+        state.eyeGlow = btn.dataset.glow;
+        saveState();
+        applyVisualPreferences();
+        showToast(`Living Eyes spectrum: ${btn.textContent.trim()}`);
+      });
+
+      document.getElementById('sensitivitySlider').addEventListener('input', (e) => {
+        state.sensitivity = parseFloat(e.target.value);
+        saveState();
+        applyVisualPreferences();
+      });
+
+      document.getElementById('blinkSlider').addEventListener('input', (e) => {
+        state.blinkInterval = parseFloat(e.target.value);
+        saveState();
+        applyVisualPreferences();
+      });
+
+      document.getElementById('ringSpeedSlider').addEventListener('input', (e) => {
+        state.ringSpeed = parseInt(e.target.value, 10);
+        saveState();
+        applyVisualPreferences();
+      });
+
+      document.getElementById('exportDataBtn').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `JOPLEX-Backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Exported JOPLEX JSON backup');
+      });
+
+      document.getElementById('importDataInput').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const imported = JSON.parse(reader.result);
+            state = { ...structuredClone(DEFAULT_STATE), ...imported };
+            saveState();
+            initAllUI();
+            showToast('Backup restored successfully');
+          } catch (err) {
+            showToast('Invalid JSON backup file');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById('replayBootBtn').addEventListener('click', runBootSequence);
+
+      document.getElementById('factoryResetBtn').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        state = structuredClone(DEFAULT_STATE);
+        saveState();
+        initAllUI();
+        showToast('Factory defaults restored');
+      });
+
+      // Initialize Everything
+      function initAllUI() {
+        applyVisualPreferences();
+        updateGreetingAndClock();
+        applyFocusMode(state.focusMode);
+        renderHistory();
+        renderGoals();
+        scratchpadInput.value = state.scratchpad || '';
+        updateScratchpadStats();
+        syncWealthInputsFromState();
+        recalcWealth();
+        renderKnowledge();
+      }
+
+      initAllUI();
+      runBootSequence();
+    })();
+  </script>
+</body>
+</html>

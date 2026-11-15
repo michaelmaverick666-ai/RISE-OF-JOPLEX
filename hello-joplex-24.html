@@ -4044,5 +4044,560 @@ if (document.readyState === "loading") document.addEventListener("DOMContentLoad
 })();
 </script>
 
+    
+<script>
+/* ================= JOPLEX SYSTEMS SUITE (v2) ================= */
+
+/* ---------- 1. Reasoning Core v2 ---------- */
+function r2Parse(t){return t.split(/\n+/).map(l=>l.trim()).filter(Boolean);}
+function r2Run(){
+  const q=document.getElementById("r2Question").value.trim();
+  const facts=r2Parse(document.getElementById("r2Facts").value);
+  const assumes=r2Parse(document.getElementById("r2Assume").value);
+  const options=r2Parse(document.getElementById("r2Options").value);
+  const constraints=r2Parse(document.getElementById("r2Constraints").value);
+  const lower=s=>s.toLowerCase();
+  const nodes=new Set(),edges=[],contradictions=[],supports=[];
+  const add=(a,b,r)=>{nodes.add(lower(a));nodes.add(lower(b));edges.push({a:lower(a),b:lower(b),rel:r});};
+  for(const f of facts){
+    let m=f.match(/^(.+?)\s*(?:->|=>|implies)\s*(.+)$/i); if(m){add(m[1],m[2],"implies");continue;}
+    m=f.match(/^(.+?)\s+contradicts\s+(.+)$/i); if(m){contradictions.push([lower(m[1]),lower(m[2])]);nodes.add(lower(m[1]));nodes.add(lower(m[2]));continue;}
+    m=f.match(/^(.+?)\s+supports?\s+(.+)$/i); if(m){supports.push([lower(m[1]),lower(m[2])]);nodes.add(lower(m[1]));nodes.add(lower(m[2]));continue;}
+    nodes.add(lower(f));
+  }
+  const derived=new Set();let changed=true,iter=0;
+  const impl=edges.filter(e=>e.rel==="implies");
+  while(changed&&iter<50){changed=false;iter++;for(const e of impl){if((nodes.has(e.a)||derived.has(e.a))&&!derived.has(e.b)){derived.add(e.b);changed=true;}}}
+  const conflicts=contradictions.filter(([a,b])=>(derived.has(a)||nodes.has(a))&&(derived.has(b)||nodes.has(b)));
+  const scores=options.map(opt=>{
+    const o=lower(opt);
+    const sH=supports.filter(([s,t])=>t===o&&(derived.has(s)||nodes.has(s))).length;
+    const cH=contradictions.filter(([a,b])=>(a===o||b===o)&&(derived.has(a)||derived.has(b))).length;
+    let cM=0; for(const c of constraints){const cl=lower(c);if(!o.includes(cl)&&!(derived.has(cl)||nodes.has(cl)))cM++;}
+    return{opt,sH,cH,cM,raw:2*sH-3*cH-2*cM};
+  });
+  const hi=Math.max(...scores.map(s=>s.raw),1),lo=Math.min(...scores.map(s=>s.raw),-1),span=hi-lo||1;
+  for(const s of scores)s.conf=s.raw<0?0:Math.round(((s.raw-lo)/span)*100);
+  scores.sort((a,b)=>b.raw-a.raw);
+  const out=[];
+  out.push(`Question: ${q||"(not stated)"}`);
+  out.push(`Assumptions: ${assumes.length||"none"}`);
+  out.push(`Derived facts: ${derived.size?[...derived].join(", "):"none"}`);
+  out.push(`Contradictions: ${conflicts.length}`);
+  if(conflicts.length)out.push(conflicts.map(([a,b])=>`  ⚠ ${a} ↔ ${b}`).join("\n"));
+  out.push("");out.push("Option scores:");
+  for(const s of scores){
+    out.push(`  • ${s.opt}`);
+    out.push(`    confidence ${s.conf}% | supports ${s.sH} | contradictions ${s.cH} | unmet constraints ${s.cM}`);
+  }
+  if(scores.length){
+    const w=scores[0];
+    out.push("");out.push(`Recommendation: ${w.opt}`);
+    let weak="no significant weakness";
+    if(w.cH>0)weak="a contradiction with a fact you stated";
+    else if(w.cM>0)weak=`${w.cM} constraint(s) not addressed`;
+    else if(w.sH===0)weak="no supporting evidence in your facts";
+    out.push(`Weakest link: ${weak}`);
+  }else out.push("No options given.");
+  document.getElementById("r2Out").textContent=out.join("\n");
+  safetyLog("reasoning run",q.slice(0,60));
+}
+function r2Demo(){
+  document.getElementById("r2Question").value="Should I ship Wealth Core v2 this week?";
+  document.getElementById("r2Facts").value="Ship this week -> user gets new features\nShip this week -> more bugs reach users\nBugs reach users -> support load rises\nDelay -> more time for testing\nTesting -> fewer bugs reach users";
+  document.getElementById("r2Assume").value="User cares about bug-free experience";
+  document.getElementById("r2Options").value="Ship this week\nDelay one week";
+  document.getElementById("r2Constraints").value="User experience must stay stable";
+}
+function r2Clear(){
+  ["r2Question","r2Facts","r2Assume","r2Options","r2Constraints"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("r2Out").textContent="";
+}
+
+/* ---------- 2. Planning Engine v2 ---------- */
+const PLAN_KEY="joplexPlans2";
+const plansLoad=()=>store.json(PLAN_KEY,[]);
+const plansSave=a=>store.set(PLAN_KEY,JSON.stringify(a));
+function planCreate(){
+  const title=document.getElementById("p2Title").value.trim();
+  const dateV=document.getElementById("p2Date").value;
+  const hours=parseFloat(document.getElementById("p2Hours").value)||0;
+  const priority=parseInt(document.getElementById("p2Priority").value,10)||2;
+  const el=document.getElementById("p2List");
+  if(!title){el.textContent="Give the plan a title.";return;}
+  if(!dateV){el.textContent="Add a deadline.";return;}
+  const now=Date.now(),end=new Date(dateV+"T23:59:59").getTime();
+  if(end<=now){el.textContent="Deadline must be in the future.";return;}
+  const totalDays=Math.max(1,Math.round((end-now)/86400000));
+  const n=Math.max(3,Math.min(8,totalDays));
+  const steps=[];
+  for(let i=0;i<n;i++)steps.push({id:"s"+i+"_"+now,text:`Milestone ${i+1} of ${n}`,done:false,doneAt:null,due:now+Math.round((totalDays/n)*i)*86400000});
+  plansSave([{id:"p"+now,title,deadline:end,hours,priority,steps,created:now,archived:false},...plansLoad()]);
+  document.getElementById("p2Title").value="";document.getElementById("p2Date").value="";document.getElementById("p2Hours").value="";
+  renderPlans();safetyLog("plan created",title);
+}
+function renderPlans(){
+  const el=document.getElementById("p2List");
+  const plans=plansLoad().filter(p=>!p.archived);
+  if(!plans.length){el.textContent="No active plans.";return;}
+  el.innerHTML="";
+  const now=Date.now();
+  for(const plan of plans){
+    const done=plan.steps.filter(s=>s.done).length,total=plan.steps.length;
+    const ageDays=Math.max(1,(now-plan.created)/86400000);
+    const velocity=done/ageDays;
+    const remaining=total-done;
+    const fcMs=velocity>0?now+(remaining/velocity)*86400000:Infinity;
+    const onTrack=fcMs<=plan.deadline;
+    const next=plan.steps.find(s=>!s.done);
+    const card=document.createElement("div");card.className="goal-card";
+    const h=document.createElement("h4");h.textContent=plan.title;card.appendChild(h);
+    const meta=document.createElement("p");meta.className="fine";
+    meta.textContent=`Priority ${plan.priority} · Due ${new Date(plan.deadline).toLocaleDateString()} · ${done}/${total} done`;
+    card.appendChild(meta);
+    const bar=document.createElement("div");bar.className="progress-track";
+    const fill=document.createElement("div");fill.className="progress-fill";fill.style.width=(total?(done/total)*100:0)+"%";bar.appendChild(fill);card.appendChild(bar);
+    const st=document.createElement("p");st.className="fine";
+    st.textContent=onTrack?`✅ On track — forecast ${new Date(fcMs).toLocaleDateString()}`:`⚠️ Behind — forecast ${isFinite(fcMs)?new Date(fcMs).toLocaleDateString():"never at this pace"}`;
+    card.appendChild(st);
+    if(next){const nx=document.createElement("p");nx.className="fine";nx.textContent=`Next: ${next.text} (due ${new Date(next.due).toLocaleDateString()})`;card.appendChild(nx);}
+    const ul=document.createElement("ul");ul.className="path-steps";
+    for(const s of plan.steps){
+      const li=document.createElement("li");if(s.done)li.classList.add("done");
+      const cb=document.createElement("input");cb.type="checkbox";cb.checked=s.done;
+      cb.addEventListener("change",()=>{s.done=cb.checked;s.doneAt=cb.checked?Date.now():null;plansSave(plansLoad().map(p=>p.id===plan.id?plan:p));renderPlans();});
+      const lab=document.createElement("label");lab.textContent=s.text+" — "+new Date(s.due).toLocaleDateString();
+      li.append(cb,lab);ul.appendChild(li);
+    }
+    card.appendChild(ul);
+    const arch=document.createElement("button");arch.className="btn btn-ghost";arch.textContent="Archive";
+    arch.onclick=()=>{plan.archived=true;plansSave(plansLoad().map(p=>p.id===plan.id?plan:p));renderPlans();};
+    card.appendChild(arch);
+    el.appendChild(card);
+  }
+}
+function planClearDone(){
+  const all=plansLoad();let n=0;
+  for(const p of all)if(!p.archived&&p.steps.every(s=>s.done)){p.archived=true;n++;}
+  plansSave(all);renderPlans();
+  if(n)notify(`Archived ${n} completed plan(s).`);
+}
+
+/* ---------- 3. Memory Architecture v2 ---------- */
+const MEM2_KEY="joplexMem2";
+let workingMem=[];
+const mem2Load=()=>store.json(MEM2_KEY,[]);
+const mem2Save=a=>store.set(MEM2_KEY,JSON.stringify(a.slice(-500)));
+const SENSITIVE=/\b(?:\d[\s-]?){12,}\b/;
+function mem2Add(){
+  const text=document.getElementById("m2Text").value.trim();
+  const stats=document.getElementById("m2Stats");
+  if(!text){stats.textContent="Type something first.";return;}
+  if(SENSITIVE.test(text)){stats.textContent="Looks like a card or ID number. Refused.";return;}
+  const type=document.getElementById("m2Type").value;
+  const imp=parseInt(document.getElementById("m2Imp").value,10)||2;
+  const layer=document.getElementById("m2Layer").value;
+  const entry={id:"m"+Date.now()+Math.random().toString(36).slice(2,6),text,type,imp,layer,created:Date.now(),uses:0};
+  if(layer==="working")workingMem.push(entry);
+  else mem2Save([...mem2Load(),entry]);
+  document.getElementById("m2Text").value="";
+  renderMem2();safetyLog("memory saved",type);
+}
+function mem2Score(e,q){
+  let kw=0;
+  if(q){const words=q.toLowerCase().split(/\s+/).filter(Boolean);const hay=(e.text+" "+e.type).toLowerCase();for(const w of words)if(hay.includes(w))kw+=1;}
+  else kw=0.5;
+  const age=(Date.now()-e.created)/86400000;
+  const recency=1/(1+age/14);
+  const reuse=1+Math.min(3,e.uses)*0.5;
+  return(kw*3+e.imp*1.5)*recency*reuse;
+}
+function renderMem2(){
+  const q=document.getElementById("m2Search").value;
+  const lt=mem2Load(),all=[...lt,...workingMem];
+  const ranked=all.map(e=>({e,score:mem2Score(e,q)})).sort((a,b)=>b.score-a.score);
+  const el=document.getElementById("m2List");el.innerHTML="";
+  for(const{e,score}of ranked.slice(0,40)){
+    const li=document.createElement("li");
+    li.textContent=`${e.layer==="working"?"🕐":"💾"} [${e.type}] ${e.text} — score ${score.toFixed(2)}, used ${e.uses}×`;
+    li.style.cursor="pointer";
+    li.onclick=()=>{e.uses+=1;if(e.layer!=="working")mem2Save(mem2Load().map(x=>x.id===e.id?e:x));renderMem2();};
+    el.appendChild(li);
+  }
+  document.getElementById("m2Stats").textContent=`Long-term ${lt.length} · Working ${workingMem.length} · Episodic ${store.json("joplexSafetyLog",[]).length}`;
+}
+function mem2Consolidate(){
+  const all=mem2Load(),seen=new Map();
+  const norm=s=>s.toLowerCase().replace(/\s+/g," ").trim();
+  for(const e of all){
+    const k=norm(e.text).slice(0,60);
+    if(seen.has(k)){const keep=seen.get(k);keep.imp=Math.max(keep.imp,e.imp);keep.uses+=e.uses;}
+    else seen.set(k,e);
+  }
+  mem2Save([...seen.values()]);renderMem2();
+  safetyLog("memories consolidated",`${all.length} -> ${seen.size}`);
+}
+function mem2Wipe(){safeAction("clear long-term memory","Erase every long-term memory?",()=>{store.del(MEM2_KEY);renderMem2();notify("Long-term memory cleared.");});}
+
+/* ---------- 4. Verification v2 ---------- */
+const LEDGER_KEY="joplexLedger2";
+const RED_FLAGS=[
+  [/\b(always|never|everyone|no one|100%|guaranteed)\b/i,"Absolute language."],
+  [/\b(doctors|scientists|experts)\s+(say|agree|recommend)\b/i,"Vague authority."],
+  [/\b(studies show|research proves|it is proven)\b/i,"Unnamed study."],
+  [/\b(breaking|shocking|secret|they don't want you to know)\b/i,"Sensational wording."],
+  [/\b(guaranteed returns|risk[- ]free|get rich quick)\b/i,"Investment red flag."],
+  [/\b(cure|miracle|detox|instant results)\b/i,"Medical overclaim."],
+  [/\b(in \d+ days?|overnight)\b/i,"Unrealistic timeframe."],
+  [/\b(click (here|this link)|act now|limited time)\b/i,"Pressure tactic."]
+];
+function v2Run(){
+  const claim=document.getElementById("v2Claim").value.trim();
+  const source=document.getElementById("v2Source").value.trim();
+  const outEl=document.getElementById("v2Out");
+  if(!claim){outEl.textContent="Paste a claim first.";return;}
+  const flags=[];
+  for(const[re,why]of RED_FLAGS)if(re.test(claim))flags.push(why);
+  let mathNote="";
+  if(/([\d.]+)\s*([+\-*/])\s*([\d.]+)/.test(claim)){
+    try{mathNote=`Arithmetic in claim evaluates to ${safeCalc(claim)}.`;}catch(e){mathNote="Arithmetic couldn't be verified.";}
+  }
+  const words=claim.toLowerCase().match(/[a-z][a-z-]{2,}/g)||[];
+  const hits=new Set();
+  for(const w of words)if(KB_INDEX[w])hits.add(w);
+  const kbNote=hits.size
+    ?`Knowledge Core mentions: ${[...hits].map(k=>KB_META[KB_INDEX[k].c][0]+" "+kbTitle(KB_INDEX[k])).join(", ")}.`
+    :"Knowledge Core has no matching topic.";
+  const verdict=flags.length?`${flags.length} red flag(s) found.`:"No obvious red flags.";
+  const human=source?`Human-verified by source: ${source}`:"Not human-verified — no source given.";
+  const out=[`Claim: ${claim}`,`Verdict: ${verdict}`,flags.length?"Flags:\n"+flags.map(f=>"  ⚠ "+f).join("\n"):"",mathNote,kbNote,human,"Reminder: Joplex cannot look anything up."].filter(Boolean).join("\n");
+  outEl.textContent=out;
+  const ledger=store.json(LEDGER_KEY,[]);
+  ledger.unshift({id:"v"+Date.now(),claim:claim.slice(0,200),source,flags:flags.length,verdict,time:Date.now()});
+  store.set(LEDGER_KEY,JSON.stringify(ledger.slice(0,100)));
+  renderLedger();safetyLog("claim checked",claim.slice(0,60));
+}
+function renderLedger(){
+  const el=document.getElementById("v2Ledger");el.innerHTML="";
+  for(const v of store.json(LEDGER_KEY,[])){
+    const li=document.createElement("li");
+    li.textContent=`${new Date(v.time).toLocaleString()} — ${v.verdict} — ${v.claim.slice(0,80)}`;
+    el.appendChild(li);
+  }
+}
+function v2Clear(){safeAction("clear ledger","Clear the evidence ledger?",()=>{store.del(LEDGER_KEY);renderLedger();notify("Ledger cleared.");});}
+
+/* ---------- 5. Permissions ---------- */
+const PERM_KEY="joplexPerms";
+const PERM_CAPS=["storage.read","storage.write","storage.delete","speech","export","network"];
+const TOOLS=[
+  {id:"memory.save",name:"Save memory",caps:["storage.write"]},
+  {id:"memory.clear",name:"Clear memory",caps:["storage.delete"]},
+  {id:"plan.create",name:"Create plan",caps:["storage.write"]},
+  {id:"wealth.export",name:"Export wealth CSV",caps:["export","storage.read"]},
+  {id:"safety.reset",name:"Reset Joplex memory",caps:["storage.delete"]},
+  {id:"voice.speak",name:"Speak responses",caps:["speech"]},
+  {id:"api.call",name:"Call AI gateway",caps:["network"]}
+];
+const SKILLS=[
+  {id:"skill.review",name:"Weekly review",steps:["plan.create","memory.save","wealth.export"]},
+  {id:"skill.audit",name:"Security audit",steps:["memory.save","wealth.export"]}
+];
+const permsLoad=()=>store.json(PERM_KEY,{"storage.read":true,"storage.write":true,"speech":true});
+const permsSave=p=>store.set(PERM_KEY,JSON.stringify(p));
+const permHas=c=>isLocked()?false:!!permsLoad()[c];
+function renderPerms(){
+  const el=document.getElementById("permLock");
+  el.textContent=isLocked()?"🔒 Safety Lock ACTIVE — all grants suspended.":"🛡️ Safety Lock not engaged.";
+  const table=document.getElementById("permTable");table.innerHTML="";
+  const p=permsLoad();
+  for(const cap of PERM_CAPS){
+    const row=document.createElement("div");row.className="goal-card";
+    const h=document.createElement("h4");h.textContent=cap;
+    const st=document.createElement("p");st.className="fine";st.textContent=p[cap]?"Granted":"Not granted";
+    const btn=document.createElement("button");btn.className="btn";btn.textContent=p[cap]?"Revoke":"Grant";
+    btn.onclick=()=>{const n=permsLoad();if(n[cap])delete n[cap];else n[cap]=true;permsSave(n);renderPerms();};
+    row.append(h,st,btn);table.appendChild(row);
+  }
+  const log=document.getElementById("permLog");log.innerHTML="";
+  for(const ev of store.json("joplexSafetyLog",[]).slice(-10).reverse()){
+    const li=document.createElement("li");
+    li.textContent=`${new Date(ev.time).toLocaleTimeString()} — ${ev.event}${ev.detail?" ("+ev.detail+")":""}`;
+    log.appendChild(li);
+  }
+}
+
+/* ---------- 6. Simulation Mode ---------- */
+const SIM_KEY="joplexSim",SIMLOG_KEY="joplexSimLog";
+const simOn=()=>store.get(SIM_KEY)==="1";
+const REAL_ALWAYS=/^joplex(SafetyLog|Sim|Pin)/;
+const _realSet=store.set.bind(store),_realDel=store.del.bind(store);
+function simLogAppend(e){const log=store.json(SIMLOG_KEY,[]);log.push(e);_realSet(SIMLOG_KEY,JSON.stringify(log.slice(-100)));renderSimLog();}
+store.set=function(k,v){if(simOn()&&/^joplex/.test(k)&&!REAL_ALWAYS.test(k)){simLogAppend({time:Date.now(),key:k,value:v});return true;}return _realSet(k,v);};
+store.del=function(k){if(simOn()&&/^joplex/.test(k)&&!REAL_ALWAYS.test(k)){simLogAppend({time:Date.now(),key:k,value:"(delete)"});return;}_realDel(k);};
+function renderSimLog(){
+  const el=document.getElementById("simLog");if(!el)return;el.innerHTML="";
+  for(const e of store.json(SIMLOG_KEY,[]).slice().reverse()){
+    const li=document.createElement("li");
+    li.textContent=`${new Date(e.time).toLocaleTimeString()} — would set ${e.key} = ${String(e.value).slice(0,60)}`;
+    el.appendChild(li);
+  }
+}
+function simToggle(){
+  const on=!simOn();
+  _realSet(SIM_KEY,on?"1":"0");
+  const b=document.getElementById("simToggle");
+  b.textContent=on?"🧪 Simulation: ON":"🧪 Simulation: Off";
+  b.classList.toggle("btn-danger",on);
+}
+function simWealth(){
+  const p=parseFloat(document.getElementById("simPrincipal").value)||0;
+  const m=parseFloat(document.getElementById("simMonthly").value)||0;
+  const r=parseFloat(document.getElementById("simRate").value)||0;
+  const y=Math.max(1,Math.min(60,parseInt(document.getElementById("simYears").value,10)||10));
+  const mr=r/100/12;let bal=p;for(let i=0;i<y*12;i++)bal=bal*(1+mr)+m;
+  document.getElementById("simOut").textContent=[
+    "Simulation only — no real data changed.",
+    `Start ${p.toFixed(2)} + ${m.toFixed(2)}/mo at ${r}% for ${y}y.`,
+    `Final balance: ${bal.toFixed(2)}`,
+    `Contributed: ${(p+m*y*12).toFixed(2)}`,
+    `Growth: ${(bal-p-m*y*12).toFixed(2)}`
+  ].join("\n");
+}
+function simClearLog(){_realDel(SIMLOG_KEY);renderSimLog();}
+
+/* ---------- 7. Knowledge Graph ---------- */
+let kgNodes=[],kgEdges=[],kgDrag=null;
+function kgBuild(){
+  kgNodes=[];kgEdges=[];const seen=new Set();
+  const add=(id,label,kind)=>{if(seen.has(id))return;seen.add(id);kgNodes.push({id,label,kind,x:Math.random()*700+50,y:Math.random()*340+40});};
+  const sample=KB.filter((_,i)=>i%3===0);
+  for(const e of sample)add("kb:"+e.k[0],kbTitle(e),"kb");
+  for(const m of mem2Load()){
+    const id="mem:"+m.id;add(id,m.text.slice(0,30),"memory");
+    for(const e of sample)if(m.text.toLowerCase().includes(e.k[0].toLowerCase()))kgEdges.push({a:id,b:"kb:"+e.k[0]});
+  }
+  for(const p of plansLoad().filter(x=>!x.archived))add("plan:"+p.id,p.title.slice(0,30),"plan");
+  const byCat={};
+  for(const e of sample)(byCat[e.c]=byCat[e.c]||[]).push("kb:"+e.k[0]);
+  for(const c in byCat){const l=byCat[c];for(let i=0;i<l.length-1;i++)kgEdges.push({a:l[i],b:l[i+1]});}
+  kgDraw();
+}
+function kgDraw(){
+  const c=document.getElementById("kgCanvas");if(!c)return;
+  const ctx=c.getContext("2d"),W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle="rgba(0,229,255,.25)";ctx.lineWidth=1;
+  for(const e of kgEdges){
+    const a=kgNodes.find(n=>n.id===e.a),b=kgNodes.find(n=>n.id===e.b);
+    if(!a||!b)continue;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  }
+  const colors={kb:"#00e5ff",memory:"#b77bff",plan:"#39ff88"};
+  const q=document.getElementById("kgSearch").value.toLowerCase();
+  for(const n of kgNodes){
+    const hl=q&&n.label.toLowerCase().includes(q);
+    ctx.beginPath();ctx.arc(n.x,n.y,hl?9:6,0,Math.PI*2);ctx.fillStyle=colors[n.kind]||"#00e5ff";ctx.fill();
+    ctx.fillStyle="#e7ecf6";ctx.font="11px monospace";ctx.fillText(n.label,n.x+9,n.y+4);
+  }
+  document.getElementById("kgInfo").textContent=`${kgNodes.length} nodes, ${kgEdges.length} edges.`;
+}
+document.getElementById("kgCanvas").addEventListener("mousedown",ev=>{
+  const c=ev.currentTarget,r=c.getBoundingClientRect();
+  const x=(ev.clientX-r.left)*(c.width/r.width),y=(ev.clientY-r.top)*(c.height/r.height);
+  kgDrag=kgNodes.find(n=>Math.hypot(n.x-x,n.y-y)<12)||null;
+});
+document.getElementById("kgCanvas").addEventListener("mousemove",ev=>{
+  if(!kgDrag)return;const c=ev.currentTarget,r=c.getBoundingClientRect();
+  kgDrag.x=(ev.clientX-r.left)*(c.width/r.width);
+  kgDrag.y=(ev.clientY-r.top)*(c.height/r.height);
+  kgDraw();
+});
+document.getElementById("kgCanvas").addEventListener("mouseup",()=>{kgDrag=null;});
+document.getElementById("kgSearch").addEventListener("input",kgDraw);
+
+/* ---------- 8. Tools & Skills ---------- */
+function renderTools(){
+  const el=document.getElementById("toolList");el.innerHTML="";
+  const p=permsLoad();
+  for(const t of TOOLS){
+    const ok=t.caps.every(c=>p[c]);
+    const row=document.createElement("div");row.className="goal-card";
+    const h=document.createElement("h4");h.textContent=(ok?"✅ ":"🔒 ")+t.name;
+    const st=document.createElement("p");st.className="fine";st.textContent="Capabilities: "+t.caps.join(", ");
+    row.append(h,st);el.appendChild(row);
+  }
+}
+function renderSkills(){
+  const el=document.getElementById("skillList");el.innerHTML="";
+  const p=permsLoad();
+  for(const s of SKILLS){
+    const caps=new Set();
+    for(const tid of s.steps){const t=TOOLS.find(x=>x.id===tid);if(t)t.caps.forEach(c=>caps.add(c));}
+    const ok=[...caps].every(c=>p[c]);
+    const row=document.createElement("div");row.className="goal-card";
+    const h=document.createElement("h4");h.textContent=(ok?"✅ ":"🔒 ")+s.name;
+    const st=document.createElement("p");st.className="fine";st.textContent="Needs: "+[...caps].join(", ");
+    row.append(h,st);el.appendChild(row);
+  }
+}
+
+/* ---------- 9. Self-Test & Recovery ---------- */
+function testRun(){
+  const results=[];const add=(n,ok,note)=>results.push({name:n,ok,note});
+  try{store.set("joplexTest","1");const v=store.get("joplexTest");store.del("joplexTest");add("Storage",v==="1","localStorage read/write");}
+  catch(e){add("Storage",false,e.message);}
+  add("Crypto (PBKDF2)",!!(window.crypto&&crypto.subtle),"passcode hashing available");
+  let corrupt=0;
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith("joplex")&&!k.startsWith("joplexPin")){
+        const v=localStorage.getItem(k);
+        if(v&&/^[[{]/.test(v)){try{JSON.parse(v);}catch(e){corrupt++;add("Corrupt: "+k,false,"couldn't parse JSON");}}
+      }
+    }
+    if(!corrupt)add("Data integrity",true,"no corrupt JSON");
+  }catch(e){add("Data integrity",false,e.message);}
+  add("Tool registry",TOOLS.length>0,TOOLS.length+" tools registered");
+  for(const id of["r2Out","p2List","m2List","v2Out","permTable","simLog","kgCanvas","toolList","skillList","apiOut"])
+    add("Element #"+id,!!document.getElementById(id),"present");
+  const passed=results.filter(r=>r.ok).length;
+  document.getElementById("testSummary").textContent=`${passed}/${results.length} checks passed.`;
+  const list=document.getElementById("testList");list.innerHTML="";
+  for(const r of results){
+    const d=document.createElement("div");d.className="finding "+(r.ok?"pass":"high");
+    const h=document.createElement("h4");h.textContent=r.name;
+    const p=document.createElement("p");p.textContent=r.note;
+    d.append(h,p);list.appendChild(d);
+  }
+  safetyLog("self-test",`${passed}/${results.length}`);
+}
+function testRepair(){
+  let fixed=0;
+  const keys=[];try{for(let i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));}catch(e){}
+  for(const k of keys){
+    if(k&&k.startsWith("joplex")&&!k.startsWith("joplexPin")){
+      const v=localStorage.getItem(k);
+      if(v&&/^[[{]/.test(v)){try{JSON.parse(v);}catch(e){localStorage.removeItem(k);fixed++;}}
+    }
+  }
+  for(const[k,d]of Object.entries({joplexMem2:"[]",joplexPlans2:"[]",joplexLedger2:"[]",joplexPerms:"{}",joplexSimLog:"[]",joplexApiLog:"[]"}))
+    if(store.get(k)===null){store.set(k,d);fixed++;}
+  testRun();
+  document.getElementById("testSummary").textContent+=` Repaired ${fixed} issue(s).`;
+}
+function testSnapshot(){
+  const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith("joplex"))o[k]=localStorage.getItem(k);}}catch(e){}
+  downloadFile("joplex-snapshot.json",JSON.stringify(o,null,2),"application/json");
+}
+
+/* ---------- 10. API Gateway ---------- */
+let apiKeyMem="";
+const APILOG_KEY="joplexApiLog",RATE_LIMIT=5,RATE_WINDOW=60000,rate=[];
+function redactSecrets(t){
+  return t
+    .replace(/\bsk-[A-Za-z0-9]{10,}\b/g,"[REDACTED_KEY]")
+    .replace(/\b\d[\d -]{10,}\d\b/g,"[REDACTED_NUMBER]")
+    .replace(/\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g,"[REDACTED_EMAIL]")
+    .replace(/\b(password|passcode|secret|token)\s*[:=]\s*\S+/gi,"$1=[REDACTED]");
+}
+function apiLog(e){
+  const log=store.json(APILOG_KEY,[]);log.unshift(e);store.set(APILOG_KEY,JSON.stringify(log.slice(0,50)));
+  const el=document.getElementById("apiLog");el.innerHTML="";
+  for(const x of log){
+    const li=document.createElement("li");
+    li.textContent=`${new Date(x.time).toLocaleTimeString()} — ${x.status} — ${x.prompt.slice(0,60)}`;
+    el.appendChild(li);
+  }
+}
+function apiProbe(){
+  const meta=document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  const policy=meta?meta.content:"(no CSP meta tag)";
+  const blocked=/connect-src\s+'none'/.test(policy)||/default-src\s+'none'/.test(policy);
+  document.getElementById("apiOut").textContent=[
+    `Page CSP: ${policy}`,
+    blocked?"⚠ Network requests are blocked by the page's CSP. Edit the CSP to allow your provider's origin.":"Network requests appear allowed by CSP.",
+    "Suggested addition:",
+    "  connect-src https://api.openai.com"
+  ].join("\n");
+}
+async function apiSend(){
+  const provider=document.getElementById("apiProvider").value;
+  const prompt=document.getElementById("apiPrompt").value.trim();
+  const out=document.getElementById("apiOut");
+  if(!prompt){out.textContent="Enter a prompt.";return;}
+  const clean=redactSecrets(prompt);
+  if(provider==="local"){
+    out.textContent="🟢 Local fallback reply:\n"+localFallback(clean);
+    apiLog({time:Date.now(),status:"local",prompt:clean});return;
+  }
+  const now=Date.now();
+  while(rate.length&&now-rate[0]>RATE_WINDOW)rate.shift();
+  if(rate.length>=RATE_LIMIT){out.textContent="⏱ Rate limit reached. Wait a minute.";return;}
+  rate.push(now);
+  if(!permHas("network")){out.textContent="🔒 Network capability not granted. Grant it in the Permissions tab.";return;}
+  const endpoint=document.getElementById("apiEndpoint").value.trim();
+  const model=document.getElementById("apiModel").value.trim();
+  const temp=parseFloat(document.getElementById("apiTemp").value)||0.4;
+  const max=parseInt(document.getElementById("apiMax").value,10)||512;
+  if(!endpoint||!model||!apiKeyMem){out.textContent="Fill in endpoint, model and key.";return;}
+  out.textContent="Sending…";
+  try{
+    const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+apiKeyMem},body:JSON.stringify({model,messages:[{role:"user",content:clean}],temperature:temp,max_tokens:max})});
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const text=data?.choices?.[0]?.message?.content||JSON.stringify(data);
+    out.textContent="🟢 Reply:\n"+redactSecrets(text);
+    apiLog({time:Date.now(),status:"ok",prompt:clean});
+  }catch(e){
+    out.textContent="🔴 Network error: "+e.message+"\n(Common causes: page CSP blocks connect-src, wrong endpoint, missing key.)";
+    apiLog({time:Date.now(),status:"error: "+e.message,prompt:clean});
+  }
+}
+function localFallback(text){
+  const c=text.toLowerCase().trim();
+  if(/^(hi|hello|hey)\b/.test(c))return "Hello from the local fallback. No network used.";
+  if(/^help\b/.test(c))return "Try: 'list tools', 'list skills', 'safety status'.";
+  if(/^(list tools|tools)\b/.test(c))return TOOLS.map(t=>"• "+t.name+" ["+t.caps.join(", ")+"]").join("\n");
+  if(/^(list skills|skills)\b/.test(c))return SKILLS.map(s=>"• "+s.name).join("\n");
+  try{const kb=kbAnswer(c);if(kb)return kb;}catch(e){}
+  return "Local fallback can't answer that. This mode never leaves the device.";
+}
+
+/* ---------- Wiring ---------- */
+document.getElementById("sxSeg").addEventListener("click",ev=>{
+  const b=ev.target.closest("button[data-sx]");if(!b)return;
+  for(const x of document.querySelectorAll("#sxSeg button"))x.setAttribute("aria-pressed",x===b?"true":"false");
+  for(const p of document.querySelectorAll(".sx-panel"))p.hidden=p.id!==b.dataset.sx;
+});
+document.getElementById("systems").addEventListener("click",ev=>{
+  const b=ev.target.closest("[data-act]");if(!b)return;
+  const fns={
+    reasonRun:r2Run,reasonDemo:r2Demo,reasonClear:r2Clear,
+    planCreate,planClearDone,
+    memAdd:mem2Add,memConsolidate:mem2Consolidate,memWipe:mem2Wipe,
+    verifyRun:v2Run,verifyClear:v2Clear,
+    permDefaults:()=>{permsSave({"storage.read":true,"storage.write":true,"speech":true});renderPerms();},
+    permRevokeAll:()=>{permsSave({});renderPerms();},
+    simClearLog,simRun:simWealth,
+    kgRebuild:kgBuild,
+    testRun,testRepair,testSnapshot,
+    apiSend,apiProbe,
+    apiCspCopy:()=>{const m=document.querySelector('meta[http-equiv="Content-Security-Policy"]');if(m&&navigator.clipboard)navigator.clipboard.writeText(m.content).catch(()=>{});document.getElementById("apiOut").textContent="CSP copied (if clipboard allowed).";}
+  };
+  if(fns[b.dataset.act])fns[b.dataset.act]();
+});
+document.getElementById("simToggle").addEventListener("click",simToggle);
+document.getElementById("m2Search").addEventListener("input",renderMem2);
+document.getElementById("apiKey").addEventListener("input",ev=>{apiKeyMem=ev.target.value;});
+document.getElementById("apiProvider").addEventListener("change",()=>{
+  document.getElementById("apiEndpoint").disabled=document.getElementById("apiProvider").value==="local";
+});
+
+/* Initial render */
+renderPlans();renderMem2();renderLedger();renderPerms();renderTools();renderSkills();renderSimLog();kgBuild();
+if(simOn()){const b=document.getElementById("simToggle");b.textContent="🧪 Simulation: ON";b.classList.add("btn-danger");}
+</script>
+  
 </body>
 </html>

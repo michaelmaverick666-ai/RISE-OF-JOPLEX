@@ -859,9 +859,182 @@ html.light #eyeWall{opacity:calc(var(--eye-op)*.38)}
           <button onclick="deleteAllData()" class="btn btn-danger">🗑️ Delete Everything</button>
         </div>
       </section>
-
+        
       <div class="reset-wrap"><button onclick="resetJoplex()" class="btn btn-danger">Reset Joplex Memory</button></div>
     </div>
+<button type="button" data-go="systems"><span>⚙️</span>Systems</button>deadline. Joplex builds a dated schedule, tracks your real completion velocity, forecasts the finish date and flags whether you are on track.</p>
+    <input type="text" id="p2Title" placeholder="Goal (e.g. Ship Wealth Core v2)" maxlength="90">
+    <input type="date" id="p2Date" aria-label="Deadline">
+    <input type="number" id="p2Hours" placeholder="Estimated total effort (hours, optional)" min="0" step="0.5">
+    <select id="p2Priority" aria-label="Priority">
+      <option value="1">Priority: Low</option>
+      <option value="2" selected>Priority: Normal</option>
+      <option value="3">Priority: Critical</option>
+    </select>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" data-act="planCreate">Create plan</button>
+      <button type="button" class="btn btn-ghost" data-act="planClearDone">Archive completed</button>
+    </div>
+    <div id="p2List"></div>
+  </section>
+
+  <!-- ===== Memory Architecture ===== -->
+  <section class="panel accent-purple sx-panel" id="sxMem" hidden>
+    <h3>💾 Memory Architecture v2</h3>
+    <p class="core-note">Four layers: working (this session), long-term (saved), episodic (your safety log) and semantic (derived facts). Retrieval blends keyword match, importance, recency and reuse. Consolidation merges near-duplicates. Passwords, card and ID numbers are refused.</p>
+    <input type="text" id="m2Text" placeholder="Something for Joplex to remember" maxlength="200">
+    <div class="core-row">
+      <select id="m2Type" aria-label="Memory type">
+        <option value="fact">Fact</option><option value="preference">Preference</option>
+        <option value="decision">Decision</option><option value="lesson">Lesson</option>
+      </select>
+      <select id="m2Imp" aria-label="Importance">
+        <option value="1">Low</option><option value="2" selected>Normal</option><option value="3">Pinned</option>
+      </select>
+      <select id="m2Layer" aria-label="Layer">
+        <option value="longterm">Long-term</option><option value="working">Working (session)</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" data-act="memAdd">Save memory</button>
+      <button type="button" class="btn" data-act="memConsolidate">Consolidate</button>
+      <button type="button" class="btn btn-danger" data-act="memWipe">Clear long-term</button>
+    </div>
+    <h4>Recall</h4>
+    <input type="text" id="m2Search" placeholder="Search memories" maxlength="80">
+    <p id="m2Stats" class="fine"></p>
+    <ul id="m2List" class="core-list"></ul>
+  </section>
+
+  <!-- ===== Verification ===== -->
+  <section class="panel accent-gold sx-panel" id="sxVerify" hidden>
+    <h3>🔍 Verification / Anti-Hallucination Core v2</h3>
+    <p class="core-note">Joplex has no internet and cannot confirm outside facts. This core scans a claim for red flags, checks any arithmetic, compares it with the Knowledge Core and keeps an evidence ledger. Only you can mark a claim human-verified — and only with a named source.</p>
+    <textarea id="v2Claim" rows="3" placeholder="Paste a claim to check" maxlength="400"></textarea>
+    <input type="text" id="v2Source" placeholder="Source you personally checked (required to verify)" maxlength="140">
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" data-act="verifyRun">Check claim</button>
+      <button type="button" class="btn btn-ghost" data-act="verifyClear">Clear ledger</button>
+    </div>
+    <div id="v2Out" class="core-out"></div>
+    <h4>Evidence ledger</h4>
+    <ul id="v2Ledger" class="core-list"></ul>
+  </section>
+
+  <!-- ===== Permissions ===== -->
+  <section class="panel accent-pink sx-panel" id="sxPerm" hidden>
+    <h3>🛡️ Permission &amp; Control System</h3>
+    <p class="core-note">Every tool declares the capabilities it needs. Nothing destructive runs without an explicit grant and an on-screen confirmation. The Safety Lock, when engaged, blocks everything below.</p>
+    <p id="permLock" class="fine"></p>
+    <div id="permTable"></div>
+    <div class="btn-row">
+      <button type="button" class="btn" data-act="permDefaults">Reset to least privilege</button>
+      <button type="button" class="btn btn-danger" data-act="permRevokeAll">Revoke everything</button>
+    </div>
+    <h4>Audit trail (last 10)</h4>
+    <ul id="permLog" class="core-list"></ul>
+  </section>
+
+<!-- ===== Simulation ===== -->
+
+  <section class="panel accent-orange sx-panel" id="sxSim" hidden>
+
+    <h3>🧪 Simulation Mode</h3>
+
+    <p class="core-note">While Simulation Mode is on, every write to storage is intercepted and logged instead of applied. Run what-if scenarios, rehearse a reset, then switch back to real mode with nothing changed.</p>
+
+    <div class="btn-row">
+
+      <button type="button" class="btn btn-primary" id="simToggle">🧪 Simulation: Off</button>
+
+      <button type="button" class="btn btn-ghost" data-act="simClearLog">Clear dry-run log</button>
+
+    </div>
+
+    <h4>Wealth what-if</h4>
+
+    <input type="number" id="simPrincipal" placeholder="Starting amount" min="0" step="any">
+
+    <input type="number" id="simMonthly" placeholder="Monthly contribution" min="0" step="any">
+
+    <input type="number" id="simRate" placeholder="Annual return (%)" step="any">
+
+    <input type="number" id="simYears" placeholder="Years" min="1" max="60" step="1">
+
+    <button type="button" class="btn btn-primary" data-act="simRun">Run scenario</button>
+
+    <div id="simOut" class="core-out"></div>
+
+    <h4>Dry-run log</h4>
+
+    <ul id="simLog" class="core-list"></ul>
+
+  </section>
+
+<!-- ===== Knowledge Graph ===== -->
+  <section class="panel accent-cyan sx-panel" id="sxGraph" hidden>
+    <h3>🕸️ Knowledge Graph</h3>
+    <p class="core-note">Built from the Knowledge Core, your memories and your plans. Drag nodes to rearrange; click one to inspect its connections.</p>
+    <input type="text" id="kgSearch" placeholder="Highlight a topic" maxlength="40">
+    <canvas id="kgCanvas" width="800" height="420" aria-label="Knowledge graph"></canvas>
+    <div class="btn-row">
+      <button type="button" class="btn" data-act="kgRebuild">Rebuild graph</button>
+    </div>
+    <p id="kgInfo" class="fine">—</p>
+  </section>
+
+  <!-- ===== Tools & Skills ===== -->
+  <section class="panel accent-green sx-panel" id="sxTools" hidden>
+    <h3>🧰 Tool &amp; Skill Registry</h3>
+    <p class="core-note">Tools are atomic actions. Skills are named sequences of tools. Each shows the capabilities it needs and whether you have granted them.</p>
+    <h4>Tools</h4>
+    <div id="toolList"></div>
+    <h4>Skills</h4>
+    <div id="skillList"></div>
+  </section>
+
+  <!-- ===== Self-test ===== -->
+  <section class="panel accent-purple sx-panel" id="sxTest" hidden>
+    <h3>🩺 Self-Test &amp; Recovery</h3>
+    <p class="core-note">Checks storage, crypto, data integrity, the tool registry and required page elements. Repair rebuilds missing stores and purges corrupt JSON without touching good data.</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" data-act="testRun">Run diagnostics</button>
+      <button type="button" class="btn" data-act="testRepair">Repair</button>
+      <button type="button" class="btn" data-act="testSnapshot">Download snapshot</button>
+    </div>
+    <p id="testSummary" class="fine"></p>
+    <div id="testList"></div>
+  </section>
+
+<!-- ===== API Gateway ===== -->
+  <section class="panel accent-gold sx-panel" id="sxApi" hidden>
+    <h3>🔌 Secure API Gateway</h3>
+    <p class="core-note">A hardened, redacting gateway for a real language model. The key is held in memory only, never written to storage. Requests are rate-limited and every prompt is stripped of secrets first.</p>
+    <p class="fine" id="apiCsp">Checking network policy…</p>
+    <select id="apiProvider" aria-label="Provider">
+      <option value="openai">OpenAI-compatible chat completions</option>
+      <option value="local">Local rule-based fallback (offline)</option>
+    </select>
+    <input type="url" id="apiEndpoint" placeholder="https://api.openai.com/v1/chat/completions" maxlength="300">
+    <input type="text" id="apiModel" placeholder="Model (e.g. gpt-4o-mini)" maxlength="60">
+    <input type="password" id="apiKey" placeholder="API key (memory only, never saved)" autocomplete="off" maxlength="200">
+    <div class="core-row">
+      <input type="number" id="apiTemp" placeholder="Temperature" min="0" max="2" step="0.1" value="0.4">
+      <input type="number" id="apiMax" placeholder="Max tokens" min="16" max="4096" step="1" value="512">
+    </div>
+    <textarea id="apiPrompt" rows="3" placeholder="Test prompt"></textarea>
+    <div class="btn-row">
+      <button type="button" class="btn btn-primary" data-act="apiSend">Send</button>
+      <button type="button" class="btn" data-act="apiProbe">Test network policy</button>
+      <button type="button" class="btn btn-ghost" data-act="apiCspCopy">Copy CSP fix</button>
+    </div>
+    <div id="apiOut" class="core-out"></div>
+    <h4>Request log (redacted)</h4>
+    <ul id="apiLog" class="core-list"></ul>
+  </section>
+
+</div>
+
 
   </main>
 </div>

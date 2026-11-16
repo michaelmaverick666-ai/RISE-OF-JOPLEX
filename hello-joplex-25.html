@@ -457,6 +457,27 @@ html.light #eyeWall{opacity:calc(var(--eye-op)*.38)}
 .b8{top:90%;animation-duration:32s;animation-delay:-13s;font-size:34px}
 @keyframes butterflyFlight{0%{transform:translate3d(-10vw,0,0) rotate(-18deg) scale(.8)}20%{transform:translate3d(25vw,-34px,0) rotate(16deg) scale(1)}42%{transform:translate3d(52vw,28px,0) rotate(-12deg) scale(.9)}67%{transform:translate3d(82vw,-42px,0) rotate(20deg) scale(1.05)}100%{transform:translate3d(115vw,12px,0) rotate(-15deg) scale(.8)}}
 @media(prefers-reduced-motion:reduce){.butterfly{animation:none;left:auto;right:5%;opacity:.5} .b2,.b4,.b6,.b8{display:none}}
+    @media (max-width: 900px), (max-height: 520px) {
+  nav, .tabs, .sidebar {   /* use whichever your menu actually is */
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    z-index: 50;
+  }
+  nav button, .tabs button {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+  }
+  main, .content {
+    margin-left: 0;
+  }
+}
 </style>
 </head>
 <body class="booting">
